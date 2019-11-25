@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xerris.DotNet.Core", "src\Xerris.DotNet.Core\Xerris.DotNet.Core.csproj", "{402C43E3-C9A1-4CD8-8AB0-4DFA2B54EBB7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xerris.DotNet.Core.Test", "test\Xerris.DotNet.Core.Test\Xerris.DotNet.Core.Test.csproj", "{62471EAB-8F35-48EE-BC5C-B9EEC741043C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{402C43E3-C9A1-4CD8-8AB0-4DFA2B54EBB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{402C43E3-C9A1-4CD8-8AB0-4DFA2B54EBB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{402C43E3-C9A1-4CD8-8AB0-4DFA2B54EBB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{402C43E3-C9A1-4CD8-8AB0-4DFA2B54EBB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62471EAB-8F35-48EE-BC5C-B9EEC741043C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62471EAB-8F35-48EE-BC5C-B9EEC741043C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62471EAB-8F35-48EE-BC5C-B9EEC741043C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62471EAB-8F35-48EE-BC5C-B9EEC741043C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
