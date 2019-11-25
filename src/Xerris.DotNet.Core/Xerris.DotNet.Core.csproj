@@ -1,19 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-      <TargetFramework>netcoreapp3.0</TargetFramework>
+      <TargetFramework>netcoreapp2.1</TargetFramework>
       <PackageId>Xerris.DotNet.Core</PackageId>
-      <Version>0.0.1</Version>
+      <Version>0.0.1-prelease-001</Version>
       <Authors>Xerris Inc.</Authors>
       <Company>Xerris Inc.</Company>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+      <LangVersion>8</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.2.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.0-preview1.19506.1" />
       <PackageReference Include="Newtonsoft.Json" Version="12.0.3-beta2" />
       <PackageReference Include="Serilog" Version="2.9.1-dev-01141" />
       <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.1-dev-00209" />
     </ItemGroup>
+
+    <Target Name="NugetPackAutoVersioning" AfterTargets="Build">
+      <Exec Command="dotnet pack -p:PackageVersion=$(&quot;prelease-&quot;)$([System.DateTime]::Now.ToString(&quot;yyyy.MM.dd.HHmmss&quot;)) --no-build --configuration $(Configuration) --output &quot;$(SolutionDir)nuget&quot;" />
+    </Target>
 
 </Project>
