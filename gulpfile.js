@@ -24,7 +24,7 @@ function _build() {
 }
 
 function _test() {
-    return gulp.src('**/*Tests.csproj', {read: false})
+    return gulp.src('**/*Test.csproj', {read: false})
         .pipe(test({logger: `junit;LogFileName=${__dirname}/TestResults/xunit/TestOutput.xml`}))
 }
 

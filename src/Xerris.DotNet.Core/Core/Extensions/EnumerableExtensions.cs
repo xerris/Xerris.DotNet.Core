@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Xerris.DotNet.Core.Core.Extensions
 {
@@ -66,6 +67,14 @@ namespace Xerris.DotNet.Core.Core.Extensions
         public static IEnumerable<T> DistinctBy<T>(this IEnumerable<T> source, Func<T, object> predicate)
         {
             return source.GroupBy(predicate).Select(x => x.First());
+        }
+
+        public static string GetEmail(this IEnumerable<string> items)
+        {
+            var emailRegex = new Regex(
+                @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z",
+                RegexOptions.IgnoreCase);
+            return items.First(x => emailRegex.IsMatch(x));
         }
     }
 }
