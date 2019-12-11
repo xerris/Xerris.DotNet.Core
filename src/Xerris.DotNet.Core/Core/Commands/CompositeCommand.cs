@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Xerris.DotNet.Core.Core.Extensions;
 
 namespace Xerris.DotNet.Core.Core.Commands
 {
@@ -9,12 +8,15 @@ namespace Xerris.DotNet.Core.Core.Commands
 
         public void Run()
         {
-            commands.ForEach(x => x.Run());
+            foreach (var each in commands)
+            {
+                each.Run();
+            }
         }
 
-        public void Add(ICommand command)
+        public void Add(ICommand waitedCommand)
         {
-            commands.Add(command);
+            commands.Add(waitedCommand);
         }
     }
 }

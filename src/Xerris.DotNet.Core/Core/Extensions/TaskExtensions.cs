@@ -1,4 +1,4 @@
-namespace Xerris.DotNet.Core.Core
+namespace Xerris.DotNet.Core.Core.Extensions
 {
     public static class TaskExtensions
     {

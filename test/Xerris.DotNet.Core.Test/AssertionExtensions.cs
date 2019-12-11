@@ -1,4 +1,4 @@
-using Xerris.DotNet.Core.Core.Validation;
+using Xerris.DotNet.Core.Core.Validations;
 using Xerris.DotNet.Core.Test.Core;
 
 namespace Xerris.DotNet.Core.Test

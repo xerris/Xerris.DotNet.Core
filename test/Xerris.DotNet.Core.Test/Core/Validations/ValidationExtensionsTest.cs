@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using Xerris.DotNet.Core.Core.Validation;
+using Xerris.DotNet.Core.Core.Validations;
 using Xunit;
 
 namespace Xerris.DotNet.Core.Test.Core.Validations

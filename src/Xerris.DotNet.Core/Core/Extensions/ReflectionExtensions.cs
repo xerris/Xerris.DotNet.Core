@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
-namespace Xerris.DotNet.Core.Core
+namespace Xerris.DotNet.Core.Core.Extensions
 {
     public static class ReflectionExtensions
     {

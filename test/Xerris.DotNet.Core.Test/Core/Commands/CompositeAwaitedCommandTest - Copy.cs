@@ -4,18 +4,18 @@ using Xerris.DotNet.Core.Core.Commands;
 using Xerris.DotNet.Core.Core.Extensions;
 using Xunit;
 
-namespace Xerris.DotNet.Core.Test.Core
+namespace Xerris.DotNet.Core.Test.Core.Commands
 {
     [Collection("base")]
     public class CompositeCommandTest
     {
-        private int count;
-
         public CompositeCommandTest()
         {
             count = 1;
         }
-        
+
+        private int count;
+
         [Fact]
         public void CanRunMultipleCommands()
         {
@@ -26,7 +26,7 @@ namespace Xerris.DotNet.Core.Test.Core
         }
     }
 
-    class TestCommand : ICommand
+    internal class TestCommand : ICommand
     {
         private readonly Action action;
 
@@ -37,8 +37,7 @@ namespace Xerris.DotNet.Core.Test.Core
 
         public void Run()
         {
-            action.Invoke();
+            action();
         }
     }
-    
 }
