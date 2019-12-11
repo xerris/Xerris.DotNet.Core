@@ -3,7 +3,7 @@
     <PropertyGroup>
       <TargetFramework>netcoreapp2.1</TargetFramework>
       <PackageId>Xerris.DotNet.Core</PackageId>
-      <Version>0.0.1-prelease-002</Version>
+      <Version>0.0.3-prelease-002</Version>
       <Authors>Xerris Inc.</Authors>
       <Company>Xerris Inc.</Company>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Xerris.DotNet.Core.Core.Commands
@@ -9,10 +10,7 @@ namespace Xerris.DotNet.Core.Core.Commands
 
         public async Task RunAsync()
         {
-            foreach (var each in commands)
-            {
-                await each.RunAsync();
-            }
+            await Task.WhenAll(commands.Select(x => x.RunAsync()));
         }
 
         public void Add(IWaitedCommand waitedCommand)
