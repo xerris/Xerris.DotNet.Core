@@ -1,8 +1,7 @@
 using System;
 using System.Linq;
 using FluentAssertions;
-using Xerris.DotNet.Core.Core;
-using Xerris.DotNet.Core.Core.Extensions;
+using Xerris.DotNet.Core.Extensions;
 using Xunit;
 
 namespace Xerris.DotNet.Core.Test.Core.Extensions

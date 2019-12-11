@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Xerris.DotNet.Core.Core.Commands;
-using Xerris.DotNet.Core.Core.Extensions;
+using Xerris.DotNet.Core.Commands;
+using Xerris.DotNet.Core.Extensions;
 using Xunit;
 
 namespace Xerris.DotNet.Core.Test.Core.Commands

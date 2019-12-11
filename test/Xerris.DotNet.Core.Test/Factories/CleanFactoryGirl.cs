@@ -1,4 +1,4 @@
-﻿using Xerris.DotNet.Core.Core.Commands;
+﻿using Xerris.DotNet.Core.Commands;
 
 namespace Xerris.DotNet.Core.Test.Factories
 {

@@ -1,5 +1,5 @@
 using System;
-using Xerris.DotNet.Core.Core.Extensions;
+using Xerris.DotNet.Core.Extensions;
 using Xerris.DotNet.Core.Test.Factories;
 
 namespace Xerris.DotNet.Core.Test

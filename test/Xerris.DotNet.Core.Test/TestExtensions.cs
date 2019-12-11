@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Xerris.DotNet.Core.Core.Validations;
+using Xerris.DotNet.Core.Validations;
 
 namespace Xerris.DotNet.Core.Test
 {

@@ -1,5 +1,5 @@
-using Xerris.DotNet.Core.Core.Extensions;
-using Xerris.DotNet.Core.Core.Validations;
+using Xerris.DotNet.Core.Extensions;
+using Xerris.DotNet.Core.Validations;
 using Xunit;
 
 namespace Xerris.DotNet.Core.Test.Core.Extensions

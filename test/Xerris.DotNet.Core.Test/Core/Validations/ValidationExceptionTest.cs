@@ -1,6 +1,6 @@
 using FluentAssertions;
 using Microsoft.CSharp.RuntimeBinder;
-using Xerris.DotNet.Core.Core.Validations;
+using Xerris.DotNet.Core.Validations;
 using Xunit;
 
 namespace Xerris.DotNet.Core.Test.Core.Validations

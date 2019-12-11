@@ -1,5 +1,5 @@
-using Xerris.DotNet.Core.Core.Validations;
 using Xerris.DotNet.Core.Test.Core;
+using Xerris.DotNet.Core.Validations;
 
 namespace Xerris.DotNet.Core.Test
 {
