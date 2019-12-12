@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Xerris.DotNet.Core.Extensions;
@@ -268,7 +269,22 @@ namespace Xerris.DotNet.Core.Validations
                 ? validation.AddException(ValidationException.MustBePhoneNumber(paramName))
                 : validation;
         }
+        
+        public static Validation IsDate(this Validation validation, string date, string paramName, string format = null)
+        {
+            var success = format == null
+                ? DateTime.TryParse(date, out _)
+                : DateTime.TryParseExact(date, format, DateTimeFormatInfo.CurrentInfo,
+                    DateTimeStyles.AssumeLocal, out _);
 
+            if (!success)
+            {
+                validation.AddException(new ValidationException($"{paramName} is not a valid Date"));
+            }
+
+            return validation;
+        }
+        
         public static Validation IsMinimumLength(this Validation validation, string theValue, int minimumLength,
             string message)
         {

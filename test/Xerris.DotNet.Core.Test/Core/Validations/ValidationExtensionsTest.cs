@@ -628,5 +628,24 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         {
             ((Validation) null).Warnings().Should().BeNull();
         }
+
+        [Fact]
+        public void IsDateWithTime()
+        {
+            Validate.Begin().IsDate("2019-01-01 14:25:59", "is a date").IsValid().Should().BeTrue();
+        }
+
+        [Fact]
+        public void IsDate()
+        {
+            Validate.Begin().IsDate("2019-01-01", "is a date").IsValid().Should().BeTrue();
+        }
+
+        [Fact]
+        public void IsNotADate()
+        {
+            Validate.Begin().IsDate("derp", "is a date").IsValid().Should().BeTrue();
+        }
+        
     }
 }
