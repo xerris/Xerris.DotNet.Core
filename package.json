@@ -6,7 +6,7 @@
   "version": "1.0.0",
   "description": "",
   "author": "Xerris",
-  "license": "BSD-3",
+  "license": "BSD-3-Clause",
   "dependencies": {
     "del": "^5.1.0",
     "mkdirp": "^0.5.1",
