@@ -22,4 +22,10 @@
       <ProjectReference Include="..\..\src\Xerris.DotNet.Core\Xerris.DotNet.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
