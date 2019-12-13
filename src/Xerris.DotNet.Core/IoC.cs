@@ -1,9 +1,10 @@
 using System;
-using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Xerris.DotNet.Core.Extensions;
 using Xerris.DotNet.Core.Logging;
+using Xerris.DotNet.Core.Validations;
 
 namespace Xerris.DotNet.Core
 {
@@ -14,28 +15,17 @@ namespace Xerris.DotNet.Core
 
         private IoC()
         {
-            var frames = new StackTrace().GetFrames();  // get method calls (frames)
-            var assembly = GetType().Assembly;
-            foreach (var each in frames)
-            {
-                var declaringType = each.GetMethod().DeclaringType;
-                if (declaringType != null && declaringType.Assembly == assembly) continue;
-                var memberInfo = each.GetMethod().DeclaringType;
-                if (memberInfo != null) assembly = memberInfo.Assembly;
-                break;
-            }
-            
-            Initialize(assembly);
+            Initialize(GetType().Assembly.GetParentAssemblies().First());
         }
 
-        public static IoC Instance { get; } = new IoC();
-
+        private static IoC Instance => new IoC();
+        
         private void Initialize(Assembly caller)
         {
             if (initialized) return;
 
             var collection = new ServiceCollection();
-            var startup = ReflectionExtensions.GetImplementingType<IAppStartup>(caller);
+            var startup = GetImplementingType<IAppStartup>(caller);
             var configuration = startup.StartUp(collection);
             LogStartup.Initialize(configuration);
 
@@ -44,7 +34,7 @@ namespace Xerris.DotNet.Core
 
             initialized = true;
         }
-
+        
         private TService Find<TService>()
         {
             return container.GetRequiredService<TService>();
@@ -53,6 +43,17 @@ namespace Xerris.DotNet.Core
         public static TService Resolve<TService>()
         {
             return Instance.Find<TService>();
+        }
+        
+        private static T GetImplementingType<T>(params Assembly[] targetAssemblies)
+        {
+            var type = typeof(T);
+            var searchAssemblies = targetAssemblies.Any() ? targetAssemblies : AppDomain.CurrentDomain.GetAssemblies();
+            var found = searchAssemblies
+                .SelectMany(s => s.GetTypes())
+                .FirstOrDefault(tt => tt.IsClass && !tt.IsAbstract && type.IsAssignableFrom(tt));
+            Validate.Begin().IsNotNull(found, "found ").Check();
+            return (T) Activator.CreateInstance(found);
         }
     }
 }

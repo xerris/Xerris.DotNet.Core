@@ -9,7 +9,7 @@ namespace Xerris.DotNet.Core.Test.Startup
         public void ApplicationConfig()
         {
             var appConfig = IoC.Resolve<IApplicationConfig>();
-            
+
             Validate.Begin()
                 .IsNotNull(appConfig, "has an app config")
                 .Check()

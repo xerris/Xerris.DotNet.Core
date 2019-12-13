@@ -20,18 +20,6 @@ namespace Xerris.DotNet.Core.Extensions
                 .SelectMany(s => s.GetTypes())
                 .Where(tt => tt.IsClass && !tt.IsAbstract && t.IsAssignableFrom(tt));
         }
-        public static T GetImplementingType<T>(params Assembly[] targetAssemblies)
-        {
-            var type = typeof(T);
-            
-            var searchAssemblies = targetAssemblies.Any() ? targetAssemblies : AppDomain.CurrentDomain.GetAssemblies();
-
-            var found = searchAssemblies
-                            .SelectMany(s => s.GetTypes())
-                            .FirstOrDefault(tt => tt.IsClass && !tt.IsAbstract && type.IsAssignableFrom(tt));
-            Validate.Begin().IsNotNull(found, "found ").Check();
-            return (T) Activator.CreateInstance(found);
-        }
 
         public static IEnumerable<Assembly> GetParentAssemblies(this Assembly a)
         {
