@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,12 +16,12 @@ namespace Xerris.DotNet.Core
 
         private IoC()
         {
-            Initialize(GetType().Assembly.GetParentAssemblies().First());
+            Initialize(GetType().Assembly.GetParentAssemblies());
         }
 
         private static IoC Instance => new IoC();
         
-        private void Initialize(Assembly caller)
+        private void Initialize(IEnumerable<Assembly> caller)
         {
             if (initialized) return;
 
@@ -45,7 +46,7 @@ namespace Xerris.DotNet.Core
             return Instance.Find<TService>();
         }
         
-        private static T GetImplementingType<T>(params Assembly[] targetAssemblies)
+        private static T GetImplementingType<T>(IEnumerable<Assembly> targetAssemblies)
         {
             var type = typeof(T);
             var searchAssemblies = targetAssemblies.Any() ? targetAssemblies : AppDomain.CurrentDomain.GetAssemblies();
