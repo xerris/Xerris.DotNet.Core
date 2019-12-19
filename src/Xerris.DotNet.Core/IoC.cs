@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,29 +14,35 @@ namespace Xerris.DotNet.Core
     {
         private IServiceProvider container;
         private bool initialized;
+        private readonly object mutex = new object();
 
         private IoC()
         {
-            Initialize(GetType().Assembly.GetParentAssemblies());
+            Initialize();
         }
 
         private static IoC Instance => new IoC();
         
-        private void Initialize(IEnumerable<Assembly> caller)
+        private void Initialize()
         {
             if (initialized) return;
 
-            var collection = new ServiceCollection();
-            var startup = GetImplementingType<IAppStartup>(caller);
-            var configuration = startup.StartUp(collection);
-            LogStartup.Initialize(configuration);
+            lock (mutex)
+            {
+                if (initialized) return;
 
-            new ConfigureServiceCollection(collection).Initialize();
-            container = collection.BuildServiceProvider();
+                var collection = new ServiceCollection();
+                var startup = GetImplementingType<IAppStartup>(AppDomain.CurrentDomain.GetAssemblies());
+                var configuration = startup.StartUp(collection);
+                LogStartup.Initialize(configuration);
 
-            initialized = true;
+                new ConfigureServiceCollection(collection).Initialize();
+                container = collection.BuildServiceProvider();
+
+                initialized = true;
+            }
         }
-        
+
         private TService Find<TService>()
         {
             return container.GetRequiredService<TService>();
@@ -49,12 +56,22 @@ namespace Xerris.DotNet.Core
         private static T GetImplementingType<T>(IEnumerable<Assembly> targetAssemblies)
         {
             var type = typeof(T);
-            var searchAssemblies = targetAssemblies.Any() ? targetAssemblies : AppDomain.CurrentDomain.GetAssemblies();
+            var searchAssemblies = targetAssemblies.Where(Filter);
             var found = searchAssemblies
                 .SelectMany(s => s.GetTypes())
                 .FirstOrDefault(tt => tt.IsClass && !tt.IsAbstract && type.IsAssignableFrom(tt));
-            Validate.Begin().IsNotNull(found, "found ").Check();
+            
+            if(found == null) throw new ArgumentException($"Unable to find type matching '{type.Name}'");
             return (T) Activator.CreateInstance(found);
+        }
+
+        private static bool Filter(Assembly assembly)
+        {
+            var name = assembly.FullName;
+            return !(name.StartsWith("microsoft", StringComparison.CurrentCultureIgnoreCase) || 
+                     name.StartsWith("system", StringComparison.CurrentCultureIgnoreCase) ||
+                     name.StartsWith("mscorlib", StringComparison.CurrentCultureIgnoreCase) ||
+                     name.StartsWith("netstandard", StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }

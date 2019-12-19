@@ -1,6 +1,6 @@
 using Amazon.Extensions.NETCore.Setup;
 
-namespace Xerris.DotNet.Core.Test.Startup
+namespace Xerris.DotNet.Core.TestSupport
 {
     public interface IApplicationConfig : IApplicationConfigBase
     {

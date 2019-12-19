@@ -1,3 +1,5 @@
+using FluentAssertions;
+using Xerris.DotNet.Core.TestSupport;
 using Xerris.DotNet.Core.Validations;
 using Xunit;
 
@@ -16,5 +18,14 @@ namespace Xerris.DotNet.Core.Test.Startup
                 .IsEqual(appConfig.AllowedHosts, "*", "got allowedHosts")
                 .Check();
         }
+
+        [Fact]
+        public void MyService()
+        {
+            var service = IoC.Resolve<IService>();
+            service.Should().NotBeNull();
+        }
+        
+
     }
 }

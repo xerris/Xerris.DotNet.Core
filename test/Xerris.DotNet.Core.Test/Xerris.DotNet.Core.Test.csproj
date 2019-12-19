@@ -20,6 +20,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\Xerris.DotNet.Core\Xerris.DotNet.Core.csproj" />
+      <ProjectReference Include="..\..\Xerris.DotNet.Core.TestSupport\Xerris.DotNet.Core.TestSupport.csproj" />
     </ItemGroup>
 
     <ItemGroup>
