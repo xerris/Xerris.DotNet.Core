@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\src\Xerris.DotNet.Core\Xerris.DotNet.Core.csproj" />
+      <ProjectReference Include="..\..\src\Xerris.DotNet.Core\Xerris.DotNet.Core.csproj" />
     </ItemGroup>
 
 </Project>
