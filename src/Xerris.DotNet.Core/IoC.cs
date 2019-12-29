@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using Xerris.DotNet.Core.Extensions;
 using Xerris.DotNet.Core.Logging;
-using Xerris.DotNet.Core.Validations;
 
 namespace Xerris.DotNet.Core
 {

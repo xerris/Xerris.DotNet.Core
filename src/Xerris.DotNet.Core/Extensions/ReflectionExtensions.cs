@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
-using Xerris.DotNet.Core.Validations;
 
 namespace Xerris.DotNet.Core.Extensions
 {
@@ -27,6 +26,45 @@ namespace Xerris.DotNet.Core.Extensions
                 .Where(f => f.GetMethod().ReflectedType != null)
                 .Select(f => f.GetMethod().ReflectedType.Assembly)
                 .Distinct().Where(x => x.GetReferencedAssemblies().Any(y => y.FullName == a.FullName));
+        }
+        
+        public static PropertyInfo GetProperty<TModel, T>(this Expression<Func<TModel, T>> expression)
+        {
+            var memberExpression = GetMemberExpression(expression);
+            return (PropertyInfo)memberExpression.Member;
+        }
+
+        public static object GetValue<TModel, T>(this Expression<Func<TModel, T>> expression, T obj)
+        {
+            var info = expression.GetProperty();
+            return info.GetValue(obj, new object[0]);
+        }
+
+        public static string NameOfProperty<TModel, T>(this Expression<Func<TModel, T>> expression)
+        {
+            return expression.GetProperty().Name;
+        }
+
+        private static MemberExpression GetMemberExpression<TModel, T>(Expression<Func<TModel, T>> expression, bool enforceCheck = true)
+        {
+            MemberExpression memberExpression = null;
+            switch (expression.Body.NodeType)
+            {
+                case ExpressionType.Convert:
+                {
+                    var body = (UnaryExpression)expression.Body;
+                    memberExpression = body.Operand as MemberExpression;
+                    break;
+                }
+                case ExpressionType.MemberAccess:
+                    memberExpression = expression.Body as MemberExpression;
+                    break;
+            }
+            if (enforceCheck && memberExpression == null)
+            {
+                throw new ArgumentException("Not a member access", "expression");
+            }
+            return memberExpression;
         }
     }
 }

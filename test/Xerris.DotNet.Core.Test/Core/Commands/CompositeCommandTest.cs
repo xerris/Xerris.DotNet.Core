@@ -1,6 +1,4 @@
-using System;
 using FluentAssertions;
-using Xerris.DotNet.Core.Commands;
 using Xerris.DotNet.Core.Extensions;
 using Xunit;
 
@@ -23,21 +21,6 @@ namespace Xerris.DotNet.Core.Test.Core.Commands
                 .Then(new TestCommand(() => count = 10))
                 .Run();
             count.Should().Be(10);
-        }
-    }
-
-    internal class TestCommand : ICommand
-    {
-        private readonly Action action;
-
-        public TestCommand(Action action)
-        {
-            this.action = action;
-        }
-
-        public void Run()
-        {
-            action();
         }
     }
 }

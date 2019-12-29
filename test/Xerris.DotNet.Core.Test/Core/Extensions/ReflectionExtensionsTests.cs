@@ -41,6 +41,17 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
                 .IsEmpty(assemblies, "assemblies")
                 .Check();
         }
+
+        [Fact]
+        public void GetPropertyInfo()
+        {
+            var firstName = ReflectionExtensions.GetProperty<Foo, string>(x => x.FirstName);
+            Validate.Begin()
+                .IsNotNull(firstName, "firstName PropertyInfo")
+                .Check()
+                .IsEqual(firstName.Name, nameof(Foo.FirstName), "nameOf property")
+                .Check();
+        }
     }
 
     public interface IHello

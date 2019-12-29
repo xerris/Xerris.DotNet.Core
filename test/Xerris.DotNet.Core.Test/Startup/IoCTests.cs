@@ -25,7 +25,5 @@ namespace Xerris.DotNet.Core.Test.Startup
             var service = IoC.Resolve<IService>();
             service.Should().NotBeNull();
         }
-        
-
     }
 }
