@@ -1,5 +1,6 @@
 using Xerris.DotNet.Core.Extensions;
 using Xerris.DotNet.Core.Test.Factories;
+using Xerris.DotNet.Core.Validations;
 using Xunit;
 
 namespace Xerris.DotNet.Core.Test.Core.Extensions
@@ -11,21 +12,24 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         public void CanConvertToBase64()
         {
             var actual = FactoryGirl.Build<Person>();
-            actual.ToJson().Zip().ToBase64().FromBase64().Unzip().FromJson<Person>().Matches(actual);
+            Validate.Begin()
+                .ComparesTo<Person>(actual.ToJson().FromJson<Person>(), actual, AssertionExtensions.Matches);
         }
 
         [Fact]
         public void CanSerialize()
         {
             var actual = FactoryGirl.Build<Person>();
-            actual.ToJson().FromJson<Person>().Matches(actual);
+            Validate.Begin()
+                .ComparesTo<Person>(actual.ToJson().FromJson<Person>(), actual, AssertionExtensions.Matches);
         }
 
         [Fact]
         public void CanZip()
         {
             var actual = FactoryGirl.Build<Person>();
-            actual.ToJson().Zip().Unzip().FromJson<Person>().Matches(actual);
+            Validate.Begin()
+                .ComparesTo<Person>(actual.ToJson().Zip().Unzip().FromJson<Person>(), actual, AssertionExtensions.Matches);
         }
     }
 }

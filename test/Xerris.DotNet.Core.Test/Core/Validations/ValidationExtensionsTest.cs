@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using Xerris.DotNet.Core.Test.Model;
 using Xerris.DotNet.Core.Validations;
 using Xunit;
 
@@ -646,6 +647,44 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         {
             Validate.Begin().IsDate("derp", "is a date").IsValid().Should().BeTrue();
         }
-        
+
+        [Fact]
+        public void ComparesTo_SameType()
+        {
+            var angelina = new Foo("Angelina", "Jolie") {Age = 44};
+            var ladyGaga = new Foo("Angelina", "Gaga") {Age = 44};
+
+            Validate.Begin()
+                .ComparesTo<Foo>(angelina, ladyGaga, (validation, actual, expected) =>
+                {
+                    validation.IsNotNull(actual, "actual").Check()
+                    .IsNotNull(expected, "expected").Check()
+                    .IsEqual(actual.FirstName, expected.FirstName, nameof(Foo.FirstName))
+                    .IsNotEqual(actual.LastName, expected.LastName, nameof(Foo.LastName))
+                    .IsEqual(actual.Age, expected.Age, nameof(Foo.Age))
+                    .Check();
+                })
+                .Check();
+        }
+
+        [Fact]
+        public void DoesNotCompareTo_DifferentType()
+        {
+            var angelina = new Foo("Angelina", "Jolie") {Age = 41};
+            var ladyGaga = new Bar("Angelina", "Gaga") {Age = 44, SocialSecurityNumber = 111321};
+            
+            Validate.Begin()
+                .ComparesTo(angelina, ladyGaga, (validation, actual, expected) =>
+                {
+                    validation.IsNotNull(actual, "actual").Check()
+                        .IsNotNull(expected, "expected").Check()
+                        .IsEqual(actual.FirstName, expected.FirstName, nameof(Foo.FirstName))
+                        .IsNotEqual(actual.LastName, expected.LastName, nameof(Foo.LastName))
+                        .IsNotEqual(actual.Age, expected.Age, nameof(Foo.Age))
+                        .IsEqual(ladyGaga.SocialSecurityNumber, 111321, nameof(Bar.SocialSecurityNumber))
+                        .Check();
+                })
+                .Check();
+        }
     }
 }

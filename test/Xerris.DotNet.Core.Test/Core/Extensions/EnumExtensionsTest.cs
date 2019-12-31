@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using FluentAssertions;
 using Xerris.DotNet.Core.Extensions;
+using Xerris.DotNet.Core.Validations;
 using Xunit;
 
 namespace Xerris.DotNet.Core.Test.Core.Extensions
@@ -14,7 +15,7 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         {
             var items = new[] {"Female", "Male"}.ToEnumList<Gender>().ToArray();
 
-            items.HasExactly(2);
+            Validate.Begin().HasExactly(items, 2, "should have 2 items").Check();
             items.Should().Contain(Gender.Female);
             items.Should().Contain(Gender.Male);
         }
@@ -50,7 +51,7 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         {
             var items = new[] { "FT", "FT-SN", "FTSN" }.ToEnumList<Codes>().ToArray();
 
-            items.HasExactly(3);
+            Validate.Begin().HasExactly(items, 3, "has exactly 3 items");
             items.Should().Contain(Codes.FT);
             items.Should().Contain(Codes.FTSN);
             items.Should().Contain(Codes.FTSN);
@@ -90,7 +91,7 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         [Fact]
         public void Should_Return_Default_For_Nullable_Enum()
         {
-            var myString = "";
+            const string myString = "";
             myString.ToNullableEnumExact<Gender>().Should().Be(default(Gender?));
         }
 

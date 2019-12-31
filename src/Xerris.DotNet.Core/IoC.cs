@@ -30,6 +30,7 @@ namespace Xerris.DotNet.Core
 
                 var collection = new ServiceCollection();
                 var startup = GetImplementingType<IAppStartup>(AppDomain.CurrentDomain.GetAssemblies());
+                AutoConfig(collection, startup.GetType().Assembly);
                 var configuration = startup.StartUp(collection);
                 LogStartup.Initialize(configuration);
 
@@ -38,6 +39,11 @@ namespace Xerris.DotNet.Core
 
                 initialized = true;
             }
+        }
+
+        private void AutoConfig(ServiceCollection collection, Assembly assembly)
+        {
+            
         }
 
         private TService Find<TService>()

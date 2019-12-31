@@ -1,17 +1,17 @@
 namespace Xerris.DotNet.Core.Test.Model
 {
-    public class Foo
+    public class Bar
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int Age { get; set; }
+        public int SocialSecurityNumber { get; set; }
 
-         public Foo() { }
-        
-        public Foo(string firstName, string lastName)
+        public Bar(string firstName, string lastName)
         {
             FirstName = firstName;
             LastName = lastName;
         }
     }
+    
 }

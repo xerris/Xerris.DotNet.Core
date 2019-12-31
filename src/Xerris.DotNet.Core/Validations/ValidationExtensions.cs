@@ -232,11 +232,19 @@ namespace Xerris.DotNet.Core.Validations
                 : validation.AddException(new ValidationException(message));
         }
 
+        [Obsolete("use HasExactly instead")]
         public static Validation HasItems<T>(this Validation validation, IEnumerable<T> items, int count, string message)
         {
             return (items != null && items.Count() == count)
                     ? validation
                     : validation.AddException(new ValidationException(message));
+        }
+        
+        public static Validation HasExactly<T>(this Validation validation, IEnumerable<T> items, int expected, string message)
+        {
+            return (items != null && items.Count() == expected)
+                ? validation
+                : validation.AddException(new ValidationException(message));
         }
 
         public static Validation Or(this Validation validation, string message, params bool[] criteria)
@@ -328,5 +336,23 @@ namespace Xerris.DotNet.Core.Validations
 
             return validation;
         }
+        
+        public static Validation ComparesTo<T>(this Validation validation, T x, T y, Action<Validation, T, T> validateAction) 
+            where T : class
+        {
+            validation.IsNotNull(x, "x").Check()
+                .IsNotNull(y, "y").Check();
+            validateAction(validation, x, y);
+            return validation;
+        } 
+        
+        public static Validation ComparesTo<T,U>(this Validation validation, T t, U u, Action<Validation, T, U> validateAction) 
+            where T : class where U : class
+        {
+            validation.IsNotNull(t, "t is null").Check()
+                .IsNotNull(u, "u is null").Check();
+            validateAction(validation, t, u);
+            return validation;
+        } 
     }
 }
