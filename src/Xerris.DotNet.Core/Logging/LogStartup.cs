@@ -17,6 +17,8 @@ namespace Xerris.DotNet.Core.Logging
                 
                 Log.Logger = new LoggerConfiguration()
                     .ReadFrom.Configuration(configuration)
+                    .WriteTo.Console(outputTemplate:
+                        "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
                     .CreateLogger();
 
                 initialized = true;
