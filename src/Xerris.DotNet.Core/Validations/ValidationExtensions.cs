@@ -36,12 +36,22 @@ namespace Xerris.DotNet.Core.Validations
 
         public static Validation IsFalse(this Validation validation, bool val, string message)
         {
-            return val ? validation.AddException(new ValidationException(message)) : validation;
+            return val == false? validation : validation.AddException(new ValidationException(message));
         }
 
         public static Validation IsTrue(this Validation validation, bool val, string message)
         {
             return val ? validation : validation.AddException(new ValidationException(message));
+        }
+
+        public static Validation IsTrue(this Validation validation, bool? val, string message)
+        {
+            return val.HasValue && val.Value? validation : validation.AddException(new ValidationException(message));
+        }
+
+        public static Validation IsFalse(this Validation validation, bool? val, string message)
+        {
+            return val.HasValue && val.Value==false? validation : validation.AddException(new ValidationException(message));
         }
 
         public static Validation IsTrue(this Validation validation, string theString,

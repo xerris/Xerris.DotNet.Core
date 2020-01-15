@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using Serilog.Formatting.Compact;
 
 namespace Xerris.DotNet.Core.Logging
 {

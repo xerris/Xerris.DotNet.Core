@@ -150,6 +150,11 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
             Validate.Begin().IsFalse(false, ValidationMessage).Invoking(x => x.Check()).Should().NotThrow();
             Validate.Begin().IsFalse(true, ValidationMessage).Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage(ValidationMessage);
+            
+            bool? nullableTrue = false;
+            Validate.Begin().IsFalse(nullableTrue, ValidationMessage).Invoking(x => x.Check()).Should().NotThrow();
+            nullableTrue = null;
+            Validate.Begin().IsFalse(nullableTrue, ValidationMessage).Invoking(x => x.Check()).Should().Throw<ValidationException>();
         }
 
         [Fact]
@@ -243,6 +248,11 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
             Validate.Begin().IsTrue(true, ValidationMessage).Invoking(x => x.Check()).Should().NotThrow();
             Validate.Begin().IsTrue(false, ValidationMessage).Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage(ValidationMessage);
+
+            bool? nullableTrue = true;
+            Validate.Begin().IsTrue(nullableTrue, ValidationMessage).Invoking(x => x.Check()).Should().NotThrow();
+            nullableTrue = null;
+            Validate.Begin().IsTrue(nullableTrue, ValidationMessage).Invoking(x => x.Check()).Should().Throw<ValidationException>();
         }
 
         [Fact]
