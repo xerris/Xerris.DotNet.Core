@@ -13,7 +13,7 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         {
             var actual = FactoryGirl.Build<Person>();
             Validate.Begin()
-                .ComparesTo<Person>(actual.ToJson().FromJson<Person>(), actual, AssertionExtensions.Matches);
+                .ComparesTo<Person>(actual.ToJson().ToBase64().FromBase64().FromJson<Person>(), actual, AssertionExtensions.Matches);
         }
 
         [Fact]

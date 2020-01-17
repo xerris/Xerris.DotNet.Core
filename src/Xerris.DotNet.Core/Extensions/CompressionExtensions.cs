@@ -36,15 +36,29 @@ namespace Xerris.DotNet.Core.Extensions
                 return Encoding.UTF8.GetString(mso.ToArray());
             }
         }
-
+        
+        public static string ToBase64(this string value) {
+            return ToBase64(Encoding.UTF8.GetBytes(value));
+        }
+        
         public static string ToBase64(this byte[] value)
         {
             return Convert.ToBase64String(value);
         }
 
-        public static byte[] FromBase64(this string value)
+        public static string FromBase64(this string value)
         {
-            return Convert.FromBase64String(value);
+            return Encoding.UTF8.GetString(Convert.FromBase64String(value));
+        }
+
+        public static byte[] GetBytes(this string value)
+        {
+            return Encoding.UTF8.GetBytes(value);
+        }
+
+        public static string FromBytes(this byte[] value)
+        {
+            return Encoding.UTF8.GetString(value);
         }
 
         private static void CopyTo(Stream src, Stream dest)
