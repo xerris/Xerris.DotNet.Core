@@ -696,5 +696,47 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
                 })
                 .Check();
         }
+
+        [Fact]
+        public void Is()
+        {
+            var angelina = new Foo("Angelina", "Jolie") {Age = 41};
+            var ladyGaga = new Bar("Angelina", "Gaga") {Age = 44, SocialSecurityNumber = 111321};
+
+            Validate.Begin()
+                .IsNotNull(angelina, "angelina").Check()
+                .IsNotNull(ladyGaga, "ladyGaga").Check()
+                .Is(angelina, (validation, subject) =>
+                    validation.IsNotNull(subject, "subject")
+                ).Check();
+        }
+
+        [Fact]
+        public void Is_Invalid()
+        {
+            var angelina = new Foo("Angelina", "Jolie") {Age = 41};
+            var ladyGaga = new Bar("Angelina", "Gaga") {Age = 44, SocialSecurityNumber = 111321};
+
+            Assert.Throws<ValidationException>(() =>
+                
+                Validate.Begin()
+                    .IsNotNull(angelina, "angelina").Check()
+                    .IsNotNull(ladyGaga, "ladyGaga").Check()
+                    .Is(angelina, (validation, subject) =>
+                        validation.IsNull(subject, "subject")
+                    ).Check()
+            );
+            
+            
+            Assert.Throws<ValidationException>(() =>
+                
+                Validate.Begin()
+                    .IsNotNull(angelina, "angelina").Check()
+                    .IsNotNull(ladyGaga, "ladyGaga").Check()
+                    .Is(angelina, (validation, subject) =>
+                        validation.IsNull(subject, "subject").Check()
+                ).Check()
+            );
+        }
     }
 }

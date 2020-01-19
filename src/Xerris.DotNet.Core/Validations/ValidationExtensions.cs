@@ -346,6 +346,11 @@ namespace Xerris.DotNet.Core.Validations
 
             return validation;
         }
+
+        public static Validation Is<T>(this Validation validation, T value, Func<Validation, T, Validation> validateAction)
+        {
+            return validateAction(validation, value);
+        }
         
         public static Validation ComparesTo<T>(this Validation validation, T x, T y, Action<Validation, T, T> validateAction) 
             where T : class
