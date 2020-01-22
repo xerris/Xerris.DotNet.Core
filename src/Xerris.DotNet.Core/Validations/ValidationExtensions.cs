@@ -369,5 +369,36 @@ namespace Xerris.DotNet.Core.Validations
             validateAction(validation, t, u);
             return validation;
         } 
+        
+        public static Validation IsInteger(this Validation validate, string value, string property)
+        {
+            var regex = new Regex("^([+-]?[1-9]\\d*|0)$");
+            return validate
+                .IsNotEmpty(value, $"{property} is empty")
+                .ContinueIfValid(v => v.IsTrue(regex.IsMatch(value), $"{property} is not an integer"));
+        }
+        
+        public static Validation IsPositiveInteger(this Validation validate, string value, string property)
+        {
+            return validate
+                .IsInteger(value, property)
+                .ContinueIfValid(v1 => v1.GreaterThan(int.Parse(value), 0, $"{property} is notgreater than 0"));
+        }
+
+        public static Validation IsPrice(this Validation validate, string value, string property)
+        {
+            return validate
+                .IsDecimal(value, property)
+                .ContinueIfValid(v1 => v1.GreaterThan(decimal.Parse(value), 0, $"{property} is not greater than 0"));
+
+        }
+
+        public static Validation IsDecimal(this Validation validate, string value, string property)
+        {            
+            var regex = new Regex("^[+-]?\\d*(\\.\\d*)?$");
+            return validate
+                .IsNotEmpty(value, $"{property} is empty")
+                .ContinueIfValid(v1 => v1.IsTrue(regex.IsMatch(value), $"{property} is not a decimal"));
+        }
     }
 }

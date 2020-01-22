@@ -12,15 +12,9 @@ namespace Xerris.DotNet.Core.Extensions
         
         private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
         {
-            ContractResolver = ContractResolver,
-            Formatting = Formatting.Indented
+            ContractResolver = ContractResolver
         };
-        
-        public static readonly JsonSerializerSettings DefaultCaseSettings = new JsonSerializerSettings
-        {
-            Formatting = Formatting.Indented
-        };
-        
+
         public static string ToJson<T>(this T item, JsonSerializerSettings settings = null)
         {
             return JsonConvert.SerializeObject(item, settings??Settings);

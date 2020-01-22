@@ -738,5 +738,51 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
                 ).Check()
             );
         }
+
+        [Fact]
+        public void IsInteger()
+        {
+            Validate.Begin().IsInteger("0", "true").Check();
+            Validate.Begin().IsInteger("-1", "true").Check();
+            Validate.Begin().IsInteger("-1", "true").Check();
+            Validate.Begin().IsInteger("+1", "true").Check();
+            Validate.Begin().IsInteger("9999", "true").Check();
+        }
+
+        [Fact]
+        public void IsNotAnInteger()
+        {
+            Validate.Begin().IsInteger("", "false").IsValid().Should().BeFalse();
+            Validate.Begin().IsInteger("a", "false").IsValid().Should().BeFalse();
+            Validate.Begin().IsInteger("-1a", "false").IsValid().Should().BeFalse();
+            Validate.Begin().IsInteger("a1", "false").IsValid().Should().BeFalse();
+            Validate.Begin().IsInteger(" ", "false").IsValid().Should().BeFalse();
+        }
+
+        [Fact]
+        public void IsDecimal()
+        {
+            Validate.Begin().IsDecimal("0", "true").Check();
+            Validate.Begin().IsDecimal("0.", "true").Check();
+            Validate.Begin().IsDecimal(".0", "true").Check();
+            Validate.Begin().IsDecimal("-.0", "true").Check();
+            Validate.Begin().IsDecimal("+.0", "true").Check();
+            Validate.Begin().IsDecimal("-11", "true").Check();
+            Validate.Begin().IsDecimal("1", "true").Check();
+            Validate.Begin().IsDecimal("-1.01", "true").Check();
+            Validate.Begin().IsDecimal("-1.1", "true").Check();
+            Validate.Begin().IsDecimal("+1.1", "true").Check();
+            Validate.Begin().IsDecimal("999900000.00000001111111", "true").Check();
+        }
+
+        [Fact]
+        public void IsNotADecimal()
+        {
+            Validate.Begin().IsDecimal("0a", "true").IsValid().Should().BeFalse();
+            Validate.Begin().IsDecimal(" ", "true").IsValid().Should().BeFalse();
+            Validate.Begin().IsDecimal("", "true").IsValid().Should().BeFalse();
+            Validate.Begin().IsDecimal("a.0", "true").IsValid().Should().BeFalse();
+            Validate.Begin().IsDecimal("-~.0", "true").IsValid().Should().BeFalse();
+        }
     }
 }
