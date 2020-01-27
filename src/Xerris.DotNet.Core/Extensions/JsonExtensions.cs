@@ -20,9 +20,9 @@ namespace Xerris.DotNet.Core.Extensions
             return JsonConvert.SerializeObject(item, settings??Settings);
         }
         
-        public static T FromJson<T>(this string data)
+        public static T FromJson<T>(this string data, JsonSerializerSettings settings = null)
         {
-            return JsonConvert.DeserializeObject<T>(data);
+            return JsonConvert.DeserializeObject<T>(data, settings??Settings);
         }
     }
 }
