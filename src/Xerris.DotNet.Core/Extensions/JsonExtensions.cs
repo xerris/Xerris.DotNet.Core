@@ -12,7 +12,7 @@ namespace Xerris.DotNet.Core.Extensions
         
         private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
         {
-            ContractResolver = ContractResolver
+            ContractResolver = ContractResolver,
         };
 
         public static string ToJson<T>(this T item, JsonSerializerSettings settings = null)
