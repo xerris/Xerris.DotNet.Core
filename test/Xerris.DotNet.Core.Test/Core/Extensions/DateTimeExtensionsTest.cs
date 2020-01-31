@@ -14,6 +14,14 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
             dateString.ToDate("yyyyMMdd")
                       .Should().Be(new DateTime(2020, 12, 21));
         }
+
+        [Fact]
+        public void Formatted()
+        {
+            const string dateString = "20201221";
+            dateString.ToDate("yyyyMMdd").Formatted("yyyyMMdd").Should().Be(dateString);
+        }
+        
         [Fact]
         public void ToDateBadDateString()
         {

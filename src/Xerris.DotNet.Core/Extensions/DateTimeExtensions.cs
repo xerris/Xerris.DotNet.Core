@@ -20,5 +20,10 @@ namespace Xerris.DotNet.Core.Extensions
             var provider = CultureInfo.InvariantCulture;
             return DateTime.ParseExact(dateString, format, provider);
         }
+
+        public static string Formatted(this DateTime date, string format)
+        {
+            return date.ToString("yyyyMMdd");
+        }
     }
 }
