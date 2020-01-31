@@ -338,7 +338,7 @@ namespace Xerris.DotNet.Core.Validations
         public static Validation ForEach<T>(this Validation validation, IEnumerable<T> items,
             Action<Validation, T> action)
         {
-            validation.IsNotEmpty(items, "items is null").Check();
+            validation.IsNotNull(items, "items is null").Check();
             foreach (var each in items)
             {
                 action(validation, each);

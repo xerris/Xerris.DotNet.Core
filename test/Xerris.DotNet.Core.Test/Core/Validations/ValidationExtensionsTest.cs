@@ -784,5 +784,14 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
             Validate.Begin().IsDecimal("a.0", "true").IsValid().Should().BeFalse();
             Validate.Begin().IsDecimal("-~.0", "true").IsValid().Should().BeFalse();
         }
+
+        [Fact]
+        public void ForEach()
+        {
+            var items = new[] {"one", "two", "three"};
+            Validate.Begin()
+                .ForEach(items, (v, each) => v.IsNotEmpty(each, "each item"))
+                .Check();
+        }
     }
 }
