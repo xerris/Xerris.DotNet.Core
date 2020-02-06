@@ -11,6 +11,7 @@ namespace Xerris.DotNet.Core.Extensions
             command.Add(right);
             return command;
         }
+        
         public static ICommand Then(this ICommand left, ICommand right)
         {
             var command = new CompositeCommand();

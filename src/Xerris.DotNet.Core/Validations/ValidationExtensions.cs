@@ -400,5 +400,10 @@ namespace Xerris.DotNet.Core.Validations
                 .IsNotEmpty(value, $"{property} is empty")
                 .ContinueIfValid(v1 => v1.IsTrue(regex.IsMatch(value), $"{property} is not a decimal"));
         }
+
+        public static Validation Throw(this Validation validation, string message)
+        {
+            return validation.AddException(new ValidationException(message)).Check();
+        }
     }
 }

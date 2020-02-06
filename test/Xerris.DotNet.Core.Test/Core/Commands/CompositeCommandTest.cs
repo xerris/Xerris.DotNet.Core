@@ -17,10 +17,10 @@ namespace Xerris.DotNet.Core.Test.Core.Commands
         [Fact]
         public void CanRunMultipleCommands()
         {
-            new TestCommand(() => count = 5)
-                .Then(new TestCommand(() => count = 10))
+            new TestCommand(() => count += 5)
+                .Then(new TestCommand(() => count += 10))
                 .Run();
-            count.Should().Be(10);
+            count.Should().Be(16);
         }
     }
 }
