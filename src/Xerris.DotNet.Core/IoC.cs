@@ -32,13 +32,13 @@ namespace Xerris.DotNet.Core
             }
         }
 
-        public static void Initialize(ServiceCollection collection)
+        public static void Initialize(IServiceCollection collection)
         {
             var ioc = new IoC();
             ioc.InitializeCollection(collection);
         }
         
-        public void InitializeCollection(ServiceCollection collection)
+        public void InitializeCollection(IServiceCollection collection)
         {
             var startup = GetImplementingType<IAppStartup>(AppDomain.CurrentDomain.GetAssemblies());
             AutoConfig(collection, startup.GetType().Assembly);
@@ -49,7 +49,7 @@ namespace Xerris.DotNet.Core
             container = collection.BuildServiceProvider();
         }
 
-        private void AutoConfig(ServiceCollection collection, Assembly assembly)
+        private void AutoConfig(IServiceCollection collection, Assembly assembly)
         {
             //todo
         }
