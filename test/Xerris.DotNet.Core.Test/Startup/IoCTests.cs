@@ -24,7 +24,7 @@ namespace Xerris.DotNet.Core.Test.Startup
         public void UsingAnotherServiceCollection()
         {
             var privateCollection = new ServiceCollection();
-            IoC.Initialize(privateCollection);
+            IoC.ConfigureServiceCollection(privateCollection);
 
             IoC.Resolve<IApplicationConfig>().Should().BeOfType<ApplicationConfig>();
             IoC.Resolve<IService>().Should().BeOfType<MyService>();

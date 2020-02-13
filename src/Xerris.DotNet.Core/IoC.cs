@@ -13,12 +13,14 @@ namespace Xerris.DotNet.Core
         private bool initialized;
         private readonly object mutex = new object();
 
+        private static Func<IServiceCollection> serviceCollectionProvider = () => new ServiceCollection();
+        
+        private static IoC Instance => new IoC();
+        
         private IoC()
         {
             Initialize();
         }
-
-        private static IoC Instance => new IoC();
         
         private void Initialize()
         {
@@ -27,26 +29,16 @@ namespace Xerris.DotNet.Core
             lock (mutex)
             {
                 if (initialized) return;
-                InitializeCollection(new ServiceCollection());
+                var collection = serviceCollectionProvider();
+                var startup = GetImplementingType<IAppStartup>(AppDomain.CurrentDomain.GetAssemblies());
+                AutoConfig(collection, startup.GetType().Assembly);
+                var configuration = startup.StartUp(collection);
+                LogStartup.Initialize(configuration);
+
+                new ConfigureServiceCollection(collection).Initialize();
+                container = collection.BuildServiceProvider();
                 initialized = true;
             }
-        }
-
-        public static void Initialize(IServiceCollection collection)
-        {
-            var ioc = new IoC();
-            ioc.InitializeCollection(collection);
-        }
-        
-        public void InitializeCollection(IServiceCollection collection)
-        {
-            var startup = GetImplementingType<IAppStartup>(AppDomain.CurrentDomain.GetAssemblies());
-            AutoConfig(collection, startup.GetType().Assembly);
-            var configuration = startup.StartUp(collection);
-            LogStartup.Initialize(configuration);
-
-            new ConfigureServiceCollection(collection).Initialize();
-            container = collection.BuildServiceProvider();
         }
 
         private void AutoConfig(IServiceCollection collection, Assembly assembly)
@@ -57,6 +49,11 @@ namespace Xerris.DotNet.Core
         private TService Find<TService>()
         {
             return container.GetRequiredService<TService>();
+        }
+
+        public static void ConfigureServiceCollection(IServiceCollection collection)
+        {
+            serviceCollectionProvider = () => collection;
         }
 
         public static TService Resolve<TService>()
