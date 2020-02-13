@@ -27,23 +27,31 @@ namespace Xerris.DotNet.Core
             lock (mutex)
             {
                 if (initialized) return;
-
-                var collection = new ServiceCollection();
-                var startup = GetImplementingType<IAppStartup>(AppDomain.CurrentDomain.GetAssemblies());
-                AutoConfig(collection, startup.GetType().Assembly);
-                var configuration = startup.StartUp(collection);
-                LogStartup.Initialize(configuration);
-
-                new ConfigureServiceCollection(collection).Initialize();
-                container = collection.BuildServiceProvider();
-
+                InitializeCollection(new ServiceCollection());
                 initialized = true;
             }
         }
 
+        public static void Initialize(ServiceCollection collection)
+        {
+            var ioc = new IoC();
+            ioc.InitializeCollection(collection);
+        }
+        
+        public void InitializeCollection(ServiceCollection collection)
+        {
+            var startup = GetImplementingType<IAppStartup>(AppDomain.CurrentDomain.GetAssemblies());
+            AutoConfig(collection, startup.GetType().Assembly);
+            var configuration = startup.StartUp(collection);
+            LogStartup.Initialize(configuration);
+
+            new ConfigureServiceCollection(collection).Initialize();
+            container = collection.BuildServiceProvider();
+        }
+
         private void AutoConfig(ServiceCollection collection, Assembly assembly)
         {
-            
+            //todo
         }
 
         private TService Find<TService>()

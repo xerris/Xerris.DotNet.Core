@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Xerris.DotNet.Core.TestSupport;
 using Xerris.DotNet.Core.Validations;
 using Xunit;
@@ -17,6 +18,16 @@ namespace Xerris.DotNet.Core.Test.Startup
                 .Check()
                 .IsEqual(appConfig.AllowedHosts, "*", "got allowedHosts")
                 .Check();
+        }
+
+        [Fact]
+        public void UsingAnotherServiceCollection()
+        {
+            var privateCollection = new ServiceCollection();
+            IoC.Initialize(privateCollection);
+
+            IoC.Resolve<IApplicationConfig>().Should().BeOfType<ApplicationConfig>();
+            IoC.Resolve<IService>().Should().BeOfType<MyService>();
         }
 
         [Fact]
