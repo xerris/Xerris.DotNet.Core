@@ -8,7 +8,7 @@ namespace Xerris.DotNet.Core.Test
     {
         public IConfiguration StartUp(IServiceCollection collection)
         {
-            var builder = new ApplicationConfigurationBuilder<ApplicationConfig>(collection);
+            var builder = new ApplicationConfigurationBuilder<ApplicationConfig>();
             var appConfig = builder.Build();
 
             collection.AddSingleton<IApplicationConfig>(appConfig);

@@ -1,19 +1,12 @@
 using System;
 using System.IO;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Xerris.DotNet.Core
 {
     public class ApplicationConfigurationBuilder<T> where T : IApplicationConfigBase, new()
     {
         private IConfiguration configuration;
-        private readonly IServiceCollection collection;
-
-        public ApplicationConfigurationBuilder(IServiceCollection collection)
-        {
-            this.collection = collection;
-        }
 
         public T Build()
         {
