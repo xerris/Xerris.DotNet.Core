@@ -793,5 +793,12 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
                 .ForEach(items, (v, each) => v.IsNotEmpty(each, "each item"))
                 .Check();
         }
+
+        [Fact]
+        public void Throw()
+        {
+            Action fail = () => Validate.Begin().Throw("this is the error");
+            fail.Should().Throw<ValidationException>().WithMessage("this is the error");
+        }
     }
 }

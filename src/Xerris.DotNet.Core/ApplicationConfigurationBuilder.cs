@@ -19,6 +19,7 @@ namespace Xerris.DotNet.Core
         {
             var appConfig = new T();
             Configuration.Bind(appConfig);
+            appConfig.AwsOptions = configuration.GetAWSOptions();
             return appConfig;
         }
 

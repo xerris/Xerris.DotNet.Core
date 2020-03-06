@@ -10,8 +10,11 @@ namespace Xerris.DotNet.Core.Test
         {
             var builder = new ApplicationConfigurationBuilder<ApplicationConfig>(collection);
             var appConfig = builder.Build();
+
             collection.AddSingleton<IApplicationConfig>(appConfig);
-            collection.AddSingleton(typeof(IService), typeof(MyService));
+            collection.AddSingleton<IAddMe, AddMe>();
+
+            collection.AutoRegister(GetType().Assembly).AutoRegister(typeof(IAddMe).Assembly);
             return builder.Configuration;
         }
     }

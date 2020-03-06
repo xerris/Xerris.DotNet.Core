@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Xerris.DotNet.Core.Logging;
 
 namespace Xerris.DotNet.Core
@@ -31,7 +32,6 @@ namespace Xerris.DotNet.Core
                 if (initialized) return;
                 var collection = serviceCollectionProvider();
                 var startup = GetImplementingType<IAppStartup>(AppDomain.CurrentDomain.GetAssemblies());
-                AutoConfig(collection, startup.GetType().Assembly);
                 var configuration = startup.StartUp(collection);
                 LogStartup.Initialize(configuration);
 
@@ -39,11 +39,6 @@ namespace Xerris.DotNet.Core
                 container = collection.BuildServiceProvider();
                 initialized = true;
             }
-        }
-
-        private void AutoConfig(IServiceCollection collection, Assembly assembly)
-        {
-            //todo
         }
 
         private TService Find<TService>()
@@ -64,7 +59,7 @@ namespace Xerris.DotNet.Core
         private static T GetImplementingType<T>(IEnumerable<Assembly> targetAssemblies)
         {
             var type = typeof(T);
-            var searchAssemblies = targetAssemblies.Where(Filter);
+            var searchAssemblies= targetAssemblies.Where(Filter);
             var found = searchAssemblies
                 .SelectMany(s => s.GetTypes())
                 .FirstOrDefault(tt => tt.IsClass && !tt.IsAbstract && type.IsAssignableFrom(tt));
@@ -73,13 +68,35 @@ namespace Xerris.DotNet.Core
             return (T) Activator.CreateInstance(found);
         }
 
-        private static bool Filter(Assembly assembly)
+        internal static bool Filter(Assembly assembly)
         {
             var name = assembly.FullName;
             return !(name.StartsWith("microsoft", StringComparison.CurrentCultureIgnoreCase) || 
                      name.StartsWith("system", StringComparison.CurrentCultureIgnoreCase) ||
                      name.StartsWith("mscorlib", StringComparison.CurrentCultureIgnoreCase) ||
-                     name.StartsWith("netstandard", StringComparison.CurrentCultureIgnoreCase));
+                     name.StartsWith("netstandard", StringComparison.CurrentCultureIgnoreCase) ||
+                     name.Contains("PresentationFramework") ||
+                     name.Contains("PresentationCore")
+                     );
+        }
+    }
+
+    public static class IoCExtensions
+    {
+        public static IServiceCollection AutoRegister(this IServiceCollection collection, Assembly assembly)
+        {
+            var interfaces = assembly.GetTypes().Where(x => x.IsInterface);
+            foreach (var i in interfaces)
+            {
+                var implementingTypes = assembly.GetTypes().Where(tt => tt.IsClass && !tt.IsAbstract && i.IsAssignableFrom(tt))
+                                                       .ToArray();
+                if (implementingTypes.Length == 1)
+                {
+                    collection.TryAddSingleton(i, implementingTypes.First());
+                }
+            }
+
+            return collection;
         }
     }
 }

@@ -28,6 +28,7 @@ namespace Xerris.DotNet.Core.Test.Startup
 
             IoC.Resolve<IApplicationConfig>().Should().BeOfType<ApplicationConfig>();
             IoC.Resolve<IService>().Should().BeOfType<MyService>();
+            IoC.Resolve<IAddMe>().Should().BeOfType<AddMe>();
         }
 
         [Fact]
@@ -35,6 +36,7 @@ namespace Xerris.DotNet.Core.Test.Startup
         {
             var service = IoC.Resolve<IService>();
             service.Should().NotBeNull();
+            IoC.Resolve<IAddMe>().Should().BeOfType<AddMe>();
         }
     }
 }

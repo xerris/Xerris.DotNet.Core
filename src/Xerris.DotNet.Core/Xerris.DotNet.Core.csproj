@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-      <TargetFramework>netcoreapp2.1</TargetFramework>
       <PackageId>Xerris.DotNet.Core</PackageId>
       <Version>0.0.3-prelease-002</Version>
       <Authors>Xerris Inc.</Authors>
       <Company>Xerris Inc.</Company>
       <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
       <LangVersion>8</LangVersion>
+      <TargetFramework>netcoreapp2.1</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
