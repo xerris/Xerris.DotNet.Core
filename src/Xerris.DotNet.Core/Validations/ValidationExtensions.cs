@@ -199,6 +199,30 @@ namespace Xerris.DotNet.Core.Validations
                 : validation.AddException(new ValidationException(paramName));
         }
 
+        public static Validation LessThanOrEqual<T>(this Validation validation, T theObject, T comparison,
+            string paramName) where T : IComparable
+        {
+            return theObject.CompareTo(comparison) <= 0
+                ? validation
+                : validation.AddException(new ValidationException(paramName));
+        }
+
+        public static Validation LessThanOrEqual(this Validation validation, DateTime? theObject,
+            DateTime? comparison,
+            string paramName)
+        {
+            if (!theObject.HasValue || !comparison.HasValue) return validation;
+            return LessThanOrEqual(validation, theObject.Value, comparison.Value, paramName);
+        }
+
+        public static Validation LessThan<T>(this Validation validation, T theObject, T comparison, string paramName)
+            where T : IComparable<T>
+        {
+            return theObject.CompareTo(comparison) < 0
+                ? validation
+                : validation.AddException(new ValidationException(paramName));
+        }
+
         public static Validation Check(this Validation validation)
         {
             if (validation == null) return null;

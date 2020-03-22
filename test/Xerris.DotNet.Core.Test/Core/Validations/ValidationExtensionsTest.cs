@@ -128,6 +128,30 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         }
 
         [Fact]
+        public void LessThan()
+        {
+            Validate.Begin()
+                .LessThan(1, 2, "1 < 2").Check()
+                .LessThan(2.0, 2.1, "2.0 < 2.1").Check()
+                .LessThan(2.0m, 2.1m, "2.0m < 2.1m")
+                .Check();
+        }
+
+        [Fact]
+        public void LessThan_DateTime()
+        {
+            Validate.Begin()
+                .LessThan(new DateTime(2000, 1, 1, 14, 0, 1), new DateTime(2000, 1, 1, 14, 0, 2), $"14:00:01 < 14:00:02")
+                .Check()
+                .LessThan(new DateTime(2000, 1, 1, 14, 1, 0), new DateTime(2000, 1, 1, 14, 2, 0), "14:01:00 < 14:02:00")
+                .Check()
+                .LessThan(new DateTime(2000, 1, 1), new DateTime(2000, 1, 2), "2000-01-01 < 2000-01-02")
+                .Check()
+                .LessThan(new DateTime(2000, 1, 1), new DateTime(2000, 2, 1), "2000-01-00 < 2000-02-00")
+                .Check();
+        }
+
+        [Fact]
         public void IsEmpty_Enumerable()
         {
             Validate.Begin().IsEmpty(new object[] { }, "Foo").Invoking(x => x.Check()).Should().NotThrow();
