@@ -5,57 +5,73 @@ namespace Xerris.DotNet.Core.Test.Factories
 {
     public static class FactoryGirl
     {
-        private static int current;
+        private static TestFactory Factory { get; set; }
 
-        private static readonly IDictionary<Type, Func<object>> Factories = new Dictionary<Type, Func<object>>();
-        public static int NextId => current += 1;
+        private static TestFactory Instance => Factory ??= new TestFactory();
 
         public static T Build<T>()
         {
-            return Build<T>(x => { });
+            return Build<T>(x => {});
         }
 
         public static T Build<T>(Action<T> propertyUpdates)
         {
-            if (Factories.ContainsKey(typeof(T)) == false)
-                throw new ArgumentException("Unknown entity type requested: " + typeof(T).Name);
-            var entity = (T) Factories[typeof(T)]();
-            propertyUpdates(entity);
-            return entity;
+            return Instance.Build(propertyUpdates);
         }
 
         public static void Define<T>(Func<T> factory)
         {
-            if (Factories.ContainsKey(typeof(T)))
-                throw new ArgumentException($"{typeof(T)} has already been registered");
-            Factories.Add(typeof(T), () => factory());
+            Instance.Define(factory);
         }
 
-        public static void Clean()
+        public static void Clear()
         {
-            current = 0;
-            Factories.Clear();
+            Factory = null;
+        }
+
+        public static int UniqueId(string key = "anonymous")
+        {
+            return Instance.UniqueId(key);
+        }
+
+        public static string UniqueIdStr(string key = "anonymous")
+        {
+            return UniqueId(key).ToString();
         }
     }
 
-    public static class IdGenerator
+    public class TestFactory
     {
-        private static int current = 1;
+        private readonly IDictionary<Type, Func<object>> factories;
+        private readonly IDictionary<string, int> uniqueIds;
 
-        public static int NextInt
+        public TestFactory()
         {
-            get
+            factories = new Dictionary<Type, Func<object>>();
+            uniqueIds = new Dictionary<string, int>();
+        }
+        
+        public T Build<T>(Action<T> propertyUpdates)
+        {
+            if (factories.ContainsKey(typeof (T)) == false)
             {
-                current++;
-                return current;
+                throw new ArgumentException($"Unknown entity type requested: {typeof (T).Name}");
             }
+            var entity = (T) factories[typeof (T)]();
+            propertyUpdates(entity);
+            return entity;
         }
 
-        public static string NextStringId => $"A-{NextInt}";
-
-        public static void Reset()
+        public void Define<T>(Func<T> factory)
         {
-            current = 1;
+            factories[typeof(T)] = () => factory();
+        }
+
+        public int UniqueId(string key= "anonymous")
+        {
+            if (!uniqueIds.ContainsKey(key))
+                uniqueIds.Add(key, 0);
+            return uniqueIds[key] += 1;
         }
     }
 }

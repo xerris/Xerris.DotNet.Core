@@ -1,11 +1,12 @@
 using Xerris.DotNet.Core.Extensions;
 using Xerris.DotNet.Core.Test.Factories;
+using Xerris.DotNet.Core.Test.Model;
 using Xerris.DotNet.Core.Validations;
 using Xunit;
 
 namespace Xerris.DotNet.Core.Test.Core.Extensions
 {
-    [Collection("base")]
+    [Collection("Test Models")]
     public class UtilityExtensionsTest
     {
         [Fact]
