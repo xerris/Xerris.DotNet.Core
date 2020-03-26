@@ -55,6 +55,11 @@ namespace Xerris.DotNet.Core
         {
             return Instance.Find<TService>();
         }
+
+        public static IServiceScope CreateScope()
+        {
+            return Instance.container.CreateScope();
+        }
         
         private static T GetImplementingType<T>(IEnumerable<Assembly> targetAssemblies)
         {
