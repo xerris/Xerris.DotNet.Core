@@ -67,6 +67,11 @@ public static class EnumExtensions
             return new List<T>(values);
         }
 
+        public static T ToEnum<T>(this string input) where T : IConvertible
+        {
+            return (T)Enum.Parse(typeof(T), input);
+        }
+
         public static T ToEnum<T>(this int input) where T : IConvertible
         {
             return (T)Enum.Parse(typeof(T), input.ToString());

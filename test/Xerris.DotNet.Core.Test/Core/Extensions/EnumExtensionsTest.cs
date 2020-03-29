@@ -33,6 +33,12 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         }
 
         [Fact]
+        public void Can_Parse_From_String_Back_To_Enum()
+        {
+            "0".ToEnum<Gender>().Should().Be(Gender.Female);
+        }
+
+        [Fact]
         public void Should_Not_Convert_String()
         {
             Assert.Throws<ArgumentException>(() => "0*".ToEnumExact<Gender>());
