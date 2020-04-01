@@ -11,5 +11,11 @@ namespace Xerris.DotNet.Core.Utilities
         public DateTimeRange(DateTime start, DateTime end) : base(start, end, dtTime => dtTime.AddDays(1))
         {
         }
+
+        public TimeSpan Difference()
+        {
+            return End - Start;
+        }
+        
     }
 }

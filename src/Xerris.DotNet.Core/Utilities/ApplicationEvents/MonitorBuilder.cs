@@ -9,14 +9,9 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
             this.sink = sink;
         }
 
-        public IEventMonitor Begin(string user, string operation)
+        public IEventMonitor Begin(string user, string operation, string details = null, int acceptableDuration = 2)
         {
-            return new EventMonitor(user, operation, ae => sink.Send(ae));
-        }
-
-        public IEventMonitor BeginAsync(string user, string operation)
-        {
-            return new EventMonitor(user, operation, async ae => await sink.SendAsync(ae));
+            return new EventMonitor(user, operation, details, acceptableDuration, sink);
         }
     }
 }

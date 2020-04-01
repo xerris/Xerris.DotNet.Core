@@ -27,13 +27,13 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
                 monitor.Action(DoStuff);
             }
 
-            sink.EventsSendSynchronously.Count.Should().Be(1);
-            sink.EventsSendSynchronously.First().User.Should().Be(User);
-            sink.EventsSendSynchronously.First().Operation.Should().Be(operation);
-            sink.EventsSendSynchronously.First().Outcome.Should().Be(Outcome.Successful);
-            sink.EventsSendSynchronously.First().Timestamp.Should().Be(Clock.Utc.Now);
-            sink.EventsSendSynchronously.First().Duration.Start.Should().Be(Clock.Utc.Now);
-            sink.EventsSendSynchronously.First().Duration.End.Should().Be(Clock.Utc.Now);
+            sink.SentEvents.Count.Should().Be(1);
+            sink.SentEvents.First().User.Should().Be(User);
+            sink.SentEvents.First().Operation.Should().Be(operation);
+            sink.SentEvents.First().Outcome.Should().Be(Outcome.Successful);
+            sink.SentEvents.First().Timestamp.Should().Be(Clock.Utc.Now);
+            sink.SentEvents.First().Duration.Start.Should().Be(Clock.Utc.Now);
+            sink.SentEvents.First().Duration.End.Should().Be(Clock.Utc.Now);
         }
 
         [Fact]
@@ -49,13 +49,13 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
                 result.Should().BeTrue();
             }
 
-            sink.EventsSendSynchronously.Count.Should().Be(1);
-            sink.EventsSendSynchronously.First().User.Should().Be(User);
-            sink.EventsSendSynchronously.First().Operation.Should().Be(operation);
-            sink.EventsSendSynchronously.First().Outcome.Should().Be(Outcome.Successful);
-            sink.EventsSendSynchronously.First().Timestamp.Should().Be(Clock.Utc.Now);
-            sink.EventsSendSynchronously.First().Duration.Start.Should().Be(Clock.Utc.Now);
-            sink.EventsSendSynchronously.First().Duration.End.Should().Be(Clock.Utc.Now);
+            sink.SentEvents.Count.Should().Be(1);
+            sink.SentEvents.First().User.Should().Be(User);
+            sink.SentEvents.First().Operation.Should().Be(operation);
+            sink.SentEvents.First().Outcome.Should().Be(Outcome.Successful);
+            sink.SentEvents.First().Timestamp.Should().Be(Clock.Utc.Now);
+            sink.SentEvents.First().Duration.Start.Should().Be(Clock.Utc.Now);
+            sink.SentEvents.First().Duration.End.Should().Be(Clock.Utc.Now);
         }
         
         [Fact]
@@ -65,19 +65,19 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             
             var sink = new TestSink();
             const string operation = "async func test";
-            using (var monitor = new MonitorBuilder(sink).BeginAsync(User, operation))
+            using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
             {
                 var result = await monitor.Function(ReturnStuffAsync);
                 result.Should().BeTrue();
             }
 
-            sink.EventsSendAsynchronously.Count.Should().Be(1);
-            sink.EventsSendAsynchronously.First().User.Should().Be(User);
-            sink.EventsSendAsynchronously.First().Operation.Should().Be(operation);
-            sink.EventsSendAsynchronously.First().Outcome.Should().Be(Outcome.Successful);
-            sink.EventsSendAsynchronously.First().Timestamp.Should().Be(Clock.Utc.Now);
-            sink.EventsSendAsynchronously.First().Duration.Start.Should().Be(Clock.Utc.Now);
-            sink.EventsSendAsynchronously.First().Duration.End.Should().Be(Clock.Utc.Now);
+            sink.SentEvents.Count.Should().Be(1);
+            sink.SentEvents.First().User.Should().Be(User);
+            sink.SentEvents.First().Operation.Should().Be(operation);
+            sink.SentEvents.First().Outcome.Should().Be(Outcome.Successful);
+            sink.SentEvents.First().Timestamp.Should().Be(Clock.Utc.Now);
+            sink.SentEvents.First().Duration.Start.Should().Be(Clock.Utc.Now);
+            sink.SentEvents.First().Duration.End.Should().Be(Clock.Utc.Now);
         }
         
         [Fact]
@@ -88,14 +88,12 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             const string operation = "duration test";
             using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
             {
-                
-                
                 var result = monitor.Function(() => ReturnStuff(2000));
                 result.Should().BeTrue();
             }
 
-            sink.EventsSendSynchronously.Count.Should().Be(1);
-            var actual = sink.EventsSendSynchronously.First();
+            sink.SentEvents.Count.Should().Be(1);
+            var actual = sink.SentEvents.First();
             actual.User.Should().Be(User);
             actual.Operation.Should().Be(operation);
             actual.Outcome.Should().Be(Outcome.Successful);
@@ -107,7 +105,7 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
         {
             var sink = new TestSink();
             const string operation = "multi test";
-            using (var monitor = new MonitorBuilder(sink).BeginAsync(User, operation))
+            using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
             {
                 monitor.Action(DoStuff);
                 
@@ -116,16 +114,66 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
                 (await monitor.Function(ReturnStuffAsync)).Should().BeTrue();
             }
 
-            sink.EventsSendAsynchronously.Count.Should().Be(3);
-            sink.EventsSendAsynchronously[0].Operation.Should().Be(operation);
-            sink.EventsSendAsynchronously[1].Operation.Should().Be($"{operation}:2");
-            sink.EventsSendAsynchronously[2].Operation.Should().Be($"{operation}:3");
+            sink.SentEvents.Count.Should().Be(3);
+            sink.SentEvents[0].Operation.Should().Be($"{operation}:1");
+            sink.SentEvents[1].Operation.Should().Be($"{operation}:2");
+            sink.SentEvents[2].Operation.Should().Be($"{operation}:3");
         }
         
+        [Fact]
+        public void ShouldCaptureSlowApplicationEvent()
+        {
+            var sink = new TestSink();
+            const string operation = "slow test";
+            using (var monitor = new MonitorBuilder(sink).Begin(User, operation, acceptableDuration: 1))
+            {
+                
+                var result = monitor.Function(() => ReturnStuff(2000));
+                result.Should().BeTrue();
+            }
+
+            sink.SentEvents.Count.Should().Be(1);
+            var actual = sink.SentEvents.First();
+            actual.User.Should().Be(User);
+            actual.Operation.Should().Be(operation);
+            actual.Outcome.Should().Be(Outcome.Slow);
+        }
         
+        [Fact]
+        public void ShouldCaptureFailedApplicationEvent()
+        {
+            var sink = new TestSink();
+            const string operation = "slow test";
+
+            string expectedMessage = null;
+            try
+            {
+                using (var monitor = new MonitorBuilder(sink).Begin(User, operation, acceptableDuration: 1))
+                {
+                    monitor.Action(BreakStuff);
+                }
+            }
+            catch (ApplicationException e)
+            {
+                expectedMessage = e.Message;
+            }
+
+            sink.SentEvents.Count.Should().Be(1);
+            var actual = sink.SentEvents.First();
+            actual.User.Should().Be(User);
+            actual.Operation.Should().Be(operation);
+            actual.Outcome.Should().Be(Outcome.Failed);
+            actual.FailureCause.Should().Be(expectedMessage);
+        }
+
         private void DoStuff()
         {
             
+        }
+
+        private void BreakStuff()
+        {
+            throw new ApplicationException("this is a failure");
         }
 
         private bool ReturnStuff()
@@ -153,18 +201,17 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
 
     internal class TestSink : IEventSink
     {
-        public readonly List<ApplicationEvent> EventsSendSynchronously = new List<ApplicationEvent>();
-        public readonly List<ApplicationEvent> EventsSendAsynchronously = new List<ApplicationEvent>();
-            
+        public readonly List<ApplicationEvent> SentEvents = new List<ApplicationEvent>();
         
-        public void Send(ApplicationEvent applicationEvent)
-        {
-            EventsSendSynchronously.Add(applicationEvent);
-        }
-
         public Task SendAsync(ApplicationEvent applicationEvent)
         {
-            EventsSendAsynchronously.Add(applicationEvent);
+            SentEvents.Add(applicationEvent);
+            return Task.CompletedTask;
+        }
+
+        public Task SendAsync(IEnumerable<ApplicationEvent> applicationEvents)
+        {
+            SentEvents.AddRange(applicationEvents);
             return Task.CompletedTask;
         }
     }

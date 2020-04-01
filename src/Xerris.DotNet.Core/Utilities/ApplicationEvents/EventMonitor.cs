@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Xerris.DotNet.Core.Time;
 
@@ -9,19 +10,23 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
     {
         private readonly string user;
         private readonly string operation;
-        private readonly Action<ApplicationEvent> sinkAction;
+        private readonly string details;
+        private readonly int acceptableDuration;
+        private readonly IEventSink sink;
         private readonly List<ApplicationEvent> list = new List<ApplicationEvent>(1);
 
-        public EventMonitor(string user, string operation, Action<ApplicationEvent> sinkAction)
+        public EventMonitor(string user, string operation, string details, int acceptableDuration, IEventSink sink)
         {
             this.user = user;
             this.operation = operation;
-            this.sinkAction = sinkAction;
+            this.details = details;
+            this.acceptableDuration = acceptableDuration;
+            this.sink = sink;
         }
 
         private ApplicationEvent CreateApplicationEvent()
         {
-            var ap = new ApplicationEvent {User = user, Operation = operation};
+            var ap = new ApplicationEvent {User = user, Operation = operation, Details = details};
             ap.StartEvent();
             return ap;
         }
@@ -30,19 +35,29 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
         {
             ap.StopEvent();
             ap.Timestamp = Clock.Utc.Now;
-            if (list.Count > 0)
+
+            if (ap.Outcome == Outcome.Successful && ap.Duration.Difference().Seconds > acceptableDuration)
             {
-                ap.Operation = $"{ap.Operation}:{list.Count +1 }";
+                ap.Outcome = Outcome.Slow;
             }
             list.Add(ap);
         }
 
         public void Dispose()
         {
-            if (sinkAction == null) return;
-            foreach (var applicationEvent in list)
+            if (sink == null) return;
+            if (list.Count == 1)
             {
-                sinkAction(applicationEvent);
+                sink.SendAsync(list.First());
+            }
+            else if (list.Count > 1)
+            {
+                for (var i = 0; i < list.Count; i++)
+                {
+                    var ap = list[i];
+                    ap.Operation = $"{ap.Operation}:{i + 1 }";
+                }
+                sink.SendAsync(list);
             }
         }
 
@@ -51,7 +66,6 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
             var ap = CreateApplicationEvent();
             try
             {
-                
                 action();
                 ap.Outcome = Outcome.Successful;
             }

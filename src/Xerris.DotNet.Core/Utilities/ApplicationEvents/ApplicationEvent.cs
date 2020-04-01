@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using Xerris.DotNet.Core.Time;
 
 namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
@@ -16,6 +15,8 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
         public DateTime Timestamp { get; set; }
         public string User { get; set; }
         public string Operation { get; set; }
+        
+        public string Details { get; set; }
         public Outcome Outcome { get; set; }
         public string FailureCause { get; set; }
         public DateTimeRange Duration { get; set; }
