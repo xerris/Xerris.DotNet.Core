@@ -20,6 +20,7 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
         public Outcome Outcome { get; set; }
         public string FailureCause { get; set; }
         public DateTimeRange Duration { get; set; }
+        public string OperationStep { get; set; }
 
         public void StartEvent()
         {

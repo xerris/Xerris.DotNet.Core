@@ -30,10 +30,27 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             sink.SentEvents.Count.Should().Be(1);
             sink.SentEvents.First().User.Should().Be(User);
             sink.SentEvents.First().Operation.Should().Be(operation);
+            sink.SentEvents.First().OperationStep.Should().BeNull();
             sink.SentEvents.First().Outcome.Should().Be(Outcome.Successful);
             sink.SentEvents.First().Timestamp.Should().Be(Clock.Utc.Now);
             sink.SentEvents.First().Duration.Start.Should().Be(Clock.Utc.Now);
             sink.SentEvents.First().Duration.End.Should().Be(Clock.Utc.Now);
+        }
+        
+        [Fact]
+        public void ShouldCaptureApplicationEventForActionWithOperationStep()
+        {
+            Clock.Utc.Freeze();
+            
+            var sink = new TestSink();
+            const string operation = "simple test";
+            using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
+            {
+                monitor.Action(DoStuff, "this is a step");
+            }
+            
+            sink.SentEvents.First().Operation.Should().Be(operation);
+            sink.SentEvents.First().OperationStep.Should().Be("this is a step");
         }
 
         [Fact]
@@ -52,6 +69,7 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             sink.SentEvents.Count.Should().Be(1);
             sink.SentEvents.First().User.Should().Be(User);
             sink.SentEvents.First().Operation.Should().Be(operation);
+            sink.SentEvents.First().OperationStep.Should().BeNull();
             sink.SentEvents.First().Outcome.Should().Be(Outcome.Successful);
             sink.SentEvents.First().Timestamp.Should().Be(Clock.Utc.Now);
             sink.SentEvents.First().Duration.Start.Should().Be(Clock.Utc.Now);
@@ -74,6 +92,7 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             sink.SentEvents.Count.Should().Be(1);
             sink.SentEvents.First().User.Should().Be(User);
             sink.SentEvents.First().Operation.Should().Be(operation);
+            sink.SentEvents.First().OperationStep.Should().BeNull();
             sink.SentEvents.First().Outcome.Should().Be(Outcome.Successful);
             sink.SentEvents.First().Timestamp.Should().Be(Clock.Utc.Now);
             sink.SentEvents.First().Duration.Start.Should().Be(Clock.Utc.Now);
@@ -96,6 +115,7 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             var actual = sink.SentEvents.First();
             actual.User.Should().Be(User);
             actual.Operation.Should().Be(operation);
+            actual.OperationStep.Should().BeNull();
             actual.Outcome.Should().Be(Outcome.Successful);
             actual.Duration.End.Subtract(actual.Duration.Start).Seconds.Should().BeGreaterOrEqualTo(2);
         }
@@ -115,9 +135,35 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             }
 
             sink.SentEvents.Count.Should().Be(3);
-            sink.SentEvents[0].Operation.Should().Be($"{operation}:1");
-            sink.SentEvents[1].Operation.Should().Be($"{operation}:2");
-            sink.SentEvents[2].Operation.Should().Be($"{operation}:3");
+            sink.SentEvents[0].Operation.Should().Be(operation);
+            sink.SentEvents[0].OperationStep.Should().Be("1");
+            sink.SentEvents[1].Operation.Should().Be(operation);
+            sink.SentEvents[1].OperationStep.Should().Be("2");
+            sink.SentEvents[2].Operation.Should().Be(operation);
+            sink.SentEvents[2].OperationStep.Should().Be("3");
+        }
+        
+        [Fact]
+        public async Task ShouldCaptureMultipleApplicationEventsWithStepNames()
+        {
+            var sink = new TestSink();
+            const string operation = "multi test";
+            using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
+            {
+                monitor.Action(DoStuff, "do stuff");
+                
+                monitor.Function(ReturnStuff, "return stuff").Should().BeTrue();
+                
+                (await monitor.Function(ReturnStuffAsync, "return stuff async")).Should().BeTrue();
+            }
+
+            sink.SentEvents.Count.Should().Be(3);
+            sink.SentEvents[0].Operation.Should().Be(operation);
+            sink.SentEvents[0].OperationStep.Should().Be("do stuff");
+            sink.SentEvents[1].Operation.Should().Be(operation);
+            sink.SentEvents[1].OperationStep.Should().Be("return stuff");
+            sink.SentEvents[2].Operation.Should().Be(operation);
+            sink.SentEvents[2].OperationStep.Should().Be("return stuff async");
         }
         
         [Fact]
@@ -127,7 +173,6 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             const string operation = "slow test";
             using (var monitor = new MonitorBuilder(sink).Begin(User, operation, acceptableDuration: 1))
             {
-                
                 var result = monitor.Function(() => ReturnStuff(2000));
                 result.Should().BeTrue();
             }

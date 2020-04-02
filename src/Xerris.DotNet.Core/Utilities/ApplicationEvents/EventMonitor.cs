@@ -24,9 +24,9 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
             this.sink = sink;
         }
 
-        private ApplicationEvent CreateApplicationEvent()
+        private ApplicationEvent CreateApplicationEvent(string operationStep)
         {
-            var ap = new ApplicationEvent {User = user, Operation = operation, Details = details};
+            var ap = new ApplicationEvent {User = user, Operation = operation, Details = details, OperationStep = operationStep};
             ap.StartEvent();
             return ap;
         }
@@ -55,15 +55,15 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
                 for (var i = 0; i < list.Count; i++)
                 {
                     var ap = list[i];
-                    ap.Operation = $"{ap.Operation}:{i + 1 }";
+                    ap.OperationStep ??= (i + 1).ToString();
                 }
                 sink.SendAsync(list);
             }
         }
 
-        public void Action(Action action)
+        public void Action(Action action, string operationStep = null)
         {
-            var ap = CreateApplicationEvent();
+            var ap = CreateApplicationEvent(operationStep);
             try
             {
                 action();
@@ -81,9 +81,9 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
             }
         }
 
-        public T Function<T>(Func<T> func)
+        public T Function<T>(Func<T> func, string operationStep = null)
         {
-            var ap = CreateApplicationEvent();
+            var ap = CreateApplicationEvent(operationStep);
             try
             {
                 
@@ -103,9 +103,9 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
             }
         }
 
-        public async Task<T> FunctionAsync<T>(Func<Task<T>> func)
+        public async Task<T> FunctionAsync<T>(Func<Task<T>> func, string operationStep = null)
         {
-            var ap = CreateApplicationEvent();
+            var ap = CreateApplicationEvent(operationStep);
             try
             {
                 var result = await func();
