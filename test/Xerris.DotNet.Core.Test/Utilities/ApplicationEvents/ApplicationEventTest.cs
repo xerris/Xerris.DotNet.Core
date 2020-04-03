@@ -4,9 +4,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Newtonsoft.Json;
+using Xerris.DotNet.Core.Extensions;
 using Xerris.DotNet.Core.Time;
 using Xerris.DotNet.Core.Utilities.ApplicationEvents;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
 {
@@ -14,12 +17,12 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
     {
    
         private const string User = "test user";
-        
+
         [Fact]
         public void ShouldCaptureApplicationEventForAction()
         {
             Clock.Utc.Freeze();
-            
+
             var sink = new TestSink();
             const string operation = "simple test";
             using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
@@ -28,20 +31,18 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             }
 
             sink.SentEvents.Count.Should().Be(1);
+            sink.SentEvents.First().Identifier.Should().NotBeNull();
             sink.SentEvents.First().User.Should().Be(User);
             sink.SentEvents.First().Operation.Should().Be(operation);
             sink.SentEvents.First().OperationStep.Should().BeNull();
             sink.SentEvents.First().Outcome.Should().Be(Outcome.Successful);
             sink.SentEvents.First().Timestamp.Should().Be(Clock.Utc.Now);
-            sink.SentEvents.First().Duration.Start.Should().Be(Clock.Utc.Now);
-            sink.SentEvents.First().Duration.End.Should().Be(Clock.Utc.Now);
+            sink.SentEvents.First().Duration.Should().Be(0.0);
         }
-        
+
         [Fact]
         public void ShouldCaptureApplicationEventForActionWithOperationStep()
         {
-            Clock.Utc.Freeze();
-            
             var sink = new TestSink();
             const string operation = "simple test";
             using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
@@ -72,8 +73,7 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             sink.SentEvents.First().OperationStep.Should().BeNull();
             sink.SentEvents.First().Outcome.Should().Be(Outcome.Successful);
             sink.SentEvents.First().Timestamp.Should().Be(Clock.Utc.Now);
-            sink.SentEvents.First().Duration.Start.Should().Be(Clock.Utc.Now);
-            sink.SentEvents.First().Duration.End.Should().Be(Clock.Utc.Now);
+            sink.SentEvents.First().Duration.Should().Be(0.0);
         }
         
         [Fact]
@@ -95,14 +95,12 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             sink.SentEvents.First().OperationStep.Should().BeNull();
             sink.SentEvents.First().Outcome.Should().Be(Outcome.Successful);
             sink.SentEvents.First().Timestamp.Should().Be(Clock.Utc.Now);
-            sink.SentEvents.First().Duration.Start.Should().Be(Clock.Utc.Now);
-            sink.SentEvents.First().Duration.End.Should().Be(Clock.Utc.Now);
+            sink.SentEvents.First().Duration.Should().Be(0.0);
         }
         
         [Fact]
         public void ShouldCaptureApplicationEventAndMeasureDuration()
         {
-
             var sink = new TestSink();
             const string operation = "duration test";
             using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
@@ -117,7 +115,7 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             actual.Operation.Should().Be(operation);
             actual.OperationStep.Should().BeNull();
             actual.Outcome.Should().Be(Outcome.Successful);
-            actual.Duration.End.Subtract(actual.Duration.Start).Seconds.Should().BeGreaterOrEqualTo(2);
+            sink.SentEvents.First().Duration.Should().BeGreaterOrEqualTo(2000.0);
         }
 
         [Fact]
@@ -171,7 +169,7 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
         {
             var sink = new TestSink();
             const string operation = "slow test";
-            using (var monitor = new MonitorBuilder(sink).Begin(User, operation, acceptableDuration: 1))
+            using (var monitor = new MonitorBuilder(sink).Begin(User, operation, acceptableDurationMilliseconds: 1000))
             {
                 var result = monitor.Function(() => ReturnStuff(2000));
                 result.Should().BeTrue();
@@ -193,7 +191,7 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             string expectedMessage = null;
             try
             {
-                using (var monitor = new MonitorBuilder(sink).Begin(User, operation, acceptableDuration: 1))
+                using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
                 {
                     monitor.Action(BreakStuff);
                 }

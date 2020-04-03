@@ -12,6 +12,8 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
     {
         private DateTime start;
         
+        
+        public string Identifier { get; set; }
         public DateTime Timestamp { get; set; }
         public string User { get; set; }
         public string Operation { get; set; }
@@ -19,7 +21,7 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
         public string Details { get; set; }
         public Outcome Outcome { get; set; }
         public string FailureCause { get; set; }
-        public DateTimeRange Duration { get; set; }
+        public double Duration { get; set; }
         public string OperationStep { get; set; }
 
         public void StartEvent()
@@ -30,8 +32,9 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
         public void StopEvent()
         {
             var end = Clock.Utc.Now;
-            Duration = new DateTimeRange(start, end);
+            Duration = (end - start).TotalMilliseconds;
             Timestamp = end;
+            Identifier = Guid.NewGuid().ToString();
         }
         
     }

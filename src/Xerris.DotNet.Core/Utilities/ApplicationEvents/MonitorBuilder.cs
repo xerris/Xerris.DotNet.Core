@@ -9,9 +9,9 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
             this.sink = sink;
         }
 
-        public IEventMonitor Begin(string user, string operation, string details = null, int acceptableDuration = 2)
+        public IEventMonitor Begin(string user, string operation, string details = null, int acceptableDurationMilliseconds = 2000)
         {
-            return new EventMonitor(user, operation, details, acceptableDuration, sink);
+            return new EventMonitor(user, operation, details, acceptableDurationMilliseconds, sink);
         }
     }
 }

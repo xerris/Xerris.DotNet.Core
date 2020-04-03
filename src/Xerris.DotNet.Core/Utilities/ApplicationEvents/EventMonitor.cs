@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Serilog;
 using Xerris.DotNet.Core.Time;
 
 namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
@@ -11,16 +12,16 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
         private readonly string user;
         private readonly string operation;
         private readonly string details;
-        private readonly int acceptableDuration;
+        private readonly int acceptableDurationMilliseconds;
         private readonly IEventSink sink;
         private readonly List<ApplicationEvent> list = new List<ApplicationEvent>(1);
 
-        public EventMonitor(string user, string operation, string details, int acceptableDuration, IEventSink sink)
+        public EventMonitor(string user, string operation, string details, int acceptableDurationMilliseconds, IEventSink sink)
         {
             this.user = user;
             this.operation = operation;
             this.details = details;
-            this.acceptableDuration = acceptableDuration;
+            this.acceptableDurationMilliseconds = acceptableDurationMilliseconds;
             this.sink = sink;
         }
 
@@ -36,7 +37,7 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
             ap.StopEvent();
             ap.Timestamp = Clock.Utc.Now;
 
-            if (ap.Outcome == Outcome.Successful && ap.Duration.Difference().Seconds > acceptableDuration)
+            if (ap.Outcome == Outcome.Successful && ap.Duration > acceptableDurationMilliseconds)
             {
                 ap.Outcome = Outcome.Slow;
             }
