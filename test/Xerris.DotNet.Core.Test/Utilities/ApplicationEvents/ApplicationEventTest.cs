@@ -4,40 +4,43 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Newtonsoft.Json;
-using Xerris.DotNet.Core.Extensions;
 using Xerris.DotNet.Core.Time;
 using Xerris.DotNet.Core.Utilities.ApplicationEvents;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
 {
-    public class ApplicationEventTest : IDisposable
+    public class ApplicationEventTest
     {
    
         private const string User = "test user";
 
+
         [Fact]
         public void ShouldCaptureApplicationEventForAction()
         {
-            Clock.Utc.Freeze();
-
-            var sink = new TestSink();
-            const string operation = "simple test";
-            using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
+            using (new FreezeClock())
             {
-                monitor.Action(DoStuff);
-            }
+                Clock.Utc.Freeze();
 
-            sink.SentEvents.Count.Should().Be(1);
-            sink.SentEvents.First().Identifier.Should().NotBeNull();
-            sink.SentEvents.First().User.Should().Be(User);
-            sink.SentEvents.First().Operation.Should().Be(operation);
-            sink.SentEvents.First().OperationStep.Should().BeNull();
-            sink.SentEvents.First().Outcome.Should().Be(Outcome.Successful);
-            sink.SentEvents.First().Timestamp.Should().Be(Clock.Utc.Now);
-            sink.SentEvents.First().Duration.Should().Be(0.0);
+                var sink = new TestSink();
+                const string operation = "simple test";
+                using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
+                {
+                    monitor.Action(DoStuff);
+                }
+
+                WaitForSink(sink);
+
+                sink.SentEvents.Count.Should().Be(1);
+                sink.SentEvents.First().Identifier.Should().NotBeNull();
+                sink.SentEvents.First().User.Should().Be(User);
+                sink.SentEvents.First().Operation.Should().Be(operation);
+                sink.SentEvents.First().OperationStep.Should().BeNull();
+                sink.SentEvents.First().Outcome.Should().Be(Outcome.Successful);
+                sink.SentEvents.First().Timestamp.Should().Be(Clock.Utc.Now);
+                sink.SentEvents.First().Duration.Should().Be(0.0);
+            }
         }
 
         [Fact]
@@ -50,6 +53,8 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
                 monitor.Action(DoStuff, "this is a step");
             }
             
+            WaitForSink(sink);
+            
             sink.SentEvents.First().Operation.Should().Be(operation);
             sink.SentEvents.First().OperationStep.Should().Be("this is a step");
         }
@@ -57,45 +62,55 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
         [Fact]
         public void ShouldCaptureApplicationEventForFunc()
         {
-            Clock.Utc.Freeze();
-            
-            var sink = new TestSink();
-            const string operation = "func test";
-            using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
+            using (new FreezeClock())
             {
-                var result = monitor.Function(ReturnStuff);
-                result.Should().BeTrue();
-            }
+                Clock.Utc.Freeze();
+            
+                var sink = new TestSink();
+                const string operation = "func test";
+                using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
+                {
+                    var result = monitor.Function(ReturnStuff);
+                    result.Should().BeTrue();
+                }
+            
+                WaitForSink(sink);
 
-            sink.SentEvents.Count.Should().Be(1);
-            sink.SentEvents.First().User.Should().Be(User);
-            sink.SentEvents.First().Operation.Should().Be(operation);
-            sink.SentEvents.First().OperationStep.Should().BeNull();
-            sink.SentEvents.First().Outcome.Should().Be(Outcome.Successful);
-            sink.SentEvents.First().Timestamp.Should().Be(Clock.Utc.Now);
-            sink.SentEvents.First().Duration.Should().Be(0.0);
+                sink.SentEvents.Count.Should().Be(1);
+                sink.SentEvents.First().User.Should().Be(User);
+                sink.SentEvents.First().Operation.Should().Be(operation);
+                sink.SentEvents.First().OperationStep.Should().BeNull();
+                sink.SentEvents.First().Outcome.Should().Be(Outcome.Successful);
+                sink.SentEvents.First().Timestamp.Should().Be(Clock.Utc.Now);
+                sink.SentEvents.First().Duration.Should().Be(0.0);
+            }
         }
         
         [Fact]
         public async Task ShouldCaptureApplicationEventForAsyncFunc()
         {
-            Clock.Utc.Freeze();
-            
-            var sink = new TestSink();
-            const string operation = "async func test";
-            using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
+            using (new FreezeClock())
             {
-                var result = await monitor.Function(ReturnStuffAsync);
-                result.Should().BeTrue();
-            }
+                Clock.Utc.Freeze();
+            
+                var sink = new TestSink();
+                const string operation = "async func test";
+                using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
+                {
+                    var result = await monitor.Function(ReturnStuffAsync);
+                    result.Should().BeTrue();
+                }
+            
+                WaitForSink(sink);
 
-            sink.SentEvents.Count.Should().Be(1);
-            sink.SentEvents.First().User.Should().Be(User);
-            sink.SentEvents.First().Operation.Should().Be(operation);
-            sink.SentEvents.First().OperationStep.Should().BeNull();
-            sink.SentEvents.First().Outcome.Should().Be(Outcome.Successful);
-            sink.SentEvents.First().Timestamp.Should().Be(Clock.Utc.Now);
-            sink.SentEvents.First().Duration.Should().Be(0.0);
+                sink.SentEvents.Count.Should().Be(1);
+                sink.SentEvents.First().User.Should().Be(User);
+                sink.SentEvents.First().Operation.Should().Be(operation);
+                sink.SentEvents.First().OperationStep.Should().BeNull();
+                sink.SentEvents.First().Outcome.Should().Be(Outcome.Successful);
+                sink.SentEvents.First().Timestamp.Should().Be(Clock.Utc.Now);
+                sink.SentEvents.First().Duration.Should().Be(0.0);
+            }
         }
         
         [Fact]
@@ -108,6 +123,8 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
                 var result = monitor.Function(() => ReturnStuff(2000));
                 result.Should().BeTrue();
             }
+            
+            WaitForSink(sink);
 
             sink.SentEvents.Count.Should().Be(1);
             var actual = sink.SentEvents.First();
@@ -131,6 +148,8 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
                 
                 (await monitor.Function(ReturnStuffAsync)).Should().BeTrue();
             }
+            
+            WaitForSink(sink);
 
             sink.SentEvents.Count.Should().Be(3);
             sink.SentEvents[0].Operation.Should().Be(operation);
@@ -154,6 +173,8 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
                 
                 (await monitor.Function(ReturnStuffAsync, "return stuff async")).Should().BeTrue();
             }
+            
+            WaitForSink(sink);
 
             sink.SentEvents.Count.Should().Be(3);
             sink.SentEvents[0].Operation.Should().Be(operation);
@@ -174,6 +195,8 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
                 var result = monitor.Function(() => ReturnStuff(2000));
                 result.Should().BeTrue();
             }
+            
+            WaitForSink(sink);
 
             sink.SentEvents.Count.Should().Be(1);
             var actual = sink.SentEvents.First();
@@ -200,6 +223,8 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             {
                 expectedMessage = e.Message;
             }
+            
+            WaitForSink(sink);
 
             sink.SentEvents.Count.Should().Be(1);
             var actual = sink.SentEvents.First();
@@ -208,6 +233,38 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             actual.Outcome.Should().Be(Outcome.Failed);
             actual.FailureCause.Should().Be(expectedMessage);
         }
+
+        private static void WaitForSink(TestSink sink)
+        {
+            SpinWait.SpinUntil(() => sink.IsFinished, 5000);
+        }
+
+        // private ITestOutputHelper output;
+        //
+        // public ApplicationEventTest(ITestOutputHelper output)
+        // {
+        //     this.output = output;
+        // }
+        //
+        // [Fact]
+        // public void DirtyBirdy()
+        // {
+        //     var applicationEvent = new ApplicationEvent
+        //     {
+        //         Operation = "derp",
+        //         User ="richard",
+        //         OperationStep = "derp step",
+        //         Outcome = Outcome.Slow,
+        //         Details = "I got details here"
+        //     };
+        //     applicationEvent.StartEvent();
+        //     Thread.Sleep(2000);
+        //     applicationEvent.StopEvent();
+        //     
+        //     output.WriteLine(applicationEvent.ToJson());
+        //
+        //
+        // }
 
         private void DoStuff()
         {
@@ -235,26 +292,25 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
         {
             return Task.FromResult(true);
         }
-
-        public void Dispose()
-        {
-            Clock.Utc.Thaw();
-        }
     }
 
     internal class TestSink : IEventSink
     {
-        public readonly List<ApplicationEvent> SentEvents = new List<ApplicationEvent>();
         
+        public readonly List<ApplicationEvent> SentEvents = new List<ApplicationEvent>();
+        public bool IsFinished { get; private set; }
+
         public Task SendAsync(ApplicationEvent applicationEvent)
         {
             SentEvents.Add(applicationEvent);
+            IsFinished = true;
             return Task.CompletedTask;
         }
 
         public Task SendAsync(IEnumerable<ApplicationEvent> applicationEvents)
         {
             SentEvents.AddRange(applicationEvents);
+            IsFinished = true;
             return Task.CompletedTask;
         }
     }

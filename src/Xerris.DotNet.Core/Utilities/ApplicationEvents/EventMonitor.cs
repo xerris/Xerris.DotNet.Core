@@ -49,7 +49,7 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
             if (sink == null) return;
             if (list.Count == 1)
             {
-                sink.SendAsync(list.First());
+                Task.Run(async () => await sink.SendAsync(list.First()).ConfigureAwait(false));
             }
             else if (list.Count > 1)
             {
@@ -58,7 +58,7 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
                     var ap = list[i];
                     ap.OperationStep ??= (i + 1).ToString();
                 }
-                sink.SendAsync(list);
+                Task.Run(async () => await sink.SendAsync(list).ConfigureAwait(false));
             }
         }
 

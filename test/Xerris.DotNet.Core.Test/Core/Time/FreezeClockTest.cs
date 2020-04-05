@@ -9,11 +9,16 @@ namespace Xerris.DotNet.Core.Test.Core.Time
     [Collection("base")]
     public class FreezeClockTest
     {
-        [Fact]
-        public void CanFreezeClodk()
+        public FreezeClockTest()
         {
-            var then = Clock.Local.Now;
-            using (var frozen = new FreezeClock())
+            Clock.Local.Thaw();
+        }
+
+        [Fact]
+        public void CanFreezeClock()
+        {
+            DateTime then;
+            using (new FreezeClock())
             {
                 then = Clock.Local.Now;
                 Thread.Sleep(500);
@@ -28,7 +33,7 @@ namespace Xerris.DotNet.Core.Test.Core.Time
         public void CanFreezeClockForSpecificDateTime()
         {
             var then = new DateTime(2018, 01, 15);
-            using (var frozen = new FreezeClock(then))
+            using (new FreezeClock(then))
             {
                 Clock.Local.Now.Should().Be(then);
                 Thread.Sleep(500);
