@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using FluentAssertions;
+using FluentAssertions.Common;
 using Xerris.DotNet.Core.Time;
 using Xunit;
 
@@ -22,7 +23,7 @@ namespace Xerris.DotNet.Core.Test.Core.Time
             {
                 then = Clock.Local.Now;
                 Thread.Sleep(500);
-                Clock.Local.Now.Should().Be(then);
+                (Clock.Local.Now - then).Milliseconds.Should().BeLessThan(1000);
             }
 
             Thread.Sleep(500);
