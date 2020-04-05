@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using FluentAssertions;
+using Xerris.DotNet.Core.Extensions;
 using Xerris.DotNet.Core.Time;
 using Xunit;
 
@@ -22,7 +23,7 @@ namespace Xerris.DotNet.Core.Test.Core.Time
             {
                 then = Clock.Local.Now;
                 Thread.Sleep(500);
-                Clock.Local.Now.Should().Be(then);
+                Clock.Local.Now.IsCloseEnough(then, .0001m);
             }
 
             Thread.Sleep(500);
@@ -35,12 +36,12 @@ namespace Xerris.DotNet.Core.Test.Core.Time
             var then = new DateTime(2018, 01, 15);
             using (new FreezeClock(then))
             {
-                Clock.Local.Now.Should().Be(then);
+                Clock.Local.Now.IsCloseEnough(then, .0001m);
                 Thread.Sleep(500);
-                Clock.Local.Now.Should().Be(then);
+                Clock.Local.Now.IsCloseEnough(then, .0001m);
             }
             Thread.Sleep(500);
-            Clock.Local.Now.Should().NotBe(then);
+            Clock.Local.Now.IsCloseEnough(then, .0001m);
             
         }
 
