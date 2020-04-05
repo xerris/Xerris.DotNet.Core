@@ -7,7 +7,7 @@ using Xunit;
 namespace Xerris.DotNet.Core.Test.Core.Time
 {
     [Collection("base")]
-    public class FreezeClockTest
+    public class FreezeClockTest : IDisposable
     {
         public FreezeClockTest()
         {
@@ -42,6 +42,11 @@ namespace Xerris.DotNet.Core.Test.Core.Time
             Thread.Sleep(500);
             Clock.Local.Now.Should().NotBe(then);
             
+        }
+
+        public void Dispose()
+        {
+            Clock.Local.Thaw();
         }
     }
 }

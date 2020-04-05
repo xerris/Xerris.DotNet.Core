@@ -23,24 +23,22 @@ namespace Xerris.DotNet.Core.Cache
 
         public async Task<TItem> GetOrCreate<TItem>(object key, Func<Task<TItem>> createItem)
         {
-            if (!cache.TryGetValue(key, out TItem cacheEntry)) // Look for cache key.
-            {
-                var myLock = locks.GetOrAdd(key, k => new SemaphoreSlim(1, 1));
+            if (cache.TryGetValue(key, out TItem cacheEntry)) return cacheEntry;
+            var myLock = locks.GetOrAdd(key, k => new SemaphoreSlim(1, 1));
 
-                await myLock.WaitAsync();
-                try
+            await myLock.WaitAsync();
+            try
+            {
+                if (!cache.TryGetValue(key, out cacheEntry))
                 {
-                    if (!cache.TryGetValue(key, out cacheEntry))
-                    {
-                        // Key not in cache, so get data.
-                        cacheEntry = await createItem();
-                        cache.Set(key, cacheEntry, CreateCacheOptions());
-                    }
+                    // Key not in cache, so get data.
+                    cacheEntry = await createItem();
+                    cache.Set(key, cacheEntry, CreateCacheOptions());
                 }
-                finally
-                {
-                    myLock.Release();
-                }
+            }
+            finally
+            {
+                myLock.Release();
             }
 
             return cacheEntry;
