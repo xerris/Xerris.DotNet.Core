@@ -4,6 +4,7 @@ namespace Xerris.DotNet.Core.Time
 {
     public sealed class FreezeClock : IDisposable
     {
+        
         private bool disposed;
 
         public FreezeClock()

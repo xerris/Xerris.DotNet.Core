@@ -12,7 +12,8 @@ namespace Xerris.DotNet.Core.Extensions
 
         public static DateTime TruncateMilliseconds(this DateTime dateTime)
         {
-            return dateTime.AddTicks(-(dateTime.Ticks % TimeSpan.TicksPerSecond));
+            return new DateTime(dateTime.Year,dateTime.Month,dateTime.Day, dateTime.Hour, dateTime.Minute, dateTime.Second, dateTime.Kind);
+            //return dateTime.AddTicks(-(dateTime.Ticks % TimeSpan.TicksPerSecond));
         }
 
         public static DateTime ToDate(this string dateString, string format)
