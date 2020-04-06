@@ -24,7 +24,6 @@ namespace Xerris.DotNet.Core.Test.Core.Time
                 then = Clock.Local.Now;
                 Thread.Sleep(500);
                 Clock.Local.Now.IsCloseEnough(then, .0001m);
-                (Clock.Local.Now - then).Milliseconds.Should().BeLessThan(1000);
             }
 
             Thread.Sleep(500);

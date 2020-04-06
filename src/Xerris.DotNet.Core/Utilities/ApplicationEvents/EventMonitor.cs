@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
+using Xerris.DotNet.Core.Extensions;
 using Xerris.DotNet.Core.Time;
 
 namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
@@ -49,7 +50,21 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
             if (sink == null) return;
             if (list.Count == 1)
             {
-                Task.Run(async () => await sink.SendAsync(list.First()).ConfigureAwait(false));
+                Task.Run(async () =>
+                {
+                    try
+                    {
+                        await sink.SendAsync(list.First()).ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        // off thread swallow exceptions but log
+                        Log.Error(e, "Error attempting to send application event.");
+                        Log.Error("**********************************************");
+                        Log.Error(list.ToJson());
+                        Log.Error("**********************************************");
+                    }
+                });
             }
             else if (list.Count > 1)
             {
@@ -58,7 +73,20 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
                     var ap = list[i];
                     ap.OperationStep ??= (i + 1).ToString();
                 }
-                Task.Run(async () => await sink.SendAsync(list).ConfigureAwait(false));
+                Task.Run(async () =>
+                {
+                    try
+                    {
+                        await sink.SendAsync(list).ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e, "Error attempting to send batch of application events.");
+                        Log.Error("**********************************************");
+                        Log.Error(list.ToJson());
+                        Log.Error("**********************************************");
+                    }
+                });
             }
         }
 
