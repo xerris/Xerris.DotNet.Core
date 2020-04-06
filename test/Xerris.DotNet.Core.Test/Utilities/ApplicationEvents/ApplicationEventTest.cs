@@ -32,8 +32,6 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
                 monitor.Action(DoStuff);
             }
 
-            WaitForSink(sink);
-
             sink.SentEvents.Count.Should().Be(1);
             sink.SentEvents.First().Identifier.Should().NotBeNull();
             sink.SentEvents.First().User.Should().Be(User);
@@ -54,8 +52,6 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
                 monitor.Action(DoStuff, "this is a step");
             }
 
-            WaitForSink(sink);
-
             sink.SentEvents.First().Operation.Should().Be(operation);
             sink.SentEvents.First().OperationStep.Should().Be("this is a step");
         }
@@ -72,8 +68,6 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
                 var result = monitor.Function(ReturnStuff);
                 result.Should().BeTrue();
             }
-
-            WaitForSink(sink);
 
             sink.SentEvents.Count.Should().Be(1);
             sink.SentEvents.First().User.Should().Be(User);
@@ -95,9 +89,8 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             {
                 var result = await monitor.Function(ReturnStuffAsync);
                 result.Should().BeTrue();
+                await monitor.Complete();
             }
-
-            WaitForSink(sink);
 
             sink.SentEvents.Count.Should().Be(1);
             sink.SentEvents.First().User.Should().Be(User);
@@ -118,8 +111,6 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
                 var result = monitor.Function(() => ReturnStuff(2000));
                 result.Should().BeTrue();
             }
-
-            WaitForSink(sink);
 
             sink.SentEvents.Count.Should().Be(1);
             var actual = sink.SentEvents.First();
@@ -142,9 +133,9 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
                 monitor.Function(ReturnStuff).Should().BeTrue();
 
                 (await monitor.Function(ReturnStuffAsync)).Should().BeTrue();
-            }
 
-            WaitForSink(sink);
+                await monitor.Complete();
+            }
 
             sink.SentEvents.Count.Should().Be(3);
             sink.SentEvents[0].Operation.Should().Be(operation);
@@ -167,9 +158,9 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
                 monitor.Function(ReturnStuff, "return stuff").Should().BeTrue();
 
                 (await monitor.Function(ReturnStuffAsync, "return stuff async")).Should().BeTrue();
-            }
 
-            WaitForSink(sink);
+                await monitor.Complete();
+            }
 
             sink.SentEvents.Count.Should().Be(3);
             sink.SentEvents[0].Operation.Should().Be(operation);
@@ -181,7 +172,7 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
         }
 
         [Fact]
-        public void ShouldCaptureSlowApplicationEvent()
+        public async Task ShouldCaptureSlowApplicationEvent()
         {
             var sink = new TestSink();
             const string operation = "slow test";
@@ -189,9 +180,9 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             {
                 var result = monitor.Function(() => ReturnStuff(2000));
                 result.Should().BeTrue();
-            }
 
-            WaitForSink(sink);
+                await monitor.Complete();
+            }
 
             sink.SentEvents.Count.Should().Be(1);
             var actual = sink.SentEvents.First();
@@ -201,7 +192,7 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
         }
 
         [Fact]
-        public void ShouldCaptureFailedApplicationEvent()
+        public async Task ShouldCaptureFailedApplicationEvent()
         {
             var sink = new TestSink();
             const string operation = "slow test";
@@ -212,14 +203,13 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
                 using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
                 {
                     monitor.Action(BreakStuff);
+                    await monitor.Complete();
                 }
             }
             catch (ApplicationException e)
             {
                 expectedMessage = e.Message;
             }
-
-            WaitForSink(sink);
 
             sink.SentEvents.Count.Should().Be(1);
             var actual = sink.SentEvents.First();
@@ -228,39 +218,7 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             actual.Outcome.Should().Be(Outcome.Failed);
             actual.FailureCause.Should().Be(expectedMessage);
         }
-
-        private static void WaitForSink(TestSink sink)
-        {
-            SpinWait.SpinUntil(() => sink.IsFinished, 5000);
-        }
-
-        // private ITestOutputHelper output;
-        //
-        // public ApplicationEventTest(ITestOutputHelper output)
-        // {
-        //     this.output = output;
-        // }
-        //
-        // [Fact]
-        // public void DirtyBirdy()
-        // {
-        //     var applicationEvent = new ApplicationEvent
-        //     {
-        //         Operation = "derp",
-        //         User ="richard",
-        //         OperationStep = "derp step",
-        //         Outcome = Outcome.Slow,
-        //         Details = "I got details here"
-        //     };
-        //     applicationEvent.StartEvent();
-        //     Thread.Sleep(2000);
-        //     applicationEvent.StopEvent();
-        //     
-        //     output.WriteLine(applicationEvent.ToJson());
-        //
-        //
-        // }
-
+        
         private void DoStuff()
         {
         }
@@ -291,19 +249,16 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
     internal class TestSink : IEventSink
     {
         public readonly List<ApplicationEvent> SentEvents = new List<ApplicationEvent>();
-        public bool IsFinished { get; private set; }
 
         public Task SendAsync(ApplicationEvent applicationEvent)
         {
             SentEvents.Add(applicationEvent);
-            IsFinished = true;
             return Task.CompletedTask;
         }
 
         public Task SendAsync(IEnumerable<ApplicationEvent> applicationEvents)
         {
             SentEvents.AddRange(applicationEvents);
-            IsFinished = true;
             return Task.CompletedTask;
         }
     }

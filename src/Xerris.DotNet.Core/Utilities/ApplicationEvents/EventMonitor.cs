@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
 using Xerris.DotNet.Core.Extensions;
@@ -16,7 +18,9 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
         private readonly int acceptableDurationMilliseconds;
         private readonly IEventSink sink;
         private readonly List<ApplicationEvent> list = new List<ApplicationEvent>(1);
-
+        private bool isCompleted;
+        private bool disposed;
+        
         public EventMonitor(string user, string operation, string details, int acceptableDurationMilliseconds, IEventSink sink)
         {
             this.user = user;
@@ -25,6 +29,12 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
             this.acceptableDurationMilliseconds = acceptableDurationMilliseconds;
             this.sink = sink;
         }
+
+        ~EventMonitor()
+        {
+            Dispose(false);
+        }
+        
 
         private ApplicationEvent CreateApplicationEvent(string operationStep)
         {
@@ -45,26 +55,12 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
             list.Add(ap);
         }
 
-        public void Dispose()
+        public async Task<int> Complete()
         {
-            if (sink == null) return;
+            if (sink == null) return 0;
             if (list.Count == 1)
             {
-                Task.Run(async () =>
-                {
-                    try
-                    {
-                        await sink.SendAsync(list.First()).ConfigureAwait(false);
-                    }
-                    catch (Exception e)
-                    {
-                        // off thread swallow exceptions but log
-                        Log.Error(e, "Error attempting to send application event.");
-                        Log.Error("**********************************************");
-                        Log.Error(list.ToJson());
-                        Log.Error("**********************************************");
-                    }
-                });
+                await sink.SendAsync(list.First()).ConfigureAwait(false);
             }
             else if (list.Count > 1)
             {
@@ -73,21 +69,11 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
                     var ap = list[i];
                     ap.OperationStep ??= (i + 1).ToString();
                 }
-                Task.Run(async () =>
-                {
-                    try
-                    {
-                        await sink.SendAsync(list).ConfigureAwait(false);
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Error(e, "Error attempting to send batch of application events.");
-                        Log.Error("**********************************************");
-                        Log.Error(list.ToJson());
-                        Log.Error("**********************************************");
-                    }
-                });
+                await sink.SendAsync(list).ConfigureAwait(false);
             }
+
+            isCompleted = true;
+            return list.Count;
         }
 
         public void Action(Action action, string operationStep = null)
@@ -151,6 +137,31 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
             {
                 EndApplicationEvent(ap);
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        
+        
+        private void Dispose(bool disposing)
+        {
+            if (disposed) return;
+            
+            if (disposing)
+            {
+                if (!isCompleted)
+                {
+                    var result = Complete().Result;
+                    Log.Information("Dispose sent {count} messages", result);
+                }
+
+                list.Clear();
+            }
+
+            disposed = true;
         }
     }
 }
