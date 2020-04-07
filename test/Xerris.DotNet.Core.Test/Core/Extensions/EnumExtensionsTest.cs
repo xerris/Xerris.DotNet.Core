@@ -102,6 +102,15 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         }
 
         [Fact]
+        public void ShouldParseNumericStringToEnum()
+        {
+            Gender value;
+            "1".TryToEnum<Gender>(out value);
+            value.Should().Be(Gender.Male);
+            
+        }
+
+        [Fact]
         public void Should_Return_Value_For_Nullable_Enum()
         {
             const string myString = "Female";

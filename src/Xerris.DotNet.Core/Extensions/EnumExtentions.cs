@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 
 namespace Xerris.DotNet.Core.Extensions
 {
@@ -70,8 +71,24 @@ public static class EnumExtensions
         public static T ToEnum<T>(this string input) where T : IConvertible
         {
             return (T)Enum.Parse(typeof(T), input);
-        }
+        }     
+        
+        public static bool TryToEnum<T>(this string input, out T value) where T : IConvertible
+        {
+            value = default;
+            var isInt = int.TryParse(input.RemoveWhitespace(), out var intValue);
+            if (!isInt) return false;
+            
+            foreach (var each in Enum.GetValues(typeof (T)))
+            {
+                if ((int) each != intValue) continue;
+                value = (T) each;
+                return true;
+            }
 
+            return false;
+        }        
+        
         public static T ToEnum<T>(this int input) where T : IConvertible
         {
             return (T)Enum.Parse(typeof(T), input.ToString());
@@ -89,7 +106,7 @@ public static class EnumExtensions
 
         private static bool TryParseFromDescription<T>(string input, out T value) where T : struct, IConvertible
         {
-            value = default(T);
+            value = default;
             var fields = typeof(T).GetFields();
             foreach (var field in fields)
             {
