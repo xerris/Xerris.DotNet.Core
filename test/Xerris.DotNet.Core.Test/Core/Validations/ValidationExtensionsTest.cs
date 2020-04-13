@@ -390,9 +390,6 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         public void ShouldBeInvalidPhoneNumbers()
         {
             // invalid formatting
-            Validate.Begin().IsPhoneNumber("888 888 8888", "invalid characters in phone number")
-                .Invoking(x => x.Check()).Should()
-                .Throw<ValidationException>().WithMessage("invalid characters in phone number");
             Validate.Begin().IsPhoneNumber("(888) 888 8888", "invalid characters in phone number")
                 .Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage("invalid characters in phone number");
@@ -517,8 +514,8 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void ShouldBeValidPhoneNumbers()
         {
-            Validate.Begin().IsPhoneNumber("555-555-5555", "phone number").Check().IsValid().Should().BeTrue();
-            Validate.Begin().IsPhoneNumber("888-472-2222", "phone number").Check().IsValid().Should().BeTrue();
+            Validate.Begin().IsPhoneNumber("555 555 5555", "555 555 5555").Check().IsValid().Should().BeTrue();
+            Validate.Begin().IsPhoneNumber("888-472-2222", "888-472-2222").Check().IsValid().Should().BeTrue();
         }
 
         [Fact]

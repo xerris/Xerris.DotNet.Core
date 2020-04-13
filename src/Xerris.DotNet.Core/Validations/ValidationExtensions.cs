@@ -22,7 +22,7 @@ namespace Xerris.DotNet.Core.Validations
 
         // 1st digit of area code must be 2-9, 1st digit of 7 digit number must be 2-9, hyphens required, no letters
         private static readonly Regex PhoneNumberRegex =
-            new Regex(@"^[2-9]\d\d-[2-9]\d\d-\d{4}$");
+            new Regex(@"^(?:\(?)[2-9](\d{2})[- ]?(?:[\).\s]?)[2-9](\d{2})[- ]?(?:[-\.\s]?)(\d{4})(?!\d)$");
 
         public static bool IsValid(this Validation validation)
         {
