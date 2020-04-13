@@ -360,15 +360,11 @@ namespace Xerris.DotNet.Core.Validations
         }
 
         public static Validation ForEach<T>(this Validation validation, IEnumerable<T> items,
-            Action<Validation, T> action)
+            Func<Validation, T, Validation> action)
         {
             validation.IsNotNull(items, "items is null").Check();
-            foreach (var each in items)
-            {
-                action(validation, each);
-            }
 
-            return validation;
+            return items.Aggregate(validation, (current, each) => action(current, each));
         }
 
         public static Validation Is<T>(this Validation validation, T value, Func<Validation, T, Validation> validateAction)

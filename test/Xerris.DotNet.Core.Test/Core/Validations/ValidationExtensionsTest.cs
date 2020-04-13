@@ -231,7 +231,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
             Validate.Begin().IsNotNull((int?) null, ValidationMessage).Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage(ValidationMessage);
         }
-
+        
         [Fact]
         public void IsNotNull_Object()
         {
@@ -809,10 +809,27 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void ForEach()
         {
+            var name = "Santa";
             var items = new[] {"one", "two", "three"};
             Validate.Begin()
+                .IsNotEmpty(name, "name")
                 .ForEach(items, (v, each) => v.IsNotEmpty(each, "each item"))
                 .Check();
+        }
+
+
+        [Fact]
+        public void ForEachFails()
+        {
+            const string name = "Santa";
+            var items = new[] {"one", "two", string.Empty};
+            
+            Action fail = () => Validate.Begin()
+                            .IsNotEmpty(name, "name")
+                            .ForEach(items, (v, each) => v.IsNotEmpty(each, "string is null"))
+                            .Check();
+            
+            fail.Should().Throw<ValidationException>().WithMessage("string is null");
         }
 
         [Fact]
