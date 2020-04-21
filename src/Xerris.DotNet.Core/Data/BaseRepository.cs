@@ -21,7 +21,10 @@ public abstract class BaseRepository
         protected async Task<IDbConnection> CreateConnectionAsync()
         {
             var connection = await connectionBuilder.CreateConnectionAsync();
-            connection.Open();
+            if(connection.State == ConnectionState.Closed)
+            {
+                connection.Open();
+            }
             return connection;
         }
 
