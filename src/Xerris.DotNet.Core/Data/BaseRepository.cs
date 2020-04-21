@@ -31,7 +31,6 @@ public abstract class BaseRepository
             return connection;
         }
         
-        
         protected async Task<int> ExecuteAsync(string sql, object parameters = null, IDbConnection connection = null,
             IDbTransaction transaction = null)
         {
