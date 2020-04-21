@@ -8,7 +8,6 @@ namespace Xerris.DotNet.Core.Data
 {
 public abstract class BaseRepository
     {
-
         private readonly IConnectionBuilder connectionBuilder;
 
         protected BaseRepository(IConnectionBuilder connectionBuilder)
