@@ -6,5 +6,6 @@ namespace Xerris.DotNet.Core.Data
     public interface IConnectionBuilder
     {
         Task<IDbConnection> CreateConnectionAsync();
+        Task<IDbConnection> CreateReadConnectionAsync();
     }
 }
