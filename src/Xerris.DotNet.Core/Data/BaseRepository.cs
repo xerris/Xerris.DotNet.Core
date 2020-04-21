@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Dapper;
+using Serilog;
 
 namespace Xerris.DotNet.Core.Data
 {
@@ -21,6 +23,14 @@ public abstract class BaseRepository
             connection.Open();
             return connection;
         }
+
+        protected async Task<IDbConnection> CreateReadonlyConnectionAsync()
+        {
+            var connection = await connectionBuilder.CreateReadConnectionAsync();
+            connection.Open();
+            return connection;
+        }
+        
         
         protected async Task<int> ExecuteAsync(string sql, object parameters = null, IDbConnection connection = null,
             IDbTransaction transaction = null)
@@ -37,45 +47,56 @@ public abstract class BaseRepository
         }
 
         protected async Task<IEnumerable<T>> QueryAsync<T>(string sql, object parameters = null,
-            IDbConnection connection = null, IDbTransaction transaction = null)
+            IDbConnection connection = null, IDbTransaction transaction = null, int retries = 1, [CallerMemberName] string callingMethod = null)
         {
-            if (connection != null)
+            return await QueryWithRetry(async () =>
             {
-                return await connection.QueryAsync<T>(sql, parameters, transaction).ConfigureAwait(false);
-            }
+                if (connection != null)
+                {
+                    return await connection.QueryAsync<T>(sql, parameters, transaction).ConfigureAwait(false);
+                }
 
-            using (connection = await CreateConnectionAsync())
-            {
-                return await connection.QueryAsync<T>(sql, parameters).ConfigureAwait(false);
-            }
+                using (connection = await CreateReadonlyConnectionAsync())
+                {
+                    return await connection.QueryAsync<T>(sql, parameters).ConfigureAwait(false);
+                }
+            },retries, callingMethod);
         }
 
         protected async Task<T> QuerySingleAsync<T>(string sql, object parameters = null,
-            IDbConnection connection = null, IDbTransaction transaction = null)
+            IDbConnection connection = null, IDbTransaction transaction = null, int retries = 1, [CallerMemberName] string callingMethod = null)
         {
-            if (connection != null)
+            return await QueryWithRetry(async () =>
             {
-                return await connection.QuerySingleAsync<T>(sql, parameters, transaction).ConfigureAwait(false);
-            }
+                if (connection != null)
+                {
+                    return await connection.QuerySingleAsync<T>(sql, parameters, transaction).ConfigureAwait(false);
+                }
 
-            using (connection = await CreateConnectionAsync())
-            {
-                return await connection.QuerySingleAsync<T>(sql, parameters).ConfigureAwait(false);
-            }
+                using (connection = await CreateReadonlyConnectionAsync())
+                {
+                    return await connection.QuerySingleAsync<T>(sql, parameters).ConfigureAwait(false);
+                }
+            },retries, callingMethod);
         }
 
         protected async Task<T> QuerySingleOrDefaultAsync<T>(string sql, object parameters = null,
-            IDbConnection connection = null, IDbTransaction transaction = null)
+            IDbConnection connection = null, IDbTransaction transaction = null, int retries = 1,
+            [CallerMemberName] string callingMethod = null)
         {
-            if (connection != null)
+            return await QueryWithRetry(async () =>
             {
-                return await connection.QuerySingleOrDefaultAsync<T>(sql, parameters, transaction).ConfigureAwait(false);
-            }
+                if (connection != null)
+                {
+                    return await connection.QuerySingleOrDefaultAsync<T>(sql, parameters, transaction)
+                        .ConfigureAwait(false);
+                }
 
-            using (connection = await CreateConnectionAsync())
-            {
-                return await connection.QuerySingleOrDefaultAsync<T>(sql, parameters).ConfigureAwait(false);
-            }
+                using (connection = await CreateReadonlyConnectionAsync())
+                {
+                    return await connection.QuerySingleOrDefaultAsync<T>(sql, parameters).ConfigureAwait(false);
+                }
+            }, retries, callingMethod);
         }
 
         protected async Task<T> InTransactionAsync<T>(Func<IDbConnection, IDbTransaction, Task<T>> func)
@@ -93,6 +114,26 @@ public abstract class BaseRepository
                 transaction.Rollback();
                 throw;
             }
+        }
+
+        private static async Task<T> QueryWithRetry<T>(Func<Task<T>> query, int retries, string callingMethod)
+        {
+            var attempt = 0;
+            while (attempt < retries)
+            {
+                try
+                {
+                    return await query().ConfigureAwait(false);
+                }
+                catch(Exception)
+                {
+                    attempt++;
+                    if (attempt == retries) throw;
+                    await Task.Delay(100);
+                    Log.Information($"Query attempt {attempt} of {retries} for {callingMethod}");
+                }
+            }
+            throw new ApplicationException("The system has entered an invalid state querying the database.");
         }
     }
 }
