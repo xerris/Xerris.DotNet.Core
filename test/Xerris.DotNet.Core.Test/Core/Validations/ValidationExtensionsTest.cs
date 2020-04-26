@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using Microsoft.Extensions.Primitives;
 using Xerris.DotNet.Core.Test.Model;
 using Xerris.DotNet.Core.Validations;
 using Xunit;
@@ -850,6 +849,20 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
                             .Check();
 
             fail.Should().Throw<ValidationException>().WithMessage("name");
+        }
+        
+        [Fact]
+        public void ForEachFails_ListIsNullShouldNotThrowNullPointerException()
+        {
+            var name = "kaka";
+            string[] items = null;
+            
+            Action fail = () => Validate.Begin()
+                .IsNotEmpty(name, "name")
+                .ForEach(items, (v, each) => v.IsNotEmpty(each, "string is null"))
+                .Check();
+
+            fail.Should().Throw<ValidationException>().WithMessage("items is null or empty");
         }
 
         [Fact]

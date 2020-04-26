@@ -363,11 +363,11 @@ namespace Xerris.DotNet.Core.Validations
             return validation ?? continueWith(Validate.Begin());
         }
 
-        public static Validation ForEach<T>(this Validation validation, IEnumerable<T> items,
-            Func<Validation, T, Validation> action)
+        public static Validation ForEach<T>(this Validation validation, IEnumerable<T> items, Func<Validation, T, Validation> action)
         {
-            var result = validation.IsNotNull(items, "items is null");
-            return items.Aggregate(result, action);
+            return items == null
+                ? validation.AddException(ValidationException.ListIsNullOrEmpty("items"))
+                : items.Aggregate(validation, action);
         }
 
         public static Validation Is<T>(this Validation validation, T value, Func<Validation, T, Validation> validateAction)
