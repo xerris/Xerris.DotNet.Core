@@ -20,7 +20,7 @@ namespace Xerris.DotNet.Core.Validations
         private static readonly Regex PostalCodeRegex =
             new Regex(@"^[ABCEGHJKLMNPRSTVXY]\d[ABCEGHJKLMNPRSTVWXYZ][\s]{1}\d[ABCEGHJKLMNPRSTVWXYZ]\d$");
 
-        // 1st digit of area code must be 2-9, 1st digit of 7 digit number must be 2-9, hyphens required, no letters
+        // 1st digit of area code must be 2-9, 1st digit of 7 digit number must be 2-9, hyphens not required, no letters
         private static readonly Regex PhoneNumberRegex =
             new Regex(@"^(?:\(?)[2-9](\d{2})[- ]?(?:[\).\s]?)[2-9](\d{2})[- ]?(?:[-\.\s]?)(\d{4})(?!\d)$");
 
@@ -344,9 +344,13 @@ namespace Xerris.DotNet.Core.Validations
         
         public static Validation Append(this Validation destination, Validation target)
         {
-            if (destination == null && target == null)
-                return null;
-            if (destination == null) return target;
+            switch (destination)
+            {
+                case null when target == null:
+                    return null;
+                case null:
+                    return target;
+            }
 
             if (target == null) return destination;
 
@@ -362,7 +366,7 @@ namespace Xerris.DotNet.Core.Validations
         public static Validation ForEach<T>(this Validation validation, IEnumerable<T> items,
             Func<Validation, T, Validation> action)
         {
-            var result= validation.IsNotNull(items, "items is null").Check();
+            var result = validation.IsNotNull(items, "items is null");
             return items.Aggregate(result, action);
         }
 
