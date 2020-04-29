@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Xerris.DotNet.Core.TestSupport;
@@ -16,6 +17,11 @@ namespace Xerris.DotNet.Core.Test
 
             collection.AutoRegister(GetType().Assembly).AutoRegister(typeof(IAddMe).Assembly);
             return builder.Configuration;
+        }
+
+        public void InitializeLogging(IConfiguration configuration, Action<IConfiguration> defaultConfig)
+        {
+            defaultConfig(configuration);
         }
     }
 }

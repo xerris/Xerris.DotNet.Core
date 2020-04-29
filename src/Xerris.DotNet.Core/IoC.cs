@@ -33,7 +33,7 @@ namespace Xerris.DotNet.Core
                 var collection = serviceCollectionProvider();
                 var startup = GetImplementingType<IAppStartup>(AppDomain.CurrentDomain.GetAssemblies());
                 var configuration = startup.StartUp(collection);
-                LogStartup.Initialize(configuration);
+                startup.InitializeLogging(configuration, LogStartup.Initialize);
 
                 new ConfigureServiceCollection(collection).Initialize();
                 container = collection.BuildServiceProvider();
