@@ -457,6 +457,12 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
             Validate.Begin().IsPhoneNumber("888-888-88888", "invalid digit in line number").Invoking(x => x.Check())
                 .Should()
                 .Throw<ValidationException>().WithMessage("invalid digit in line number");
+            Validate.Begin().IsPhoneNumber("4030002345", "invalid digit in line number").Invoking(x => x.Check())
+                .Should()
+                .Throw<ValidationException>().WithMessage("invalid digit in line number");
+            Validate.Begin().IsPhoneNumber("1032002345", "invalid digit in line number").Invoking(x => x.Check())
+                .Should()
+                .Throw<ValidationException>().WithMessage("invalid digit in line number");
         }
 
         [Fact]
@@ -817,7 +823,6 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
                 .Check();
         }
 
-
         [Fact]
         public void ForEachFails()
         {
@@ -830,6 +835,34 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
                             .Check();
             
             fail.Should().Throw<ValidationException>().WithMessage("string is null");
+        }
+        
+        [Fact]
+        public void ForEachFails_OnItemPriorToForEach()
+        {
+            var name = string.Empty;
+            var items = new[] {"one", "two", "three"};
+            
+            Action fail = () => Validate.Begin()
+                            .IsNotEmpty(name, "name")
+                            .ForEach(items, (v, each) => v.IsNotEmpty(each, "string is null"))
+                            .Check();
+
+            fail.Should().Throw<ValidationException>().WithMessage("name");
+        }
+        
+        [Fact]
+        public void ForEachFails_ListIsNullShouldNotThrowNullPointerException()
+        {
+            var name = "kaka";
+            string[] items = null;
+            
+            Action fail = () => Validate.Begin()
+                .IsNotEmpty(name, "name")
+                .ForEach(items, (v, each) => v.IsNotEmpty(each, "string is null"))
+                .Check();
+
+            fail.Should().Throw<ValidationException>().WithMessage("items is null or empty");
         }
 
         [Fact]

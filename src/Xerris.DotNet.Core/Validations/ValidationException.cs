@@ -41,6 +41,11 @@ namespace Xerris.DotNet.Core.Validations
             return new ValidationException($"{message}");
         }
 
+        public static ValidationException ListIsNullOrEmpty(string message)
+        {
+            return new ValidationException($"{message} is null or empty");
+        }
+
         public static ValidationException ExceedsMaximumLength(string message)
         {
             return new ValidationException($"{message}");
