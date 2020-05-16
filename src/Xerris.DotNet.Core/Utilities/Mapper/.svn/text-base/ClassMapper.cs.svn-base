@@ -1,0 +1,19 @@
+﻿using System;
+
+namespace DealManagement.Utility.Mapper
+{
+    public class ClassMapper<FROM, TO> : IClassMapper<FROM, TO>
+    {
+        private readonly Action<FROM, TO> action;
+
+        public ClassMapper(Action<FROM, TO> action)
+        {
+            this.action = action;
+        }
+
+        public void Apply(FROM from, TO to)
+        {
+            action(from, to);
+        }
+    }
+}

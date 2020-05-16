@@ -1,0 +1,10 @@
+﻿namespace DealManagement.Utility.Mapper.Converter
+{
+    public class DirectConverter<T> : IValueConverter<T>
+    {
+        public T Convert(object value)
+        {
+            return (T) value;
+        }
+    }
+}

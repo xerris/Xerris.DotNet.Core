@@ -1,0 +1,10 @@
+﻿namespace DealManagement.Utility.Mapper.Converter
+{
+    public class StringConverter : AbstractValueConverter<string>
+    {
+        protected override string InternalConvert(string input)
+        {
+            return input;
+        }
+    }
+}

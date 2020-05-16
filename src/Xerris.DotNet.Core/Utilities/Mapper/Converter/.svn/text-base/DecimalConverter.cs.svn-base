@@ -1,0 +1,10 @@
+﻿namespace DealManagement.Utility.Mapper.Converter
+{
+    public class DecimalConverter : AbstractValueConverter<decimal?>
+    {
+        protected override decimal? InternalConvert(string input)
+        {
+            return string.IsNullOrEmpty(input) ? (decimal?)null : decimal.Parse(input);
+        }
+    }
+}

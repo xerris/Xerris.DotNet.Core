@@ -369,6 +369,13 @@ namespace Xerris.DotNet.Core.Validations
                 ? validation.AddException(ValidationException.ListIsNullOrEmpty("items"))
                 : items.Aggregate(validation, action);
         }
+        
+        public static Validation TypeIsEqual<T>(this Validation validation, object theObject, string paramName)
+        {
+            return validation
+                .IsNotNull(theObject, "theObject").Check()
+                .IsEqual(typeof (T), theObject.GetType(), paramName);
+        }
 
         public static Validation Is<T>(this Validation validation, T value, Func<Validation, T, Validation> validateAction)
         {
