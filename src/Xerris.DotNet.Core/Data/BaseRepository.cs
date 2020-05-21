@@ -44,10 +44,10 @@ public abstract class BaseRepository
             {
                 return await connection.ExecuteAsync(sql, parameters, transaction).ConfigureAwait(false);
             }
-
-            using (connection = await CreateConnectionAsync())
+            
+            using (var conn = await CreateConnectionAsync())
             {
-                return await connection.ExecuteAsync(sql, parameters).ConfigureAwait(false);
+                return await conn.ExecuteAsync(sql, parameters).ConfigureAwait(false);
             }
         }
 
@@ -61,9 +61,9 @@ public abstract class BaseRepository
                     return await connection.QueryAsync<T>(sql, parameters, transaction).ConfigureAwait(false);
                 }
 
-                using (connection = await CreateReadonlyConnectionAsync())
+                using (var conn = await CreateReadonlyConnectionAsync())
                 {
-                    return await connection.QueryAsync<T>(sql, parameters).ConfigureAwait(false);
+                    return await conn.QueryAsync<T>(sql, parameters).ConfigureAwait(false);
                 }
             },retries, callingMethod);
         }
@@ -78,9 +78,9 @@ public abstract class BaseRepository
                     return await connection.QuerySingleAsync<T>(sql, parameters, transaction).ConfigureAwait(false);
                 }
 
-                using (connection = await CreateReadonlyConnectionAsync())
+                using (var conn = await CreateReadonlyConnectionAsync())
                 {
-                    return await connection.QuerySingleAsync<T>(sql, parameters).ConfigureAwait(false);
+                    return await conn.QuerySingleAsync<T>(sql, parameters).ConfigureAwait(false);
                 }
             },retries, callingMethod);
         }
@@ -97,9 +97,9 @@ public abstract class BaseRepository
                         .ConfigureAwait(false);
                 }
 
-                using (connection = await CreateReadonlyConnectionAsync())
+                using (var conn = await CreateReadonlyConnectionAsync())
                 {
-                    return await connection.QuerySingleOrDefaultAsync<T>(sql, parameters).ConfigureAwait(false);
+                    return await conn.QuerySingleOrDefaultAsync<T>(sql, parameters).ConfigureAwait(false);
                 }
             }, retries, callingMethod);
         }
