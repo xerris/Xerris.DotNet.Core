@@ -1,28 +1,25 @@
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using System.Text.Json;
 
 namespace Xerris.DotNet.Core.Extensions
 {
     public static class JsonExtensions
     {
-        private static readonly DefaultContractResolver ContractResolver = new DefaultContractResolver
+        private static readonly JsonSerializerOptions DefaultSerializerOptions = new JsonSerializerOptions
         {
-            NamingStrategy = new CamelCaseNamingStrategy()
+            IgnoreReadOnlyProperties = true,
+            IgnoreNullValues = true,
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
         
-        private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+        public static string ToJson<T>(this T subject, JsonSerializerOptions options = null)
         {
-            ContractResolver = ContractResolver,
-        };
-
-        public static string ToJson<T>(this T item, JsonSerializerSettings settings = null)
-        {
-            return JsonConvert.SerializeObject(item, settings??Settings);
+            return JsonSerializer.Serialize(subject, options??DefaultSerializerOptions);
         }
-        
-        public static T FromJson<T>(this string data, JsonSerializerSettings settings = null)
+
+        public static T FromJson<T>(this string json, JsonSerializerOptions options = null)
         {
-            return JsonConvert.DeserializeObject<T>(data, settings??Settings);
+            return JsonSerializer.Deserialize<T>(json, options??DefaultSerializerOptions);
         }
     }
 }
