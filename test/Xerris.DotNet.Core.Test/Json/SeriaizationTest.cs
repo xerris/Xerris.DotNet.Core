@@ -23,6 +23,7 @@ namespace Xerris.DotNet.Core.Test.Json
                 .IsEqual(from.Name, subject.Name, nameof(TestSubject.Name))
                 .IsEqual(from.Age, subject.Age, nameof(TestSubject.Age))
                 .IsEqual(from.Start, subject.Start, nameof(TestSubject.Start))
+                .IsCloseEnough(from.Start, subject.Start, nameof(TestSubject.Start))
                 .Check();
         }
     }

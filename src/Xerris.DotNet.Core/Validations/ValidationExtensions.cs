@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Xerris.DotNet.Core.Extensions;
 
@@ -32,6 +33,18 @@ namespace Xerris.DotNet.Core.Validations
         public static Validation IsEqual<T>(this Validation validation, T left, T right, string message)
         {
             return Equals(left, right) ? validation : validation.AddException(new ValidationException(message));
+        }
+
+        public static Validation IsCloseEnough(this Validation validation, DateTime left, DateTime right,
+            string message)
+        {
+            return validation
+                .IsEqual(left.Year, right.Year, $"{nameof(DateTime.Year)} {message}")
+                .IsEqual(left.Month, right.Month, $"{nameof(DateTime.Month)} {message}")
+                .IsEqual(left.Day, right.Day, $"{nameof(DateTime.Day)} {message}")
+                .IsEqual(left.Hour, right.Hour, $"{nameof(DateTime.Hour)} {message}")
+                .IsEqual(left.Minute, right.Minute, $"{nameof(DateTime.Minute)} {message}")
+                .IsEqual(left.Second, right.Second, $"{nameof(DateTime.Second)} {message}");
         }
 
         public static Validation IsFalse(this Validation validation, bool val, string message)

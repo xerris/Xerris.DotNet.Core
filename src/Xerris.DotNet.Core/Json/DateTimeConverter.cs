@@ -8,7 +8,7 @@ namespace Xerris.DotNet.Core.Json
 {
     public class DateTimeJsonConverter : JsonConverter<DateTime>
     {
-        private const string Format = "yyyy'-'MM'-'dd'T'HH':'mm':'sssZ";
+        private const string Format = "yyyy-MM-ddTHH:mm:ss.fffZ";
         public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             Debug.Assert(typeToConvert == typeof(DateTime));
