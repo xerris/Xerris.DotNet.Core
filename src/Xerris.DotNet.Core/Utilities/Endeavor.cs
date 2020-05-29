@@ -26,8 +26,12 @@ namespace Xerris.DotNet.Core.Utilities
                     attempt++;
                     if (exceptionAction != null)
                         await exceptionAction((TE) e);
-                    
-                    if (retries == attempt) throw;
+
+                    if (retries == attempt)
+                    {
+                        Log.Error("received {Exception} exception. Exceeded maximum retries", e.GetType().Name);
+                        throw;
+                    }
                     await Task.Delay(delay);
                 }
             }
