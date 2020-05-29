@@ -20,7 +20,7 @@ namespace Xerris.DotNet.Core.Test.Utilities
         [Fact]
         public void Success()
         {
-            endeavor.Go<PlayItAgainException>(() => Go(), 
+            Endeavor.Go<PlayItAgainException>(() => Go(), 
                 e => throw new Exception("should not be here"));
             timesFailed.Should().Be(0);
         }
@@ -28,7 +28,7 @@ namespace Xerris.DotNet.Core.Test.Utilities
         [Fact]
         public async Task FailsOnce()
         {
-            await endeavor.Go<PlayItAgainException>(async () => await Go(timesFailed == 0), 
+            await Endeavor.Go<PlayItAgainException>(async () => await Go(timesFailed == 0), 
                 e =>  CountFails(), 3, 50);
             timesFailed.Should().Be(1);
         }
@@ -36,7 +36,7 @@ namespace Xerris.DotNet.Core.Test.Utilities
         [Fact]
         public async Task FailsAFewTimes()
         {
-            await endeavor.Go<PlayItAgainException>(async () => await Go(timesFailed <= 3), 
+            await Endeavor.Go<PlayItAgainException>(async () => await Go(timesFailed <= 3), 
                 async e => await CountFails(), 5, 50);
             timesFailed.Should().Be(4);
         }
@@ -46,7 +46,7 @@ namespace Xerris.DotNet.Core.Test.Utilities
         {
             try
             {
-                await endeavor.Go<PlayItAgainException>(async () => await Bork(),
+                await Endeavor.Go<PlayItAgainException>(async () => await Bork(),
                     async e => await CountFails(), 3, 50);
                 throw new Exception($"didn't catch an {nameof(PlayItAgainException)}");
             }
@@ -55,7 +55,7 @@ namespace Xerris.DotNet.Core.Test.Utilities
                 ex.Should().NotBeNull();
             }
 
-            timesFailed.Should().Be(2);
+            timesFailed.Should().Be(3);
         }
 
         private async Task<bool> CountFails()

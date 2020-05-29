@@ -1,15 +1,16 @@
 using System;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace Xerris.DotNet.Core.Utilities
 {
     public class Endeavor
     {
-        public async Task Go<TE>(Func<Task> action, Func<TE, Task> exceptionAction, int retries = 5, int delay = 500)
+        public static async Task Go<TE>(Func<Task> action, Func<TE, Task> exceptionAction = null, int retries = 5, int delay = 500)
             where TE : Exception
         {
             var attempt = 0;
-            while (attempt <= retries)
+            while (attempt < retries)
             {
                 try
                 {
@@ -18,10 +19,15 @@ namespace Xerris.DotNet.Core.Utilities
                 }
                 catch (Exception e)
                 {
-                    attempt++;
+                    Log.Debug("received {Exception} exception...", e.GetType().Name);
+                    
                     if (e.GetType() != typeof(TE)) throw;
+
+                    attempt++;
+                    if (exceptionAction != null)
+                        await exceptionAction((TE) e);
+                    
                     if (retries == attempt) throw;
-                    await exceptionAction((TE) e);
                     await Task.Delay(delay);
                 }
             }
