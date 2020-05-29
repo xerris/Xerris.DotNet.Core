@@ -8,12 +8,10 @@ namespace Xerris.DotNet.Core.Test.Utilities
 {
     public class EndeavorTests
     {
-        private readonly Endeavor endeavor;
         private int timesFailed;
 
         public EndeavorTests()
         {
-            endeavor = new Endeavor();
             timesFailed = 0;
         }
         
