@@ -13,8 +13,11 @@ namespace Xerris.DotNet.Core.Time
 
         public DateTime Now => TimeZoneInfo.ConvertTime(ClockManager.Now, timeZoneInfo);
         public DateTime NowUtc => ClockManager.Now.ToUniversalTime();
-
+        public DateTime NowToTimeZone(TimeZoneInfo info) => TimeZoneInfo.ConvertTime(Now, info);
+        public DateTime UtcToday => ClockManager.Today.ToUniversalTime();
         public DateTime Today => TimeZoneInfo.ConvertTime(ClockManager.Today, timeZoneInfo).Date;
+        public DateTime TodayAt(TimezoneOffset offset) => offset.TodayFrom(UtcToday);
+        public DateTime NowAt(TimezoneOffset offset) => offset.From(UtcToday);
 
         public void Freeze()
         {
