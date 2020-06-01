@@ -1,4 +1,5 @@
 using System;
+using FluentAssertions;
 using Xerris.DotNet.Core.Time;
 using Xunit;
 
@@ -32,6 +33,13 @@ namespace Xerris.DotNet.Core.Test.Core.Time
         public void TodayAtEastern() => TimezoneOffset.Eastern.TodayFrom(utc.Today);
         [Fact]
         public void EasternFromUtc() => TimezoneOffset.Eastern.TodayFromUtc();
-        
+
+        [Fact]
+        public void TodayOverMidnight()
+        {
+            var utc3am = new DateTime(2020, 06, 02, 03, 00, 00, DateTimeKind.Utc);
+            var mtnToday = TimezoneOffset.Mountain.TodayFrom(utc3am);
+            mtnToday.Should().Be(new DateTime(2020, 06, 01));
+        }
     }
 }

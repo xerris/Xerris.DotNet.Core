@@ -1,6 +1,8 @@
 using System;
+using System.Runtime.InteropServices;
 using FluentAssertions;
 using Xerris.DotNet.Core.Time;
+using Xerris.DotNet.Core.Utilities;
 using Xunit;
 
 namespace Xerris.DotNet.Core.Test.Core.Time
@@ -28,8 +30,15 @@ namespace Xerris.DotNet.Core.Test.Core.Time
 
         private void TestTodayAt(TimezoneOffset offset)
         {
-            var todayUtc = utc.Today;
+            var todayUtc = CalculateTodayForOffset(offset);
             utc.TodayAt(offset).Should().Be(todayUtc);
+        }
+
+        private DateTime CalculateTodayForOffset(TimezoneOffset offset)
+        {
+            var gap = Math.Abs(offset.Offset);
+            var toAdd = utc.Now.Hour - gap <= gap ? -1 : 0; //depending on time of day figure out what the expected 'today' is
+            return  utc.Today.AddHours(toAdd).Earliest();
         }
     }
 }

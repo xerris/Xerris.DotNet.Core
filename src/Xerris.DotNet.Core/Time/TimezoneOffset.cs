@@ -12,10 +12,10 @@ namespace Xerris.DotNet.Core.Time
             Offset = offset;
         }
 
-        public static TimezoneOffset Pacific => new TimezoneOffset(8);
-        public static TimezoneOffset Mountain => new TimezoneOffset(7);
-        public static TimezoneOffset Central => new TimezoneOffset(6);
-        public static TimezoneOffset Eastern => new TimezoneOffset(5);
+        public static TimezoneOffset Pacific => new TimezoneOffset(-8);
+        public static TimezoneOffset Mountain => new TimezoneOffset(-7);
+        public static TimezoneOffset Central => new TimezoneOffset(-6);
+        public static TimezoneOffset Eastern => new TimezoneOffset(-5);
 
         public DateTime TodayFrom(in DateTime utc)
         {
