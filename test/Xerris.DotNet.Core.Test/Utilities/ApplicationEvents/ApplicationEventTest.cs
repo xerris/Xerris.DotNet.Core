@@ -14,7 +14,6 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
     {
         private const string User = "test user";
 
-
         public void Dispose()
         {
             Clock.Utc.Thaw();

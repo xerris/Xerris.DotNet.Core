@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using FluentAssertions;
+using Xerris.DotNet.Core.Extensions;
 using Xerris.DotNet.Core.Time;
 using Xunit;
 
@@ -36,7 +37,7 @@ namespace Xerris.DotNet.Core.Test.Core.Time
 
             Clock.Local.Thaw();
             Thread.Sleep(500);
-            Clock.Local.Now.Should().NotBe(frozen);
+            Clock.Local.Now.IsCloseEnough(frozen, 100);
         }
 
         public void Dispose()

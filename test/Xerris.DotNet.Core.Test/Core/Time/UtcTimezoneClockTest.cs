@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.InteropServices;
 using FluentAssertions;
 using Xerris.DotNet.Core.Time;
 using Xerris.DotNet.Core.Utilities;
@@ -45,7 +44,6 @@ namespace Xerris.DotNet.Core.Test.Core.Time
             dateTime.Should().Be(localTime);
             utc.Thaw();
         }
-        
         
         private void TestTodayAt(TimezoneOffset offset)
         {
