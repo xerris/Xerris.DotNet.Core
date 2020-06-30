@@ -28,6 +28,25 @@ namespace Xerris.DotNet.Core.Test.Core.Time
         [Fact]
         public void TodayAtEastern() => TestTodayAt(TimezoneOffset.Eastern);
 
+        [Theory]
+        [InlineData("2020-05-01 05:00:00", "2020-04-30 23:00:00")] // Normal -7
+        [InlineData("2020-05-01 00:00:00", "2020-04-30 18:00:00")] // Normal -7
+        [InlineData("2020-05-01 12:00:00", "2020-05-01 6:00:00")]  // Normal -7
+        [InlineData("2020-11-15 05:00:00", "2020-11-14 22:00:00")] // Daylight savings -6
+        [InlineData("2020-11-15 00:00:00", "2020-11-14 17:00:00")] // Daylight savings -6
+        [InlineData("2020-03-08 09:00:00", "2020-03-08 03:00:00")] // Daylight savings -6 (over Daylight savings date)
+        [InlineData("2020-03-08 08:00:00", "2020-03-08 01:00:00")] // Normal -7 (over Daylight savings date)
+        public void UtcToMountain(string actualUtcTime, string expectedLocalTime)
+        {
+            var localTime = DateTime.Parse(expectedLocalTime);
+            var utcTime = DateTime.Parse(actualUtcTime);
+            utc.Freeze(utcTime); 
+            var dateTime = utc.NowAt(TimezoneOffset.Mountain);
+            dateTime.Should().Be(localTime);
+            utc.Thaw();
+        }
+        
+        
         private void TestTodayAt(TimezoneOffset offset)
         {
             var todayUtc = CalculateTodayForOffset(offset);

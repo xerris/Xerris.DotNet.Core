@@ -24,7 +24,7 @@ namespace Xerris.DotNet.Core.Time
 
         public DateTime From(in DateTime utc)
         {
-            return utc.IsDaylightSavingTime() ? utc.AddHours(Offset - 1) : utc.AddHours(Offset);
+            return Clock.Local.Now.IsDaylightSavingTime() ? utc.AddHours(Offset + 1) : utc.AddHours(Offset);
         }
 
         public void TodayFromUtc() => TodayFrom(DateTime.Today.ToUniversalTime());

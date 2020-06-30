@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using FluentAssertions;
 using Xerris.DotNet.Core.Validations;
@@ -23,7 +24,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
                                      new ValidationException("two")});
             
             multi.InnerExceptions.Count().Should().Be(2);
-            multi.Message.Should().Be("one\ntwo");
+            multi.Message.Should().Be($"one{Environment.NewLine}two");
         }
     }
 }
