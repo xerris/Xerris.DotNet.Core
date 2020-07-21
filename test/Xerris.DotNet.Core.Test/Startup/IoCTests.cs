@@ -53,8 +53,7 @@ namespace Xerris.DotNet.Core.Test.Startup
             CleanEnvironment();
         }
         
-
-        private void CleanEnvironment()
+        private static void CleanEnvironment()
         {
             Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), null);
         }
