@@ -1,3 +1,4 @@
+using System;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Xerris.DotNet.Core.TestSupport;
@@ -6,17 +7,25 @@ using Xunit;
 
 namespace Xerris.DotNet.Core.Test.Startup
 {
-    public class IoCTests
+    public class IoCTests : IDisposable
     {
+        public IoCTests()
+        {
+            CleanEnvironment();
+        }
+
         [Fact]
         public void ApplicationConfig()
         {
+            Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), "connectme");
+            
             var appConfig = IoC.Resolve<IApplicationConfig>();
 
             Validate.Begin()
                 .IsNotNull(appConfig, "has an app config")
                 .Check()
                 .IsEqual(appConfig.AllowedHosts, "*", "got allowedHosts")
+                .IsEqual(appConfig.ConnectionString, "connectme", nameof(IApplicationConfig.ConnectionString))
                 .Check();
         }
 
@@ -37,6 +46,17 @@ namespace Xerris.DotNet.Core.Test.Startup
             var service = IoC.Resolve<IService>();
             service.Should().NotBeNull();
             IoC.Resolve<IAddMe>().Should().BeOfType<AddMe>();
+        }
+
+        public void Dispose()
+        {
+            CleanEnvironment();
+        }
+        
+
+        private void CleanEnvironment()
+        {
+            Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), null);
         }
     }
 }
