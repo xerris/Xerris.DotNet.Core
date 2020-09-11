@@ -8,3 +8,13 @@ namespace Xerris.DotNet.Core.Extensions
         public int Order { get; set; }
     }
 }
+
+[AttributeUsage(AttributeTargets.Field)]
+public class SequenceAttribute : Attribute
+{
+    public int Sequence { get; set; }
+    public SequenceAttribute(int value)
+    {
+        Sequence = value;
+    }
+}

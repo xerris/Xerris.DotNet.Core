@@ -189,8 +189,17 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
             success.Should().BeFalse();
             result.Should().Be(Gender.Female);
         }
-    }
 
+        [Fact]
+        public void GetSequence()
+        { 
+            SortThings.Item1.GetAttribute<SequenceAttribute>().Sequence.Should().Be(1);
+            SortThings.Item2.GetAttribute<SequenceAttribute>().Sequence.Should().Be(3);
+            SortThings.Item3.GetAttribute<SequenceAttribute>().Sequence.Should().Be(2);
+            SortThings.Item4.GetAttribute<SequenceAttribute>().Sequence.Should().Be(5);
+        }
+    }
+    
     public enum Gender
     {
         Female = 0,
@@ -204,15 +213,22 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         [System.ComponentModel.Description("FT-SN")]
         FTSN
     }
-
+  
     public enum SortThings
     {
         [EnumOrder(Order = 2)]
+        [Sequence(1)]
         Item1 = 1,
+        
         [EnumOrder(Order = 10)]
+        [Sequence(3)]
         Item2 = 2,
+        
         [EnumOrder(Order = 1)]
+        [Sequence(2)]
         Item3 = 3,
+        
+        [Sequence(5)]
         Item4 = 4
     }
 }

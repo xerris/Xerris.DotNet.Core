@@ -125,7 +125,13 @@ public static class EnumExtensions
             var fi = value.GetType().GetField(value.ToString());
             var attributes = (EnumOrderAttribute[])fi.GetCustomAttributes(typeof(EnumOrderAttribute), false);
             return attributes.Length > 0 ? attributes[0].Order : value.IntValue();
-        }        
+        }
+
+        public static T GetAttribute<T>(this Enum value) where T : Attribute
+        { 
+            var fi = value.GetType().GetField(value.ToString());
+            return (T)fi.GetCustomAttributes(typeof(T), false).FirstOrDefault();
+        }
 
         public static string GetDescription<T>(this T value) where T: struct, IConvertible
         {
