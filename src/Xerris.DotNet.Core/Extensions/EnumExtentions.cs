@@ -111,11 +111,9 @@ public static class EnumExtensions
             foreach (var field in fields)
             {
                 var descriptionAttribute = field.GetCustomAttribute<DescriptionAttribute>();
-                if (descriptionAttribute != null && descriptionAttribute.Description == input)
-                {
-                    value = (T) Enum.Parse(typeof(T), field.Name);
-                    return true;
-                }
+                if (descriptionAttribute == null || descriptionAttribute.Description != input) continue;
+                value = (T) Enum.Parse(typeof(T), field.Name);
+                return true;
             }
             return false;
         }
@@ -125,6 +123,12 @@ public static class EnumExtensions
             var fi = value.GetType().GetField(value.ToString());
             var attributes = (EnumOrderAttribute[])fi.GetCustomAttributes(typeof(EnumOrderAttribute), false);
             return attributes.Length > 0 ? attributes[0].Order : value.IntValue();
+        }
+
+        public static int GetSequence(this Enum value)
+        {
+            var sequence = value.GetAttribute<SequenceAttribute>();
+            return sequence?.Sequence ?? 0;
         }
 
         public static T GetAttribute<T>(this Enum value) where T : Attribute

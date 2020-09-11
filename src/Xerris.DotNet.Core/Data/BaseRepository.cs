@@ -8,7 +8,7 @@ using Serilog;
 
 namespace Xerris.DotNet.Core.Data
 {
-public abstract class BaseRepository
+    public abstract class BaseRepository
     {
         private readonly IConnectionBuilder connectionBuilder;
 
@@ -20,10 +20,7 @@ public abstract class BaseRepository
         protected async Task<IDbConnection> CreateConnectionAsync()
         {
             var connection = await connectionBuilder.CreateConnectionAsync();
-            if(connection.State == ConnectionState.Closed)
-            {
-                connection.Open();
-            }
+            connection.Open();
             return connection;
         }
 
@@ -44,10 +41,10 @@ public abstract class BaseRepository
             {
                 return await connection.ExecuteAsync(sql, parameters, transaction).ConfigureAwait(false);
             }
-            
-            using (var conn = await CreateConnectionAsync())
+
+            using (connection = await CreateConnectionAsync())
             {
-                return await conn.ExecuteAsync(sql, parameters).ConfigureAwait(false);
+                return await connection.ExecuteAsync(sql, parameters).ConfigureAwait(false);
             }
         }
 
@@ -61,9 +58,9 @@ public abstract class BaseRepository
                     return await connection.QueryAsync<T>(sql, parameters, transaction).ConfigureAwait(false);
                 }
 
-                using (var conn = await CreateReadonlyConnectionAsync())
+                using (connection = await CreateReadonlyConnectionAsync())
                 {
-                    return await conn.QueryAsync<T>(sql, parameters).ConfigureAwait(false);
+                    return await connection.QueryAsync<T>(sql, parameters).ConfigureAwait(false);
                 }
             },retries, callingMethod);
         }
@@ -78,9 +75,9 @@ public abstract class BaseRepository
                     return await connection.QuerySingleAsync<T>(sql, parameters, transaction).ConfigureAwait(false);
                 }
 
-                using (var conn = await CreateReadonlyConnectionAsync())
+                using (connection = await CreateReadonlyConnectionAsync())
                 {
-                    return await conn.QuerySingleAsync<T>(sql, parameters).ConfigureAwait(false);
+                    return await connection.QuerySingleAsync<T>(sql, parameters).ConfigureAwait(false);
                 }
             },retries, callingMethod);
         }
@@ -97,9 +94,9 @@ public abstract class BaseRepository
                         .ConfigureAwait(false);
                 }
 
-                using (var conn = await CreateReadonlyConnectionAsync())
+                using (connection = await CreateReadonlyConnectionAsync())
                 {
-                    return await conn.QuerySingleOrDefaultAsync<T>(sql, parameters).ConfigureAwait(false);
+                    return await connection.QuerySingleOrDefaultAsync<T>(sql, parameters).ConfigureAwait(false);
                 }
             }, retries, callingMethod);
         }
