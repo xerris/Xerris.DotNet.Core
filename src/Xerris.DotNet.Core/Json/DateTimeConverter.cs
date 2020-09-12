@@ -1,15 +1,16 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Xerris.DotNet.Core.Json
 {
     public class DateTimeJsonConverter : JsonConverter<DateTime>
     {
-        private readonly string format= "yyyy-MM-ddTHH:mm:ss.fffZ";
+        private readonly string format;
 
-        public DateTimeJsonConverter(): this(format: "yyyy-MM-ddTHH:mm:ss.fffZ")
+        public DateTimeJsonConverter():this("yyyy-MM-ddTHH:mm:ss.fffZ")
         {
         }
 
@@ -18,16 +19,15 @@ namespace Xerris.DotNet.Core.Json
             this.format = format;
         }
 
-        public override void WriteJson(JsonWriter writer, DateTime value, JsonSerializer serializer)
+        public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            writer.WriteValue(value.ToUniversalTime().ToString(format));
+            Debug.Assert(typeToConvert == typeof(DateTime));
+            return DateTime.ParseExact(reader.GetString(), format, CultureInfo.InvariantCulture);
         }
 
-        public override DateTime ReadJson(JsonReader reader, Type objectType, DateTime existingValue, bool hasExistingValue,
-            JsonSerializer serializer)
+        public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
         {
-            Debug.Assert(objectType == typeof(DateTime));
-            return DateTime.ParseExact(reader.Value.ToString(), format, CultureInfo.InvariantCulture);
+            writer.WriteStringValue(value.ToUniversalTime().ToString(format));
         }
     }
 }
