@@ -27,7 +27,7 @@ namespace Xerris.DotNet.Core.Data
         protected async Task<IDbConnection> CreateReadonlyConnectionAsync()
         {
             var connection = await connectionBuilder.CreateReadConnectionAsync();
-            if(connection.State == ConnectionState.Closed)
+            if(connection.State != ConnectionState.Open)
             {
                 connection.Open();
             }
