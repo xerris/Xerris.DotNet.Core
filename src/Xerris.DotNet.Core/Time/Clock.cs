@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 
 namespace Xerris.DotNet.Core.Time
 {
@@ -18,6 +18,9 @@ namespace Xerris.DotNet.Core.Time
 
         public static IClock MountainTime =>
             mountainTime ??= new TimeZoneClock(TimeZones.MountainTimeZone);
+        
+        public static IClock CentralTime =>
+            mountainTime ??= new TimeZoneClock(TimeZones.CentralTimeZone);
 
         public static IClock Utc => utc ??= new TimeZoneClock(TimeZoneInfo.Utc);
 

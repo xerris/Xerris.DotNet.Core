@@ -15,6 +15,21 @@ namespace Xerris.DotNet.Core.Time
         ///     Uses daylight savings time
         /// </summary>
         public static readonly TimeZoneInfo MountainTimeZone =
-            TimeZoneInfo.FindSystemTimeZoneById("Mountain Standard Time");
+            FindSystemTimeZone("Mountain Standard Time", "America/Edmonton"); 
+        
+        public static readonly TimeZoneInfo CentralTimeZone =
+            FindSystemTimeZone("Central Standard Time", "America/Regina");
+        
+        private static TimeZoneInfo FindSystemTimeZone(string windowsTimeZones, string ianaTimeZone)
+        {
+            try
+            {
+                return TimeZoneInfo.FindSystemTimeZoneById(windowsTimeZones);
+            }
+            catch (TimeZoneNotFoundException)
+            {
+                return TimeZoneInfo.FindSystemTimeZoneById(ianaTimeZone);
+            }
+        }
     }
 }

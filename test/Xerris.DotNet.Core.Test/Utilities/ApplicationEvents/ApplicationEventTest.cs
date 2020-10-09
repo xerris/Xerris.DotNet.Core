@@ -107,7 +107,7 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             const string operation = "duration test";
             using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
             {
-                var result = monitor.Function(() => ReturnStuff(2000));
+                var result = monitor.Function(() => ReturnStuff(1000));
                 result.Should().BeTrue();
             }
 
@@ -117,7 +117,7 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             actual.Operation.Should().Be(operation);
             actual.OperationStep.Should().BeNull();
             actual.Outcome.Should().Be(Outcome.Successful);
-            sink.SentEvents.First().Duration.Should().BeGreaterOrEqualTo(2000.0);
+            sink.SentEvents.First().Duration.Should().BeGreaterOrEqualTo(1000.0);
         }
 
         [Fact]

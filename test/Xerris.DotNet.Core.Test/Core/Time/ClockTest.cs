@@ -37,7 +37,20 @@ namespace Xerris.DotNet.Core.Test.Core.Time
 
             Clock.Local.Thaw();
             Thread.Sleep(500);
+
             Clock.Local.Now.IsCloseEnough(frozen, 100);
+        }
+
+        [Fact]
+        public void CanGetMountainTime()
+        {
+            var now = Clock.MountainTime.Now;
+        }
+        
+        [Fact]
+        public void CanGetCentralTime()
+        {
+            var now = Clock.CentralTime.Now;
         }
 
         public void Dispose()
