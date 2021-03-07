@@ -8,7 +8,7 @@ namespace Xerris.DotNet.Core.Data
         Task<IUnitOfWork> CreateAsync();
     }
     
-    public class UnitOfWorkProvider
+    public class UnitOfWorkProvider : IUnitOfWorkProvider
     {
         private readonly IConnectionBuilder builder;
 
