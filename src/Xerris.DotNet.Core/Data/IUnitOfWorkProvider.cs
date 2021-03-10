@@ -3,9 +3,10 @@ using Serilog;
 
 namespace Xerris.DotNet.Core.Data
 {
-    public interface IUnitOfWorkProvider 
+  public interface IUnitOfWorkProvider
     {
-        Task<IUnitOfWork> CreateAsync();
+        Task<IUnitOfWork> CreateTransactional();
+        Task<IUnitOfWork> CreateNonTransactional();
     }
     
     public class UnitOfWorkProvider : IUnitOfWorkProvider
@@ -17,10 +18,20 @@ namespace Xerris.DotNet.Core.Data
             this.builder = builder;
         }
         
-        public async Task<IUnitOfWork> CreateAsync()
+        public async Task<IUnitOfWork> CreateTransactional()
         {
             Log.Debug("Provider is about to request a new connection");
-            return new UnitOfWork(await builder.CreateConnectionAsync().ConfigureAwait(false));
+            var connection = await builder.CreateConnectionAsync().ConfigureAwait(false);
+            connection.Open();
+            return new UnitOfWork(connection);
+        }
+
+        public async Task<IUnitOfWork> CreateNonTransactional()
+        {
+            Log.Debug("Provider is about to request a new connection");
+            var connection = await builder.CreateConnectionAsync().ConfigureAwait(false);
+            connection.Open();
+            return new ReadonlyUnitOfWork(connection);
         }
     }
 }
