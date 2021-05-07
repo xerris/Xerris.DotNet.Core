@@ -74,7 +74,6 @@ async function _push() {
         console.log(`pushed to nuget for verion: ${version}`);
     });
 }
-
 exports.Version = gulp.series(_clean, _version);
 exports.Build   = gulp.series(_clean, _restore, _build);
 exports.Test    = gulp.series(_clean, _restore, _build, _test);
