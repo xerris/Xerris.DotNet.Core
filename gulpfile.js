@@ -70,9 +70,9 @@ async function _push() {
     var cmd = `dotnet nuget push ./dist/${packageName}.${version}.nupkg`;
     var nugetApi = `-k ${process.env.NUGET_APIKEY}`
     var execCmd = `${cmd} ${nugetApiUrl} ${nugetApi}`
-    // exec(execCmd).on('exit', () => {
-    //     console.log(`pushed to nuget for verion: ${version}`);
-    // });
+    exec(execCmd).on('exit', () => {
+        console.log(`pushed to nuget for verion: ${version}`);
+    });
 }
 
 exports.Version = gulp.series(_clean, _version);
