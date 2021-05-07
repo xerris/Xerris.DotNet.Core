@@ -1,0 +1,69 @@
+anchors:
+  setup-node: &setup-node
+    run:
+      name: Setup node
+      command: |
+        curl -sL https://deb.nodesource.com/setup_12.x |  bash -
+        apt update && apt-get -q -y install nodejs
+
+  configure-build-environment: &configure-build-environment
+    run:
+      name: Configure
+      command: |
+        sed "s/GITHUB_TOKEN/$GITHUB_AUTH_TOKEN/g" .nuget.config > nuget.config
+        npm install .
+        cd src/Xerris.DotNet.Core
+        npm install .
+
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/sdk:3.1-bionic
+    steps:
+      - *setup-node
+      - checkout
+      - *configure-build-environment
+      - run:
+          name: Compile
+          command: npm run gulp Build
+      - run:
+          name: Run Tests
+          working_directory: .
+          command: npm run gulp Test
+      - store_test_results:
+          path: ./TestResults
+  deploy:
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/sdk:3.1-bionic
+    steps:
+      - *setup-node
+      - checkout
+      - *configure-build-environment
+      - run:
+          name: Push
+          command: |
+            git config user.email "bot@xerris.com"
+            git config user.name "Xerris-bot"
+            npm run gulp Push
+            git add .
+            git commit -m "committing change to version.json"
+
+workflows:
+  version: 2.0
+  ci-main:
+    jobs:
+      - build:
+          context: xerris-core
+          filters:
+            branches:
+              only:
+                - master
+      - deploy:
+          context: xerris-core
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - build
