@@ -47,8 +47,9 @@ jobs:
             echo "pushing new version to NUGET"
             npm run gulp Push
             echo "comitting version.json change to git"
-            git add .
+            git add version.json
             git commit -m "committing change to version.json"
+            git push origin main
 
 workflows:
   version: 2.0
