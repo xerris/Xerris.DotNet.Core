@@ -12,8 +12,6 @@ anchors:
       command: |
         sed "s/GITHUB_TOKEN/$GITHUB_AUTH_TOKEN/g" .nuget.config > nuget.config
         npm install .
-        cd src/Xerris.DotNet.Core
-        npm install .
 
 version: 2.1
 jobs:
