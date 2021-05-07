@@ -42,20 +42,29 @@ jobs:
           name: Push
           command: |
             echo "setting up git config"
-            git config user.email "bot@xerris.com"
-            git config user.name "Xerris-bot"
+#            git config user.email "bot@xerris.com"
+#            git config user.name "Xerris-bot"
             echo "pushing new version to NUGET"
-            npm run gulp Push
-            echo "comitting version.json change to git"
-            git add version.json
-            git commit -m "committing change to version.json"
-            git push origin main
+            file=version.json
+            echo $CIRCLE_TAG >> $file
+            echo " Tag: " + $CIRCLE_TAG
+#            npm run gulp Push
+#            echo "comitting version.json change to git"
+#            git add version.json
+#            git commit -m "committing change to version.json"
+#            git push origin main
 
 workflows:
   version: 2
   ci-main:
     jobs:
       - build:
+          context: xerris-core
+          filters:
+            branches:
+              only:
+                - main
+      - deploy:
           context: xerris-core
           filters:
             branches:
