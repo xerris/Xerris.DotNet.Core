@@ -58,12 +58,12 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - main
       - deploy:
           context: xerris-core
           filters:
             branches:
               only:
-                - master
+                - main
           requires:
             - build
