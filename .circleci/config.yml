@@ -71,5 +71,3 @@ workflows:
                 - /^v(\d+\.)?(\d+\.)?(\*|\d+)$/
             branches:
               ignore: /.*/
-          requires:
-            - build
