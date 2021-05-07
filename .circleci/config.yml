@@ -61,11 +61,15 @@ workflows:
             branches:
               only:
                 - main
+  ci-deploy:
+    jobs:
       - deploy:
           context: xerris-core
           filters:
-            branches:
+            tags:
               only:
-                - main
+                - /^v(\d+\.)?(\d+\.)?(\*|\d+)$/
+            branches:
+              ignore: /.*/
           requires:
             - build

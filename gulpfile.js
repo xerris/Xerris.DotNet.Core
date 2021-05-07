@@ -76,9 +76,9 @@ async function _push() {
 }
 
 exports.Version = gulp.series(_clean, _version);
-exports.Build   = gulp.series(_clean, _restore, _version, _build);
-exports.Test    = gulp.series(_clean, _restore, _version, _build, _test);
-exports.Default = gulp.series(_clean, _restore, _version, _build, _test);
-exports.Publish = gulp.series(_distDir, _clean, _version, _build, _publish);
-exports.Package = gulp.series(_distDir, _clean, _version, _build, _publish, _package);
+exports.Build   = gulp.series(_clean, _restore, _build);
+exports.Test    = gulp.series(_clean, _restore, _build, _test);
+exports.Default = gulp.series(_clean, _restore, _build, _test);
+exports.Publish = gulp.series(_distDir, _clean, _build, _publish);
+exports.Package = gulp.series(_distDir, _clean, _build, _publish, _package);
 exports.Push    = gulp.series(_distDir, _clean, _version, _build, _test, _publish, _package, _push);
