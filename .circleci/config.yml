@@ -47,7 +47,7 @@ jobs:
             echo "pushing new version to NUGET"
             file=version.json
             echo $CIRCLE_TAG >> $file
-            echo " Tag: " + $CIRCLE_TAG
+            echo $CIRCLE_TAG
 #            npm run gulp Push
 #            echo "comitting version.json change to git"
 #            git add version.json
