@@ -64,14 +64,6 @@ workflows:
             branches:
               only:
                 - main
-      - deploy:
-          context: xerris-core
-          filters:
-            branches:
-              only:
-                - main
-          requires:
-            - build
   ci-deploy:
     jobs:
       - deploy:
