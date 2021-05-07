@@ -9,7 +9,9 @@ const configuration = process.env.BUILD_CONFIGURATION || 'Debug';
 const packageName = 'Xerris.DotNet.Core';
 const nugetApiUrl = '-s https://api.nuget.org/v3/index.json';
 const targetProject = 'src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj';
-let version = '0.0.0-prerelease';
+const versionFile = './version.json';
+const release = '-prerelease';
+let version = `0.0.1${release}`;
 
 function _clean() {
     return gulp.src('*.sln', {read: false})
@@ -56,13 +58,11 @@ function _package() {
 }
 
 async function _version() {
-    console.log('Pushing to NUGET!');
-    var jsonString = fs.readFileSync('./version.js');
-    var nugetVersion = JSON.parse(jsonString);
-    nugetVersion.Patch +=1;
-    version = `${nugetVersion.Major}.${nugetVersion.Minor}.${nugetVersion.Patch}-prerelease`
-    console.log(`new verion: ${version}`);
-    fs.writeFileSync('./version.js',JSON.stringify(nugetVersion));
+    var nugetVersion = JSON.parse(fs.readFileSync(versionFile));
+    nugetVersion.Patch += 1;
+    version = `${nugetVersion.Major}.${nugetVersion.Minor}.${nugetVersion.Patch}${release}`
+    console.log(`new version: ${version}`);
+    fs.writeFileSync(versionFile, JSON.stringify(nugetVersion));
 }
 
 async function _push() {
@@ -70,15 +70,15 @@ async function _push() {
     var cmd = `dotnet nuget push ./dist/${packageName}.${version}.nupkg`;
     var nugetApi = `-k ${process.env.NUGET_APIKEY}`
     var execCmd = `${cmd} ${nugetApiUrl} ${nugetApi}`
-    exec(execCmd).on('exit', () => {
-        console.log(`pushed to nuget for verion: ${version}`);
-    });
+    // exec(execCmd).on('exit', () => {
+    //     console.log(`pushed to nuget for verion: ${version}`);
+    // });
 }
 
 exports.Version = gulp.series(_clean, _version);
-exports.Build = gulp.series(_clean, _restore, _version, _build);
-exports.Test = gulp.series(_clean, _restore, _version, _build, _test);
+exports.Build   = gulp.series(_clean, _restore, _version, _build);
+exports.Test    = gulp.series(_clean, _restore, _version, _build, _test);
 exports.Default = gulp.series(_clean, _restore, _version, _build, _test);
 exports.Publish = gulp.series(_distDir, _clean, _version, _build, _publish);
 exports.Package = gulp.series(_distDir, _clean, _version, _build, _publish, _package);
-exports.Push = gulp.series(_distDir, _clean, _version, _build, _test, _publish, _package, _push);
+exports.Push    = gulp.series(_distDir, _clean, _version, _build, _test, _publish, _package, _push);
