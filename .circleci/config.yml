@@ -70,6 +70,8 @@ workflows:
             branches:
               only:
                 - main
+          requires:
+            - build
   ci-deploy:
     jobs:
       - deploy:
