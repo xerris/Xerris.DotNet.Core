@@ -52,7 +52,7 @@ jobs:
             git push origin main
 
 workflows:
-  version: 2.0
+  version: 2
   ci-main:
     jobs:
       - build:
