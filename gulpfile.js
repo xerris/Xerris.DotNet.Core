@@ -65,6 +65,12 @@ async function _version() {
     fs.writeFileSync(versionFile, JSON.stringify(nugetVersion));
 }
 
+async function _commitVersion() {
+    console.log(`commiting version file with version: ${version}`);    
+    exec('git add .');
+    exec("git commit -m 'committed version.json file'");
+}
+
 async function _push() {
     console.log(`pushing to nuget for verion: ${version}`);
     var cmd = `dotnet nuget push ./dist/${packageName}.${version}.nupkg`;
@@ -73,6 +79,7 @@ async function _push() {
     // exec(execCmd).on('exit', () => {
     //     console.log(`pushed to nuget for verion: ${version}`);
     // });
+    _commitVersion();
 }
 
 exports.Version = gulp.series(_clean, _version);
