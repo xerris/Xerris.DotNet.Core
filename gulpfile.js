@@ -58,11 +58,10 @@ function _package() {
 }
 
 async function _version() {
-    var nugetVersion = JSON.parse(fs.readFileSync(versionFile));
-    nugetVersion.Patch += 1;
-    version = `${nugetVersion.Major}.${nugetVersion.Minor}.${nugetVersion.Patch}${release}`
-    console.log(`new version: ${version}`);
-    fs.writeFileSync(versionFile, JSON.stringify(nugetVersion));
+    fs.readFile(versionFile, (err, data) => {
+        version = data.toString().split('\n')[0].substring(1);
+        console.log(`new version: ${version}`);
+    });
 }
 
 async function _push() {
@@ -70,9 +69,10 @@ async function _push() {
     var cmd = `dotnet nuget push ./dist/${packageName}.${version}.nupkg`;
     var nugetApi = `-k ${process.env.NUGET_APIKEY}`
     var execCmd = `${cmd} ${nugetApiUrl} ${nugetApi}`
-    exec(execCmd).on('exit', () => {
-        console.log(`pushed to nuget for verion: ${version}`);
-    });
+    console.log(execCmd);
+    // exec(execCmd).on('exit', () => {
+    //     console.log(`pushed to nuget for verion: ${version}`);
+    // });
 }
 exports.Version = gulp.series(_clean, _version);
 exports.Build   = gulp.series(_clean, _restore, _build);

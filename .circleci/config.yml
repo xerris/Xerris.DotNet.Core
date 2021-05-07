@@ -12,6 +12,13 @@ anchors:
       command: |
         sed "s/GITHUB_TOKEN/$GITHUB_AUTH_TOKEN/g" .nuget.config > nuget.config
         npm install .
+        
+  configure-nuget-version: &configure-nuget_version
+    run:
+      name: Configure nuget Version
+      command: |
+        file=version.json
+        echo $CIRCLE_TAG >> $file
 
 version: 2.1
 jobs:
@@ -38,21 +45,14 @@ jobs:
       - *setup-node
       - checkout
       - *configure-build-environment
+      - *configure-nuget_version
       - run:
           name: Push
           command: |
             echo "setting up git config"
             echo "pushing new version to NUGET"
-            file=version.json
-            echo $CIRCLE_TAG >> $file
             echo $CIRCLE_TAG
-#            git config user.email "bot@xerris.com"
-#            git config user.name "Xerris-bot"
-#            npm run gulp Push
-#            echo "comitting version.json change to git"
-#            git add version.json
-#            git commit -m "committing change to version.json"
-#            git push origin main
+            git add version.json
 
 workflows:
   version: 2
