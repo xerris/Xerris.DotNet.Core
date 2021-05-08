@@ -49,10 +49,7 @@ jobs:
       - run:
           name: Push
           command: |
-            echo "setting up git config"
-            echo "pushing new version to NUGET"
-            echo $CIRCLE_TAG
-            git add version.json
+            npm run gulp Push
 
 workflows:
   version: 2
