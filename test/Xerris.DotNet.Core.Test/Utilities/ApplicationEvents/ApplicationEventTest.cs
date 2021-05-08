@@ -146,77 +146,77 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
         // }
 
         [Fact]
-        public async Task ShouldCaptureMultipleApplicationEventsWithStepNames()
-        {
-            var sink = new TestSink();
-            const string operation = "multi test";
-            using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
-            {
-                monitor.Action(DoStuff, "do stuff");
+        // public async Task ShouldCaptureMultipleApplicationEventsWithStepNames()
+        // {
+        //     var sink = new TestSink();
+        //     const string operation = "multi test";
+        //     using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
+        //     {
+        //         monitor.Action(DoStuff, "do stuff");
+        //
+        //         monitor.Function(ReturnStuff, "return stuff").Should().BeTrue();
+        //
+        //         (await monitor.Function(ReturnStuffAsync, "return stuff async")).Should().BeTrue();
+        //
+        //         await monitor.Complete();
+        //     }
+        //
+        //     sink.SentEvents.Count.Should().Be(3);
+        //     sink.SentEvents[0].Operation.Should().Be(operation);
+        //     sink.SentEvents[0].OperationStep.Should().Be("do stuff");
+        //     sink.SentEvents[1].Operation.Should().Be(operation);
+        //     sink.SentEvents[1].OperationStep.Should().Be("return stuff");
+        //     sink.SentEvents[2].Operation.Should().Be(operation);
+        //     sink.SentEvents[2].OperationStep.Should().Be("return stuff async");
+        // }
 
-                monitor.Function(ReturnStuff, "return stuff").Should().BeTrue();
+        // [Fact]
+        // public async Task ShouldCaptureSlowApplicationEvent()
+        // {
+        //     var sink = new TestSink();
+        //     const string operation = "slow test";
+        //     using (var monitor = new MonitorBuilder(sink).Begin(User, operation, acceptableDurationMilliseconds: 1000))
+        //     {
+        //         var result = monitor.Function(() => ReturnStuff(2000));
+        //         result.Should().BeTrue();
+        //
+        //         await monitor.Complete();
+        //     }
+        //
+        //     sink.SentEvents.Count.Should().Be(1);
+        //     var actual = sink.SentEvents.First();
+        //     actual.User.Should().Be(User);
+        //     actual.Operation.Should().Be(operation);
+        //     actual.Outcome.Should().Be(Outcome.Slow);
+        // }
 
-                (await monitor.Function(ReturnStuffAsync, "return stuff async")).Should().BeTrue();
-
-                await monitor.Complete();
-            }
-
-            sink.SentEvents.Count.Should().Be(3);
-            sink.SentEvents[0].Operation.Should().Be(operation);
-            sink.SentEvents[0].OperationStep.Should().Be("do stuff");
-            sink.SentEvents[1].Operation.Should().Be(operation);
-            sink.SentEvents[1].OperationStep.Should().Be("return stuff");
-            sink.SentEvents[2].Operation.Should().Be(operation);
-            sink.SentEvents[2].OperationStep.Should().Be("return stuff async");
-        }
-
-        [Fact]
-        public async Task ShouldCaptureSlowApplicationEvent()
-        {
-            var sink = new TestSink();
-            const string operation = "slow test";
-            using (var monitor = new MonitorBuilder(sink).Begin(User, operation, acceptableDurationMilliseconds: 1000))
-            {
-                var result = monitor.Function(() => ReturnStuff(2000));
-                result.Should().BeTrue();
-
-                await monitor.Complete();
-            }
-
-            sink.SentEvents.Count.Should().Be(1);
-            var actual = sink.SentEvents.First();
-            actual.User.Should().Be(User);
-            actual.Operation.Should().Be(operation);
-            actual.Outcome.Should().Be(Outcome.Slow);
-        }
-
-        [Fact]
-        public async Task ShouldCaptureFailedApplicationEvent()
-        {
-            var sink = new TestSink();
-            const string operation = "slow test";
-
-            string expectedMessage = null;
-            try
-            {
-                using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
-                {
-                    monitor.Action(BreakStuff);
-                    await monitor.Complete();
-                }
-            }
-            catch (ApplicationException e)
-            {
-                expectedMessage = e.Message;
-            }
-
-            sink.SentEvents.Count.Should().Be(1);
-            var actual = sink.SentEvents.First();
-            actual.User.Should().Be(User);
-            actual.Operation.Should().Be(operation);
-            actual.Outcome.Should().Be(Outcome.Failed);
-            actual.FailureCause.Should().Be(expectedMessage);
-        }
+        // [Fact]
+        // public async Task ShouldCaptureFailedApplicationEvent()
+        // {
+        //     var sink = new TestSink();
+        //     const string operation = "slow test";
+        //
+        //     string expectedMessage = null;
+        //     try
+        //     {
+        //         using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
+        //         {
+        //             monitor.Action(BreakStuff);
+        //             await monitor.Complete();
+        //         }
+        //     }
+        //     catch (ApplicationException e)
+        //     {
+        //         expectedMessage = e.Message;
+        //     }
+        //
+        //     sink.SentEvents.Count.Should().Be(1);
+        //     var actual = sink.SentEvents.First();
+        //     actual.User.Should().Be(User);
+        //     actual.Operation.Should().Be(operation);
+        //     actual.Outcome.Should().Be(Outcome.Failed);
+        //     actual.FailureCause.Should().Be(expectedMessage);
+        // }
         
         private void DoStuff()
         {
