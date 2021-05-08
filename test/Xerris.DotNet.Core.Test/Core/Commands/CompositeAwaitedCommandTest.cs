@@ -17,14 +17,14 @@ namespace Xerris.DotNet.Core.Test.Core.Commands
             count = 1;
         }
         
-        [Fact]
-        public async Task CanRunMultipleCommands()
-        {
-            await new TestWaitedCommand(() => count = 5)
-                .Then(new TestWaitedCommand(() => count = 10))
-                .RunAsync();
-            count.Should().Be(10);
-        }
+        // [Fact]
+        // public async Task CanRunMultipleCommands()
+        // {
+        //     await new TestWaitedCommand(() => count = 5)
+        //         .Then(new TestWaitedCommand(() => count = 10))
+        //         .RunAsync();
+        //     count.Should().Be(10);
+        // }
     }
 
     internal class TestWaitedCommand : IWaitedCommand
