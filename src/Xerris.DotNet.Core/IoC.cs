@@ -10,35 +10,21 @@ namespace Xerris.DotNet.Core
 {
     public class IoC
     {
-        private IServiceProvider container;
-        private bool initialized;
-        private readonly object mutex = new object();
+        private readonly IServiceProvider container;
 
         private static Func<IServiceCollection> serviceCollectionProvider = () => new ServiceCollection();
         
-        private static IoC Instance => new IoC();
-        
+        private static readonly IoC Instance = new IoC();
+
         private IoC()
         {
-            Initialize();
-        }
-        
-        private void Initialize()
-        {
-            if (initialized) return;
+            var collection = serviceCollectionProvider();
+            var startup = GetImplementingType<IAppStartup>(AppDomain.CurrentDomain.GetAssemblies());
+            var configuration = startup.StartUp(collection);
+            startup.InitializeLogging(configuration, LogStartup.Initialize);
 
-            lock (mutex)
-            {
-                if (initialized) return;
-                var collection = serviceCollectionProvider();
-                var startup = GetImplementingType<IAppStartup>(AppDomain.CurrentDomain.GetAssemblies());
-                var configuration = startup.StartUp(collection);
-                startup.InitializeLogging(configuration, LogStartup.Initialize);
-
-                new ConfigureServiceCollection(collection).Initialize();
-                container = collection.BuildServiceProvider();
-                initialized = true;
-            }
+            new ConfigureServiceCollection(collection).Initialize();
+            container = collection.BuildServiceProvider();
         }
 
         private TService Find<TService>()
@@ -73,7 +59,7 @@ namespace Xerris.DotNet.Core
             return (T) Activator.CreateInstance(found);
         }
 
-        internal static bool Filter(Assembly assembly)
+        private static bool Filter(Assembly assembly)
         {
             var name = assembly.FullName;
             return !(name.StartsWith("microsoft", StringComparison.CurrentCultureIgnoreCase) || 

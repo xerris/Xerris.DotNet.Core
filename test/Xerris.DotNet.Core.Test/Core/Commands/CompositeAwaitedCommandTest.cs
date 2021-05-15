@@ -10,11 +10,11 @@ namespace Xerris.DotNet.Core.Test.Core.Commands
     [Collection("base")]
     public class CompositeAwaitedCommandTest
     {
-        private int count;
+        //private int count;
 
         public CompositeAwaitedCommandTest()
         {
-            count = 1;
+            //count = 1;
         }
         
         // [Fact]
