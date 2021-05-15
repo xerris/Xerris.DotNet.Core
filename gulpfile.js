@@ -1,12 +1,17 @@
 const gulp = require('gulp');
+const fs = require('fs');
 const del = require('del');
 const mkdirp = require('mkdirp');
 const path = require('path');
 const { exec } = require('child_process');
 const {clean, restore, build, test, pack, publish, run} = require('gulp-dotnet-cli');
-const version = `0.0.` + (process.env.BUILD_NUMBER || '0' + '-prerelease');
 const configuration = process.env.BUILD_CONFIGURATION || 'Debug';
+const packageName = 'Xerris.DotNet.Core';
+const nugetApiUrl = '-s https://api.nuget.org/v3/index.json';
 const targetProject = 'src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj';
+const versionFile = './version.json';
+const release = '-prerelease';
+let version = `0.0.1${release}`;
 
 function _clean() {
     return gulp.src('*.sln', {read: false})
@@ -46,29 +51,33 @@ function _publish() {
 
 function _package() {
     return gulp.src(targetProject)
-            .pipe(pack({
-                output: path.join(process.cwd(), 'dist') ,
-                version: version
-            }));
+        .pipe(pack({
+            output: path.join(process.cwd(), 'dist') ,
+            version: version
+        }));
 }
 
-function _deploy() {
-    return exec('npm run deploy', {cwd: cdkProject},(error, stdout, stderr) => {
-        if (error) {
-            console.error(`exec error: ${error}`);
-            return;
-        }
-        console.log(`stdout: ${stdout}`);
-
-        if(stderr)
-            console.error(`stderr: ${stderr}`);
+async function _version() {
+    fs.readFile(versionFile, (err, data) => {
+        version = data.toString().split('\n')[0].substring(1);
+        console.log(`new version: ${version}`);
     });
 }
 
-
-exports.Build = gulp.series(_clean, _restore, _build);
-exports.Test = gulp.series(_clean, _restore, _build, _test);
+async function _push() {
+    console.log(`pushing to nuget for verion: ${version}`);
+    var cmd = `dotnet nuget push ./dist/${packageName}.${version}.nupkg`;
+    var nugetApi = `-k ${process.env.NUGET_APIKEY}`
+    var execCmd = `${cmd} ${nugetApiUrl} ${nugetApi}`
+    console.log(execCmd);
+    exec(execCmd).on('exit', () => {
+        console.log(`pushed to nuget for verion: ${version}`);
+    });
+}
+exports.Version = gulp.series(_clean, _version);
+exports.Build   = gulp.series(_clean, _restore, _build);
+exports.Test    = gulp.series(_clean, _restore, _build, _test);
 exports.Default = gulp.series(_clean, _restore, _build, _test);
 exports.Publish = gulp.series(_distDir, _clean, _build, _publish);
 exports.Package = gulp.series(_distDir, _clean, _build, _publish, _package);
-exports.Deploy = gulp.series(_distDir, _clean, _build, _test, _publish, _package, _deploy);
+exports.Push    = gulp.series(_distDir, _clean, _version, _build, _test, _publish, _package, _push);
