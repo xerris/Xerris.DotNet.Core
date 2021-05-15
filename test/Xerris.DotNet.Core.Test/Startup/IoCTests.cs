@@ -47,6 +47,13 @@ namespace Xerris.DotNet.Core.Test.Startup
             IoC.Resolve<IAddMe>().Should().BeOfType<AddMe>();
         }
 
+        [Fact]
+        public void ResolveShouldReturnTheSameInstance()
+        {
+            var service = IoC.Resolve<IService>();
+            IoC.Resolve<IService>().Should().BeSameAs(service);
+        }
+
         public void Dispose()
         {
             Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), null);
