@@ -103,11 +103,12 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
         [Fact]
         public void ShouldCaptureApplicationEventAndMeasureDuration()
         {
+            const int duration = 2000;
             var sink = new TestSink();
             const string operation = "duration test";
             using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
             {
-                var result = monitor.Function(() => ReturnStuff(1000));
+                var result = monitor.Function(() => ReturnStuff(duration));
                 result.Should().BeTrue();
             }
 
@@ -117,7 +118,7 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             actual.Operation.Should().Be(operation);
             actual.OperationStep.Should().BeNull();
             actual.Outcome.Should().Be(Outcome.Successful);
-            sink.SentEvents.First().Duration.Should().BeGreaterOrEqualTo(1000.0);
+            sink.SentEvents.First().Duration.Should().BeGreaterOrEqualTo(duration);
         }
 
         [Fact]

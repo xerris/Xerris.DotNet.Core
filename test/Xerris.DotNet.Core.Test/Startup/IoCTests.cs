@@ -11,14 +11,13 @@ namespace Xerris.DotNet.Core.Test.Startup
     {
         public IoCTests()
         {
-            CleanEnvironment();
+            Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), "connectme");
         }
 
         [Fact]
         public void ApplicationConfig()
         {
-            Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), "connectme");
-            
+ 
             var appConfig = IoC.Resolve<IApplicationConfig>();
 
             Validate.Begin()
@@ -49,11 +48,6 @@ namespace Xerris.DotNet.Core.Test.Startup
         }
 
         public void Dispose()
-        {
-            CleanEnvironment();
-        }
-        
-        private static void CleanEnvironment()
         {
             Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), null);
         }
