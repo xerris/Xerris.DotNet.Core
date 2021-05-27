@@ -26,5 +26,15 @@ namespace Xerris.DotNet.Core.Extensions
         {
             return date.ToString("yyyyMMdd");
         }
+        
+        public static DateTime Latest(this DateTime value)
+        {
+            return new DateTime(value.Year, value.Month, value.Day, 23, 59, 59, 999);
+        }
+        
+        public static DateTime Earliest(this DateTime value)
+        {
+            return new DateTime(value.Year, value.Month, value.Day);
+        }
     }
 }

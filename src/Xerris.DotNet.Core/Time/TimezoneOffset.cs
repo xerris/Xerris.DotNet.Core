@@ -1,5 +1,5 @@
 using System;
-using Xerris.DotNet.Core.Utilities;
+using Xerris.DotNet.Core.Extensions;
 
 namespace Xerris.DotNet.Core.Time
 {

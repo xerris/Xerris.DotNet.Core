@@ -1,8 +1,7 @@
 using System;
 using FluentAssertions;
+using Xerris.DotNet.Core.Extensions;
 using Xerris.DotNet.Core.Time;
-using Xerris.DotNet.Core.Utilities;
-using Xunit;
 
 namespace Xerris.DotNet.Core.Test.Core.Time
 {

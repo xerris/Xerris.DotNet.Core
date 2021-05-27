@@ -1,5 +1,6 @@
 using System;
 using FluentAssertions;
+using Xerris.DotNet.Core.Extensions;
 using Xerris.DotNet.Core.Utilities;
 using Xunit;
 
