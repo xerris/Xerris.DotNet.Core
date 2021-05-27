@@ -11,14 +11,13 @@ namespace Xerris.DotNet.Core.Test.Startup
     {
         public IoCTests()
         {
-            CleanEnvironment();
+            Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), "connectme");
         }
 
         [Fact]
         public void ApplicationConfig()
         {
-            Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), "connectme");
-            
+ 
             var appConfig = IoC.Resolve<IApplicationConfig>();
 
             Validate.Begin()
@@ -48,12 +47,14 @@ namespace Xerris.DotNet.Core.Test.Startup
             IoC.Resolve<IAddMe>().Should().BeOfType<AddMe>();
         }
 
-        public void Dispose()
+        [Fact]
+        public void ResolveShouldReturnTheSameInstance()
         {
-            CleanEnvironment();
+            var service = IoC.Resolve<IService>();
+            IoC.Resolve<IService>().Should().BeSameAs(service);
         }
-        
-        private static void CleanEnvironment()
+
+        public void Dispose()
         {
             Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), null);
         }
