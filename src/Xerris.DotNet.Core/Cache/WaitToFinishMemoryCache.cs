@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
@@ -10,7 +11,7 @@ namespace Xerris.DotNet.Core.Cache
     {
         private readonly int slidingExpirationInMinutes;
         private readonly int absoluteExpirationInMinutes;
-        private readonly MemoryCache cache = new MemoryCache(new MemoryCacheOptions {SizeLimit = 100});
+        private MemoryCache cache = new MemoryCache(new MemoryCacheOptions {SizeLimit = 1000});
 
         private readonly ConcurrentDictionary<object, SemaphoreSlim> locks =
             new ConcurrentDictionary<object, SemaphoreSlim>();
@@ -20,7 +21,7 @@ namespace Xerris.DotNet.Core.Cache
             this.slidingExpirationInMinutes = slidingExpirationInMinutes;
             this.absoluteExpirationInMinutes = absoluteExpirationInMinutes;
         }
-
+        
         public async Task<TItem> GetOrCreate<TItem>(object key, Func<Task<TItem>> createItem)
         {
             if (cache.TryGetValue(key, out TItem cacheEntry)) return cacheEntry;
@@ -44,7 +45,15 @@ namespace Xerris.DotNet.Core.Cache
             return cacheEntry;
         }
 
-        private MemoryCacheEntryOptions CreateCacheOptions()
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public void Purge()
+        {
+            if (cache.Count == 0) return;
+            cache.Dispose();
+            cache = new MemoryCache(new MemoryCacheOptions {SizeLimit = 100});
+        }
+
+            private MemoryCacheEntryOptions CreateCacheOptions()
         {
             var cacheEntryOptions = new MemoryCacheEntryOptions()
                 .SetSize(1) //Size amount
