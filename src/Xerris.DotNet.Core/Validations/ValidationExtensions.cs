@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using Xerris.DotNet.Core.Extensions;
 
@@ -242,7 +241,7 @@ namespace Xerris.DotNet.Core.Validations
             if (!validation.Errors.Any()) return validation;
             if (validation.Errors.Count() == 1)
                 throw new ValidationException("Validation Failure", validation.Errors.First());
-            throw new ValidationException("Validation Failure", new MultiException(validation.Errors));
+            throw new MultiException(validation.Errors);
         }
 
         public static ValidationException Warnings(this Validation validation)

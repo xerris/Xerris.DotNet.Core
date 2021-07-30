@@ -11,9 +11,7 @@ namespace Xerris.DotNet.Core
     public class IoC
     {
         private readonly IServiceProvider container;
-
         private static Func<IServiceCollection> serviceCollectionProvider = () => new ServiceCollection();
-        
         private static readonly IoC Instance = new IoC();
 
         private IoC()
@@ -27,25 +25,14 @@ namespace Xerris.DotNet.Core
             container = collection.BuildServiceProvider();
         }
 
-        private TService Find<TService>()
-        {
-            return container.GetRequiredService<TService>();
-        }
+        private TService Find<TService>() => container.GetRequiredService<TService>();
 
-        public static void ConfigureServiceCollection(IServiceCollection collection)
-        {
+        public static void ConfigureServiceCollection(IServiceCollection collection) =>
             serviceCollectionProvider = () => collection;
-        }
 
-        public static TService Resolve<TService>()
-        {
-            return Instance.Find<TService>();
-        }
+        public static TService Resolve<TService>() => Instance.Find<TService>();
 
-        public static IServiceScope CreateScope()
-        {
-            return Instance.container.CreateScope();
-        }
+        public static IServiceScope CreateScope() => Instance.container.CreateScope(); 
         
         private static T GetImplementingType<T>(IEnumerable<Assembly> targetAssemblies)
         {

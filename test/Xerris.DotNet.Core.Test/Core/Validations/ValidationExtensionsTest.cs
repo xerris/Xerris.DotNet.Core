@@ -22,8 +22,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
             validation.Add(error2);
 
             validation.Invoking(x => x.Check())
-                .Should().Throw<ValidationException>().WithMessage("Foo\r\nBar")
-                .WithInnerException<MultiException>().WithMessage("Foo\r\nBar");
+                .Should().Throw<MultiException>().WithMessage("Foo\r\nBar");
         }
 
         [Fact]

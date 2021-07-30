@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using FluentAssertions;
+using Xerris.DotNet.Core.Extensions;
 using Xerris.DotNet.Core.Validations;
 using Xunit;
 
@@ -21,7 +22,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         {
             var multi = new MultiException("one", 
                 new[] {new ValidationException("one"),
-                                     new ValidationException("two")});
+                                   new ValidationException("two")});
             
             multi.InnerExceptions.Count().Should().Be(2);
             multi.Message.Should().Be($"one{Environment.NewLine}two");
