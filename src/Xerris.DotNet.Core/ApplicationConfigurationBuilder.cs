@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Immutable;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 
@@ -12,10 +13,14 @@ namespace Xerris.DotNet.Core
         {
             var appConfig = new T();
             Configuration.Bind(appConfig);
-            appConfig.AwsOptions = configuration.GetAWSOptions();
-            return appConfig;
+            return Build(configuration, appConfig);
         }
 
+        protected virtual T Build(IConfiguration config, T appConfig)
+        {
+            return appConfig;
+        }
+        
         public IConfiguration Configuration
         {
             get
