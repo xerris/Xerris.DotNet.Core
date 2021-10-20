@@ -36,7 +36,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void Contains()
         {
-            Validate.Begin().Contains(new[] {1}, 1, ValidationMessage).Invoking(x => x.Check()).Should().NotThrow();
+            Validate.Begin().Contains(new[] {1}, 1, ValidationMessage).Check();
             Validate.Begin().Contains(new[] {2}, 1, ValidationMessage).Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage(ValidationMessage);
         }
@@ -77,7 +77,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void GreaterThan_Comparable()
         {
-            Validate.Begin().GreaterThan(2, 1, ValidationMessage).Invoking(x => x.Check()).Should().NotThrow();
+            Validate.Begin().GreaterThan(2, 1, ValidationMessage).Check();
             Validate.Begin().GreaterThan(1, 1, ValidationMessage).Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage(ValidationMessage);
         }
@@ -85,13 +85,11 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void GreaterThan_DateTime()
         {
-            Validate.Begin().GreaterThan(new DateTime(2000, 1, 2), null, ValidationMessage).Invoking(x => x.Check())
-                .Should().NotThrow();
-            Validate.Begin().GreaterThan(null, new DateTime(2000, 1, 1), ValidationMessage).Invoking(x => x.Check())
-                .Should().NotThrow();
+            Validate.Begin().GreaterThan(new DateTime(2000, 1, 2), null, ValidationMessage).Check();
+            Validate.Begin().GreaterThan(null, new DateTime(2000, 1, 1), ValidationMessage).Check();
             Validate.Begin()
                 .GreaterThan((DateTime?) new DateTime(2000, 1, 2), new DateTime(2000, 1, 1), ValidationMessage)
-                .Invoking(x => x.Check()).Should().NotThrow();
+                .Check();
             Validate.Begin()
                 .GreaterThan((DateTime?) new DateTime(2000, 1, 1), new DateTime(2000, 1, 1), ValidationMessage)
                 .Invoking(x => x.Check()).Should().Throw<ValidationException>()
@@ -101,8 +99,8 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void GreaterThanOrEqual_Comparable()
         {
-            Validate.Begin().GreaterThanOrEqual(2, 1, ValidationMessage).Invoking(x => x.Check()).Should().NotThrow();
-            Validate.Begin().GreaterThanOrEqual(1, 1, ValidationMessage).Invoking(x => x.Check()).Should().NotThrow();
+            Validate.Begin().GreaterThanOrEqual(2, 1, ValidationMessage).Check();
+            Validate.Begin().GreaterThanOrEqual(1, 1, ValidationMessage).Check();
             Validate.Begin().GreaterThanOrEqual(0, 1, ValidationMessage).Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage(ValidationMessage);
         }
@@ -111,15 +109,15 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         public void GreaterThanOrEqual_DateTime()
         {
             Validate.Begin().GreaterThanOrEqual(new DateTime(2000, 1, 2), null, ValidationMessage)
-                .Invoking(x => x.Check()).Should().NotThrow();
+                .Check();
             Validate.Begin().GreaterThanOrEqual(null, new DateTime(2000, 1, 1), ValidationMessage)
-                .Invoking(x => x.Check()).Should().NotThrow();
+                .Check();
             Validate.Begin()
                 .GreaterThanOrEqual((DateTime?) new DateTime(2000, 1, 2), new DateTime(2000, 1, 1), ValidationMessage)
-                .Invoking(x => x.Check()).Should().NotThrow();
+                .Check();
             Validate.Begin()
                 .GreaterThanOrEqual((DateTime?) new DateTime(2000, 1, 1), new DateTime(2000, 1, 1), ValidationMessage)
-                .Invoking(x => x.Check()).Should().NotThrow();
+                .Check();
             Validate.Begin()
                 .GreaterThanOrEqual((DateTime?) new DateTime(2000, 1, 1), new DateTime(2000, 1, 2), ValidationMessage)
                 .Invoking(x => x.Check()).Should().Throw<ValidationException>()
@@ -153,7 +151,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void IsEmpty_Enumerable()
         {
-            Validate.Begin().IsEmpty(new object[] { }, "Foo").Invoking(x => x.Check()).Should().NotThrow();
+            Validate.Begin().IsEmpty(new object[] { }, "Foo").Check();
             Validate.Begin().IsEmpty(new object[] {1}, "Foo").Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage("Foo should be empty");
         }
@@ -161,8 +159,8 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void IsEmpty_String()
         {
-            Validate.Begin().IsEmpty(string.Empty, "Foo").Invoking(x => x.Check()).Should().NotThrow();
-            Validate.Begin().IsEmpty(null, "Foo").Invoking(x => x.Check()).Should().NotThrow();
+            Validate.Begin().IsEmpty(string.Empty, "Foo").Check();
+            Validate.Begin().IsEmpty(null, "Foo").Check();
             Validate.Begin().IsEmpty("A", "Foo").Invoking(x => x.Check()).Should().Throw<ValidationException>()
                 .WithMessage("Foo should be empty");
         }
@@ -170,12 +168,12 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void IsFalse()
         {
-            Validate.Begin().IsFalse(false, ValidationMessage).Invoking(x => x.Check()).Should().NotThrow();
+            Validate.Begin().IsFalse(false, ValidationMessage).Check();
             Validate.Begin().IsFalse(true, ValidationMessage).Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage(ValidationMessage);
             
             bool? nullableTrue = false;
-            Validate.Begin().IsFalse(nullableTrue, ValidationMessage).Invoking(x => x.Check()).Should().NotThrow();
+            Validate.Begin().IsFalse(nullableTrue, ValidationMessage).Check();
             nullableTrue = null;
             Validate.Begin().IsFalse(nullableTrue, ValidationMessage).Invoking(x => x.Check()).Should().Throw<ValidationException>();
         }
@@ -183,7 +181,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void IsNotEmpty_Enumerable()
         {
-            Validate.Begin().IsNotEmpty(new object[] {1}, "Foo").Invoking(x => x.Check()).Should().NotThrow();
+            Validate.Begin().IsNotEmpty(new object[] {1}, "Foo").Check();
             Validate.Begin().IsNotEmpty(new object[] { }, "Foo").Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage("Foo is not expected to be empty");
         }
@@ -191,7 +189,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void IsNotEmpty_String()
         {
-            Validate.Begin().IsNotEmpty("A", ValidationMessage).Invoking(x => x.Check()).Should().NotThrow();
+            Validate.Begin().IsNotEmpty("A", ValidationMessage).Check();
             Validate.Begin().IsNotEmpty(string.Empty, ValidationMessage).Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage(ValidationMessage);
             Validate.Begin().IsNotEmpty(null, ValidationMessage).Invoking(x => x.Check()).Should()
@@ -201,8 +199,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void IsNotNull_DateTime()
         {
-            Validate.Begin().IsNotNull(new DateTime(2000, 1, 1), ValidationMessage).Invoking(x => x.Check()).Should()
-                .NotThrow();
+            Validate.Begin().IsNotNull(new DateTime(2000, 1, 1), ValidationMessage).Check();
             Validate.Begin().IsNotNull(DateTime.MinValue, ValidationMessage).Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage(ValidationMessage);
         }
@@ -210,7 +207,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void IsNotNull_Decimal()
         {
-            Validate.Begin().IsNotNull(1m, ValidationMessage).Invoking(x => x.Check()).Should().NotThrow();
+            Validate.Begin().IsNotNull(1m, ValidationMessage).Check();
             Validate.Begin().IsNotNull(0m, ValidationMessage).Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage(ValidationMessage);
         }
@@ -218,7 +215,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void IsNotNull_Int()
         {
-            Validate.Begin().IsNotNull(1, ValidationMessage).Invoking(x => x.Check()).Should().NotThrow();
+            Validate.Begin().IsNotNull(1, ValidationMessage).Check();
             Validate.Begin().IsNotNull(0, ValidationMessage).Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage(ValidationMessage);
         }
@@ -226,7 +223,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void IsNotNull_NullableInt()
         {
-            Validate.Begin().IsNotNull((int?) 1, ValidationMessage).Invoking(x => x.Check()).Should().NotThrow();
+            Validate.Begin().IsNotNull((int?) 1, ValidationMessage).Check();
             Validate.Begin().IsNotNull((int?) null, ValidationMessage).Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage(ValidationMessage);
         }
@@ -234,7 +231,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void IsNotNull_Object()
         {
-            Validate.Begin().IsNotNull("A", ValidationMessage).Invoking(x => x.Check()).Should().NotThrow();
+            Validate.Begin().IsNotNull("A", ValidationMessage).Check();
             Validate.Begin().IsNotNull((object) null, ValidationMessage).Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage(ValidationMessage);
         }
@@ -242,7 +239,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void IsNull_NullableInt()
         {
-            Validate.Begin().IsNull((int?) null, "Foo").Invoking(x => x.Check()).Should().NotThrow();
+            Validate.Begin().IsNull((int?) null, "Foo").Check();
             Validate.Begin().IsNull((int?) 1, "Foo").Invoking(x => x.Check()).Should().Throw<ValidationException>()
                 .WithMessage("Foo should be null");
         }
@@ -250,7 +247,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void IsNull_Object()
         {
-            Validate.Begin().IsNull(null, "Foo").Invoking(x => x.Check()).Should().NotThrow();
+            Validate.Begin().IsNull(null, "Foo").Check();
             Validate.Begin().IsNull("A", "Foo").Invoking(x => x.Check()).Should().Throw<ValidationException>()
                 .WithMessage("Foo should be null");
         }
@@ -258,7 +255,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void IsOfType()
         {
-            Validate.Begin().IsOfType<int>(1, "Foo").Invoking(x => x.Check()).Should().NotThrow();
+            Validate.Begin().IsOfType<int>(1, "Foo").Check();
             Validate.Begin().IsOfType<int>("A", "Foo").Invoking(x => x.Check()).Should().Throw<ValidationException>()
                 .WithMessage("Foo is not of type Int32");
             Validate.Begin().IsOfType<int>(null, "Foo").Invoking(x => x.Check()).Should().Throw<ValidationException>()
@@ -268,12 +265,12 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void IsTrue()
         {
-            Validate.Begin().IsTrue(true, ValidationMessage).Invoking(x => x.Check()).Should().NotThrow();
+            Validate.Begin().IsTrue(true, ValidationMessage).Check();
             Validate.Begin().IsTrue(false, ValidationMessage).Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage(ValidationMessage);
 
             bool? nullableTrue = true;
-            Validate.Begin().IsTrue(nullableTrue, ValidationMessage).Invoking(x => x.Check()).Should().NotThrow();
+            Validate.Begin().IsTrue(nullableTrue, ValidationMessage).Check();
             nullableTrue = null;
             Validate.Begin().IsTrue(nullableTrue, ValidationMessage).Invoking(x => x.Check()).Should().Throw<ValidationException>();
         }
@@ -281,7 +278,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void IsWithinLength()
         {
-            Validate.Begin().IsWithinLength("12345", 5, "Number too big").Invoking(x => x.Check()).Should().NotThrow();
+            Validate.Begin().IsWithinLength("12345", 5, "Number too big").Check();
             Validate.Begin().IsWithinLength("123456", 5, "Number too big").Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage("Number too big");
         }
@@ -289,7 +286,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void Or()
         {
-            new Validation().Or(ValidationMessage).Invoking(x => x.Check()).Should().NotThrow();
+            new Validation().Or(ValidationMessage).Check();
             new Validation().Or(ValidationMessage, false).Invoking(x => x.Check()).Should().Throw<ValidationException>()
                 .WithMessage(ValidationMessage);
             new Validation().Or(ValidationMessage, true).Invoking(x => x.Check()).Should().Throw<ValidationException>()
