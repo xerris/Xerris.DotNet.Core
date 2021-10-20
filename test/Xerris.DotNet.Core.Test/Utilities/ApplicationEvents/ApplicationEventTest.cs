@@ -14,6 +14,11 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
     {
         private const string User = "test user";
 
+        public ApplicationEventTest()
+        {
+            Clock.Utc.Freeze();
+        }
+        
         public void Dispose()
         {
             Clock.Utc.Thaw();
@@ -22,8 +27,6 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
         [Fact]
         public void ShouldCaptureApplicationEventForAction()
         {
-            Clock.Utc.Freeze();
-
             var sink = new TestSink();
             const string operation = "simple test";
             using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
@@ -39,6 +42,8 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
             sink.SentEvents.First().Outcome.Should().Be(Outcome.Successful);
             sink.SentEvents.First().Timestamp.Should().Be(Clock.Utc.Now);
             sink.SentEvents.First().Duration.Should().Be(0.0);
+            
+            Clock.Utc.Thaw();
         }
 
         [Fact]
@@ -58,8 +63,6 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
         [Fact]
         public void ShouldCaptureApplicationEventForFunc()
         {
-            Clock.Utc.Freeze();
-
             var sink = new TestSink();
             const string operation = "func test";
             using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
@@ -80,8 +83,6 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
         [Fact]
         public async Task ShouldCaptureApplicationEventForAsyncFunc()
         {
-            Clock.Utc.Freeze();
-
             var sink = new TestSink();
             const string operation = "async func test";
             using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
@@ -102,26 +103,27 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
 
         //@Richard Hurst,  this test keeps failing on CircleCi. not sure why...
         // Expected sink.SentEvents.First().Duration to be greater or equal to 2000.0, but found -118720139000.0.
-        // [Fact]
-        // public void ShouldCaptureApplicationEventAndMeasureDuration()
-        // {
-        //     const int duration = 2000;
-        //     var sink = new TestSink();
-        //     const string operation = "duration test";
-        //     using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
-        //     {
-        //         var result = monitor.Function(() => ReturnStuff(duration));
-        //         result.Should().BeTrue();
-        //     }
-        //
-        //     sink.SentEvents.Count.Should().Be(1);
-        //     var actual = sink.SentEvents.First();
-        //     actual.User.Should().Be(User);
-        //     actual.Operation.Should().Be(operation);
-        //     actual.OperationStep.Should().BeNull();
-        //     actual.Outcome.Should().Be(Outcome.Successful);
-        //     sink.SentEvents.First().Duration.Should().BeGreaterOrEqualTo(duration);
-        // }
+        [Fact]
+        public void ShouldCaptureApplicationEventAndMeasureDuration()
+        {
+            Clock.Utc.Thaw();
+            const int duration = 2000;
+            var sink = new TestSink();
+            const string operation = "duration test";
+            using (var monitor = new MonitorBuilder(sink).Begin(User, operation))
+            {
+                var result = monitor.Function(() => ReturnStuff(duration));
+                result.Should().BeTrue();
+            }
+        
+            sink.SentEvents.Count.Should().Be(1);
+            var actual = sink.SentEvents.First();
+            actual.User.Should().Be(User);
+            actual.Operation.Should().Be(operation);
+            actual.OperationStep.Should().BeNull();
+            actual.Outcome.Should().Be(Outcome.Successful);
+            sink.SentEvents.First().Duration.Should().BeGreaterOrEqualTo(duration);
+        }
 
          [Fact]
          public async Task ShouldCaptureMultipleApplicationEvents()
@@ -176,6 +178,7 @@ namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
          [Fact]
          public async Task ShouldCaptureSlowApplicationEvent()
          {
+             Clock.Utc.Thaw();
              var sink = new TestSink();
              const string operation = "slow test";
              using (var monitor = new MonitorBuilder(sink).Begin(User, operation, acceptableDurationMilliseconds: 1000))
