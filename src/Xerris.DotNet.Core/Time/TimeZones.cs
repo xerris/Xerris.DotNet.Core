@@ -20,6 +20,9 @@ namespace Xerris.DotNet.Core.Time
         public static readonly TimeZoneInfo CentralTimeZone =
             FindSystemTimeZone("Central Standard Time", "America/Regina");
         
+        public static readonly TimeZoneInfo AustralianEastern =
+            FindSystemTimeZone("AUS Eastern Standard Time", "Australia/Sydney");
+        
         private static TimeZoneInfo FindSystemTimeZone(string windowsTimeZones, string ianaTimeZone)
         {
             try

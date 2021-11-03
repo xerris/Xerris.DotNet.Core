@@ -46,10 +46,6 @@ namespace Xerris.DotNet.Core.Utilities
             if (IsSystemType(o1)) return o1.Equals(o2);
             if (o1 is IEnumerable) return CollectionEquals((IEnumerable)o1, o2 as IEnumerable, objectsAlreadyCompared, throwException, attributeTypesOnPropertiesToIgnore);
 
-            if (o1 == null && o2 == null)
-            {
-                return true;
-            }
             if (o1 == null || o2 == null) return false;
 
             if (o1.GetType() != o2.GetType()) return false;

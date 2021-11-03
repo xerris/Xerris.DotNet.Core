@@ -11,7 +11,7 @@ namespace Xerris.DotNet.Core.Test.Startup
     {
         public IoCTests()
         {
-            Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), "connectme");
+            Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), "connectMe");
         }
 
         [Fact]
@@ -24,7 +24,7 @@ namespace Xerris.DotNet.Core.Test.Startup
                 .IsNotNull(appConfig, "has an app config")
                 .Check()
                 .IsEqual(appConfig.AllowedHosts, "*", "got allowedHosts")
-                .IsEqual(appConfig.ConnectionString, "connectme", nameof(IApplicationConfig.ConnectionString))
+                .IsEqual(appConfig.ConnectionString, "connectMe", nameof(IApplicationConfig.ConnectionString))
                 .Check();
         }
 

@@ -11,6 +11,9 @@ namespace Xerris.DotNet.Core.Time
         private static IClock mountainTime;
 
         private static IClock utc;
+        
+        private static IClock australianEastern;
+        
         public static IClock Local => local ??= new TimeZoneClock(TimeZoneInfo.Local);
 
         public static IClock MountainStandardTime => mountainStandardTime ??= 
@@ -21,6 +24,9 @@ namespace Xerris.DotNet.Core.Time
         
         public static IClock CentralTime =>
             mountainTime ??= new TimeZoneClock(TimeZones.CentralTimeZone);
+
+        public static IClock AustralianEasternTime =>
+            australianEastern ??= new TimeZoneClock(TimeZones.AustralianEastern);
 
         public static IClock Utc => utc ??= new TimeZoneClock(TimeZoneInfo.Utc);
 

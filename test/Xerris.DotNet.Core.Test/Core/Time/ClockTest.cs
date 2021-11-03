@@ -53,6 +53,17 @@ namespace Xerris.DotNet.Core.Test.Core.Time
             var now = Clock.CentralTime.Now;
         }
 
+        [Theory]
+        [InlineData("2021-11-03 13:00:00", "2021-11-04 00:00:00")] // 1:00PM UTC is the next day in AEDT
+        [InlineData("2021-11-03 12:59:00", "2021-11-03 00:00:00")] // before 1:00ON UTC is the same day in AEDT
+        [InlineData("2021-09-03 14:00:00", "2021-09-04 00:00:00")] // 2:00PM UTC is the next day in AEST
+        [InlineData("2021-09-03 13:59:00", "2021-09-03 00:00:00")] // before 2:00ON UTC is the same day in AEST
+        public void CanGetTodayInAustralianEasternTime(string utcTimeAsString, string expectedAestDateAsString)
+        {
+            Clock.Utc.Freeze(DateTime.Parse(utcTimeAsString));
+            Clock.AustralianEasternTime.Today.Should().Be(DateTime.Parse(expectedAestDateAsString));
+        }
+
         public void Dispose()
         {
             Clock.Local.Thaw(); 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Xerris.DotNet.Core.Extensions;
 using Xerris.DotNet.Core.Logging;
 
 namespace Xerris.DotNet.Core
@@ -66,8 +67,7 @@ namespace Xerris.DotNet.Core
             var interfaces = assembly.GetTypes().Where(x => x.IsInterface);
             foreach (var i in interfaces)
             {
-                var implementingTypes = assembly.GetTypes().Where(tt => tt.IsClass && !tt.IsAbstract && i.IsAssignableFrom(tt))
-                                                       .ToArray();
+                var implementingTypes = FindAllFor(i, assembly).ToArray();
                 if (implementingTypes.Length == 1)
                 {
                     collection.TryAddSingleton(i, implementingTypes.First());
@@ -75,6 +75,18 @@ namespace Xerris.DotNet.Core
             }
 
             return collection;
+        }
+
+        public static IServiceCollection AutoRegisterAll<T>(this IServiceCollection collection, Assembly assembly)
+        {
+            var target = typeof(T);
+            FindAllFor(target, assembly).ForEach(each => collection.AddSingleton(target, each));
+            return collection;
+        }
+
+        private static IEnumerable<Type> FindAllFor(Type type, Assembly assembly)
+        {
+            return assembly.GetTypes().Where(tt => tt.IsClass && !tt.IsAbstract && type.IsAssignableFrom(tt));
         }
     }
 }
