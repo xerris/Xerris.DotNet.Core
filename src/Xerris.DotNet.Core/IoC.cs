@@ -11,13 +11,15 @@ namespace Xerris.DotNet.Core
 {
     public class IoC
     {
-        private readonly IServiceProvider container;
         private static Func<IServiceCollection> serviceCollectionProvider = () => new ServiceCollection();
-        private static readonly IoC Instance = new IoC();
+        private IServiceProvider container;
+        private static IoC instance = new IoC();
 
-        private IoC()
+        private IoC() => StartUp(serviceCollectionProvider());
+        private IoC(IServiceCollection collection) => StartUp(collection);
+
+        private void StartUp(IServiceCollection collection)
         {
-            var collection = serviceCollectionProvider();
             var startup = GetImplementingType<IAppStartup>(AppDomain.CurrentDomain.GetAssemblies());
             var configuration = startup.StartUp(collection);
             startup.InitializeLogging(configuration, LogStartup.Initialize);
@@ -31,9 +33,11 @@ namespace Xerris.DotNet.Core
         public static void ConfigureServiceCollection(IServiceCollection collection) =>
             serviceCollectionProvider = () => collection;
 
-        public static TService Resolve<TService>() => Instance.Find<TService>();
+        public static void Initialize(IServiceCollection collection) => instance = new IoC(collection);
+        
+        public static TService Resolve<TService>() => instance.Find<TService>();
 
-        public static IServiceScope CreateScope() => Instance.container.CreateScope(); 
+        public static IServiceScope CreateScope() => instance.container.CreateScope(); 
         
         private static T GetImplementingType<T>(IEnumerable<Assembly> targetAssemblies)
         {
