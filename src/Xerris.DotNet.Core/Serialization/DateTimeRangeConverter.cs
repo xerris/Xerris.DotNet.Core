@@ -7,13 +7,13 @@ namespace Xerris.DotNet.Core.Serialization
 {
     public class DateTimeRangeConverter : JsonConverter
     {
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             if (!(value is DateTimeRange range)) return;
             writer.WriteValue(new DateTimeRangeDto(range).ToJson());
         }
 
-        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             if (reader.Value == null) return null;
             if (string.IsNullOrWhiteSpace((string) reader.Value) || 
@@ -27,7 +27,7 @@ namespace Xerris.DotNet.Core.Serialization
             return objectType == typeof(DateTimeRange);
         }
         
-        private static bool IsEqual(string? condition, string? value)
+        private static bool IsEqual(string condition, string value)
         {
             return string.Equals(condition, value, StringComparison.InvariantCultureIgnoreCase);
         }
