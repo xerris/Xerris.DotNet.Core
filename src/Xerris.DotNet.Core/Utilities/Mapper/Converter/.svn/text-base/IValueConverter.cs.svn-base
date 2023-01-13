@@ -1,9 +1,0 @@
-﻿namespace DealManagement.Utility.Mapper.Converter
-{
-    public interface IValueConverter {}
-
-    public interface IValueConverter<T> : IValueConverter
-    {
-        T Convert(object value);
-    }
-}

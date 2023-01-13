@@ -1,9 +1,0 @@
-﻿namespace DealManagement.Utility.Mapper
-{
-    interface IMapper<FROM, TO>
-        where FROM : class
-        where TO : class
-    {
-        TO Build(FROM message);
-    }
-}
