@@ -15,11 +15,14 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
                       .Should().Be(new DateTime(2020, 12, 21));
         }
 
-        [Fact]
-        public void Formatted()
+        [Theory]
+        [InlineData("yyyy-MM-dd", "2022-01-30")]
+        [InlineData("yyyyMMdd", "20220130")]
+        [InlineData("s", "2022-01-30T00:00:00")]
+        public void Formatted(string format, string expected)
         {
-            const string dateString = "20201221";
-            dateString.ToDate("yyyyMMdd").Formatted("yyyyMMdd").Should().Be(dateString);
+            var date = new DateTime(2022, 01, 30);
+            date.Formatted(format).Should().Be(expected);
         }
         
         [Fact]

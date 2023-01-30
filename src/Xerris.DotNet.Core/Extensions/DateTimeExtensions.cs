@@ -22,9 +22,9 @@ namespace Xerris.DotNet.Core.Extensions
             return DateTime.ParseExact(dateString, format, provider);
         }
 
-        public static string Formatted(this DateTime date, string format)
+        public static string Formatted(this DateTime date, string format = "yyyyMMdd")
         {
-            return date.ToString("yyyyMMdd");
+            return date.ToString(format);
         }
         
         public static DateTime Latest(this DateTime value)
