@@ -29,7 +29,7 @@ namespace Xerris.DotNet.Core.Logging.Http
                 msg, req.RequestUri.Scheme, req.RequestUri.Host);
 
             foreach (var (key, value) in req.Content.Headers.Where(h 
-                         => string.Equals(h.Key, "Authorization",StringComparison.CurrentCultureIgnoreCase)))
+                         => !string.Equals(h.Key, "Authorization",StringComparison.CurrentCultureIgnoreCase)))
             {
                 Log.Debug("{Message} {Key}: {Value}", msg, key, string.Join(", ", value));
             }
