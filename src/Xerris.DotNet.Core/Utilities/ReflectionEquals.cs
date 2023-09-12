@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using Xerris.DotNet.Core.Extensions;
 
@@ -16,15 +14,11 @@ namespace Xerris.DotNet.Core.Utilities
         /// 
         /// </summary>
         /// <param name="obj"/>
+        ///
         public static T DeepClone<T>(this T obj) where T : class
         {
-            if (obj == null)
-                return default(T);
-            var binaryFormatter = new BinaryFormatter();
-            using var memoryStream = new MemoryStream();
-            binaryFormatter.Serialize(memoryStream, obj);
-            memoryStream.Seek(0L, SeekOrigin.Begin);
-            return (T)binaryFormatter.Deserialize(memoryStream);
+            var json = obj?.ToJson();
+            return json?.FromJson<T>();
         }
 
         public static bool ReflectionEquals(this object o1, object o2, bool throwException = false)
