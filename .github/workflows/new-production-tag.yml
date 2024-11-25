@@ -72,7 +72,7 @@ jobs:
       - name: Increment version
         id: increment_version
         run: |
-          IFS='.' read -ra ADDR <<< "${{ needs.checkout.outputs.latest_tag#v }}"
+          IFS='.' read -ra ADDR <<< "${{ needs.checkout.outputs.latest_tag }}"
           major=${ADDR[0]}
           minor=${ADDR[1]}
           patch=${ADDR[2]}
