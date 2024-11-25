@@ -42,7 +42,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Configure Git User
-        run:
+        run: |
           git config --global user.email "greg@xerris.com"
           git config --global user.name "kr0ggg"
 
