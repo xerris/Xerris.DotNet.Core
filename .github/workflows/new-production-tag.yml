@@ -79,13 +79,13 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Pack
-        run: dotnet pack ./src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj --configuration Release --output nupkgs
+        run: dotnet pack ./src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj --configuration Release --output ./nupkgs
 
       - name: Upload NuGet package
         uses: actions/upload-artifact@v4
         with:
           name: nuget-package
-          path: nupkgs/*.nupkg
+          path: ./nupkgs/*.nupkg
           
   publish:
     runs-on: ubuntu-latest
