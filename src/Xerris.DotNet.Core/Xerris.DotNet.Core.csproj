@@ -7,7 +7,7 @@
       <Company>Xerris Inc.</Company>
       <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
       <LangVersion>8</LangVersion>
-      <TargetFramework>net6.0</TargetFramework>
+      <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>

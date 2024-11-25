@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace Xerris.DotNet.Core.Utilities.Mapper
 {
@@ -13,7 +14,7 @@ namespace Xerris.DotNet.Core.Utilities.Mapper
             this.target = target;
         }
 
-        public void Apply(object src, object dest) => target.SetValue(dest, value, new object[0]);
+        public void Apply(object src, object dest) => target.SetValue(dest, value, Array.Empty<object>());
         public string Source => Equals(default(T), value)? string.Empty : value.ToString();
         public string Target => target.Name;
     }
