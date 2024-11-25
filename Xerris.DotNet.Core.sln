@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\ci-build.yml = .github\workflows\ci-build.yml
 		.github\workflows\new-production-tag.yml = .github\workflows\new-production-tag.yml
+		.github\workflows\add-new-production-tag.sh = .github\workflows\add-new-production-tag.sh
 	EndProjectSection
 EndProject
 Global

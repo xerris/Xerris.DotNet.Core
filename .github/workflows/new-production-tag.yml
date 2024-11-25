@@ -5,54 +5,28 @@ on:
     branches:
       - main
   pull_request:
-      branches:
-        - main
-      types:
-        - closed
+    branches:
+      - main
+    types:
+      - closed
 
 jobs:
-  checkout:
+  build_and_checkout:
     runs-on: ubuntu-latest
-    outputs:
-      latest_tag: ${{ steps.get_tag.outputs.tag }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
-      - name: Get latest tag matching pattern
-        id: get_tag
-        run: |
-          latest_tag=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' | sort -V | tail -n 1)
-          if [ -z "$latest_tag" ]; then
-            echo "No tag found matching the pattern v.#.#.###"
-            latest_tag="v0.0.1"
-          else
-            # Increment the patch version
-            IFS='.' read -ra ADDR <<< "${latest_tag#v}"
-            major=${ADDR[0]}
-            minor=${ADDR[1]}
-            patch=${ADDR[2]}
-            new_patch=$((patch + 1))
-            latest_tag="v$major.$minor.$new_patch"
-          fi
-
-  build:
-    runs-on: ubuntu-latest
-    needs: checkout
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
       - name: Run build
         run: |
           # Add your build commands here
           echo "Building the project..."
-  
+
   test:
     runs-on: ubuntu-latest
-    needs: build
+    needs: build_and_checkout
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -62,35 +36,15 @@ jobs:
           # Add your test commands here
           echo "Running tests..."
 
-  increment_version:
+  add_production_tag:
     runs-on: ubuntu-latest
     needs: test
-    outputs:
-      new_tag: ${{ steps.increment_version.outputs.new_tag }}
-    steps:
-      - name: Increment version
-        id: increment_version
-        run: |
-          IFS='.' read -ra ADDR <<< "${{ needs.checkout.outputs.latest_tag }}"
-          major=${ADDR[0]}
-          minor=${ADDR[1]}
-          patch=${ADDR[2]}
-          new_patch=$((patch + 1))
-          new_tag="$major.$minor.$new_patch"
-          echo "New tag: $new_tag"
-          echo "::set-output name=new_tag::v$new_tag"
-
-  create_tag:
-    runs-on: ubuntu-latest
-    needs: increment_version
     if: success()
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Create new tag
+      - name: Run Add New Production Tag Script
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "[email protected]"
-          git tag ${{ needs.increment_version.outputs.new_tag }}
-          git push origin ${{ needs.increment_version.outputs.new_tag }}
+          chmod +x .github/workflows/add-new-production-tag.sh
+          ./.github/workflows/add-new-production-tag.sh
