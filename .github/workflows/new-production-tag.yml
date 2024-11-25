@@ -44,7 +44,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Run Add New Production Tag Script
+      - name: Add New Production Tag
         run: |
           chmod +x .github/workflows/add-new-production-tag.sh
           ./.github/workflows/add-new-production-tag.sh
