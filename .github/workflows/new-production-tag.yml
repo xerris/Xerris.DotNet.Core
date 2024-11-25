@@ -77,18 +77,21 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
+          
+      - name: Create packages folder
+        run: mkdir ./packages
 
       - name: Pack
-        run: dotnet pack ./src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj --configuration Release --output ./nupkgs
+        run: dotnet pack ./src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj --configuration Release --output ./packages
 
       - name: List NuGet packages after packing
-        run: ls -la ./nupkgs
+        run: ls -la ./packages
 
       - name: Upload NuGet package
         uses: actions/upload-artifact@v4
         with:
           name: nuget-package
-          path: ./nupkgs/*.nupkg
+          path: ./packages/*.nupkg
 
   publish:
     runs-on: ubuntu-latest
