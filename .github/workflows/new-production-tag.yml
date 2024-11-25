@@ -67,7 +67,7 @@ jobs:
           chmod +x .github/workflows/add-new-production-tag.sh
           ./.github/workflows/add-new-production-tag.sh
           
-  pack:
+  pack-n-publish:
     runs-on: ubuntu-latest
     needs: [ build, test, tag ]
     steps:
@@ -87,31 +87,6 @@ jobs:
       - name: List NuGet packages after packing
         run: ls -la ./packages
 
-      - name: Upload NuGet package
-        uses: actions/upload-artifact@v4
-        with:
-          name: nuget-package
-          path: ./packages/*.nupkg
-
-  publish:
-    runs-on: ubuntu-latest
-    needs: [ build, test, tag, pack ]
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Download NuGet package
-        uses: actions/download-artifact@v4
-        with:
-          name: nuget-package
-
-      - name: List downloaded NuGet packages
-        run: ls -la ./packages
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-
       - name: Publish to NuGet
         run: |
           dotnet nuget push ./packages/*.nupkg \
@@ -119,3 +94,5 @@ jobs:
             --source ${{ secrets.NUGET_SOURCE_URI }} \
             --timeout 360 \
             --skip-duplicate
+
+
