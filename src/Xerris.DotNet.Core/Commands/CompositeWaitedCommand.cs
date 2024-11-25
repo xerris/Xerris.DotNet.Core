@@ -9,13 +9,9 @@ namespace Xerris.DotNet.Core.Commands
         private readonly ICollection<IWaitedCommand> commands = new List<IWaitedCommand>();
 
         public async Task RunAsync()
-        {
-            await Task.WhenAll(commands.Select(x => x.RunAsync()));
-        }
+            => await Task.WhenAll(commands.Select(x => x.RunAsync()));
 
         public void Add(IWaitedCommand waitedCommand)
-        {
-            commands.Add(waitedCommand);
-        }
+            => commands.Add(waitedCommand);
     }
 }

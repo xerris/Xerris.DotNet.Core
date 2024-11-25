@@ -9,14 +9,10 @@ namespace Xerris.DotNet.Core.Commands
         public void Run()
         {
             foreach (var each in commands)
-            {
                 each.Run();
-            }
         }
 
         public void Add(ICommand waitedCommand)
-        {
-            commands.Add(waitedCommand);
-        }
+            => commands.Add(waitedCommand);
     }
 }

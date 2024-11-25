@@ -9,15 +9,11 @@ namespace Xerris.DotNet.Core.Commands
 
         public async Task RunAsync(T data)
         {
-            foreach (var each in commands)
-            {
+            foreach (var each in commands) 
                 await each.RunAsync(data);
-            }
         }
 
         public void Add(ICommand<T> command)
-        {
-            commands.Add(command);
-        }
+            => commands.Add(command);
     }
 }
