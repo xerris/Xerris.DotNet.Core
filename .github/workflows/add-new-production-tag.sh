@@ -1,15 +1,17 @@
 #!/bin/bash
 
-# Get all tags matching the format
-git fetch 
+# Fetch all tags from the remote repository
+git fetch
+
+# Get all tags matching the format and sort them using version sort
 all_tags=$(git tag -l "v*" | sort -V)
 
 if [ -z "$all_tags" ]; then
-    # If no matching tags exist, start with DEV-v0.0.1
+    # If no matching tags exist, start with v0.0.1
     new_tag="v0.0.1"
 else
-    # Find the tag with the largest patch number
-    largest_tag=$(echo "$all_tags" | awk -F'[.-]' '{print $NF, $0}' | sort -n | tail -n1 | cut -d' ' -f2-)
+    # Find the largest tag by sorting and getting the last one
+    largest_tag=$(echo "$all_tags" | tail -n1)
 
     # Extract the version numbers
     version=$(echo $largest_tag | sed 's/v//')
@@ -25,9 +27,7 @@ else
 fi
 
 # Create and push the new tag
-
-echo "new TAG: $new_tag"
-
+# Uncomment these lines to actually create and push the tag
 git tag $new_tag
 git push origin $new_tag
 

@@ -1,9 +1,6 @@
 name: Increment Version on Merge
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
