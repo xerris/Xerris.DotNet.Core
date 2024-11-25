@@ -27,10 +27,17 @@ jobs:
           latest_tag=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' | sort -V | tail -n 1)
           if [ -z "$latest_tag" ]; then
             echo "No tag found matching the pattern v.#.#.###"
-            exit 1
+            latest_tag="v0.0.1"
           fi
-          echo "Latest tag: $latest_tag"
-          echo "::set-output name=tag::$latest_tag"
+          else
+            # Increment the patch version
+            IFS='.' read -ra ADDR <<< "${latest_tag#v}"
+            major=${ADDR[0]}
+            minor=${ADDR[1]}
+            patch=${ADDR[2]}
+            new_patch=$((patch + 1))
+            latest_tag="v$major.$minor.$new_patch"
+          fi
 
   build:
     runs-on: ubuntu-latest

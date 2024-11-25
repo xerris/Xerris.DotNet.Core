@@ -8,6 +8,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xerris.DotNet.Core.TestSupp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xerris.Sample.Api", "sample\Xerris.Sample.Api\Xerris.Sample.Api.csproj", "{072C1C14-A811-4943-B0CF-CDF4037DE565}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github", "github", "{186025C0-1403-4FDD-96CC-13B74FF5B1BC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{7A77C852-E637-4145-B743-2C90BABF64C6}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\ci-build.yml = .github\workflows\ci-build.yml
+		.github\workflows\new-production-tag.yml = .github\workflows\new-production-tag.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +38,8 @@ Global
 		{072C1C14-A811-4943-B0CF-CDF4037DE565}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{072C1C14-A811-4943-B0CF-CDF4037DE565}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{072C1C14-A811-4943-B0CF-CDF4037DE565}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7A77C852-E637-4145-B743-2C90BABF64C6} = {186025C0-1403-4FDD-96CC-13B74FF5B1BC}
 	EndGlobalSection
 EndGlobal
