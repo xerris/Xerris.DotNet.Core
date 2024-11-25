@@ -69,7 +69,7 @@ jobs:
           
   pack:
     runs-on: ubuntu-latest
-    needs: [build, test, tag ]
+    needs: [ build, test, tag ]
     steps:
       - uses: actions/checkout@v3
 
@@ -81,12 +81,15 @@ jobs:
       - name: Pack
         run: dotnet pack ./src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj --configuration Release --output ./nupkgs
 
+      - name: List NuGet packages after packing
+        run: ls -la ./nupkgs
+
       - name: Upload NuGet package
         uses: actions/upload-artifact@v4
         with:
           name: nuget-package
           path: ./nupkgs/*.nupkg
-          
+
   publish:
     runs-on: ubuntu-latest
     needs: [ build, test, tag, pack ]
@@ -97,6 +100,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: nuget-package
+
+      - name: List downloaded NuGet packages
+        run: ls -la ./nupkgs
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
