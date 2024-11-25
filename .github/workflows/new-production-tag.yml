@@ -41,6 +41,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Configure Git User
+        run:
+          git config --global user.email "greg@xerris.com"
+          git config --global user.name "kr0ggg"
+
       - name: Add New Production Tag
         run: |
           chmod +x .github/workflows/add-new-production-tag.sh
