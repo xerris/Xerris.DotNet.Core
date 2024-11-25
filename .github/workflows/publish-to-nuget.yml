@@ -10,18 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
-          
+
       - name: Restore dependencies
         run: dotnet restore
-        
+
       - name: Build
         run: dotnet build --configuration Release --no-restore
-        
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -33,17 +33,17 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
-          
+
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
           name: build-output
-          
+
       - name: Test
         run: dotnet test --no-restore --verbosity normal
 
@@ -52,15 +52,15 @@ jobs:
     needs: [build, test]
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
-          
+
       - name: Pack
         run: dotnet pack --configuration Release --no-build --output nupkgs
-        
+
       - name: Upload NuGet package
         uses: actions/upload-artifact@v4
         with:
@@ -72,17 +72,21 @@ jobs:
     needs: [build, test, pack]
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Download NuGet package
         uses: actions/download-artifact@v4
         with:
           name: nuget-package
-          
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
-          
+
       - name: Publish to NuGet
-        run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} |
-                                                --source ${{ secrets.NUGET_SOURCE_URI }} 
+        run: |
+          dotnet nuget push ./nupkgs/*.nupkg \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source ${{ secrets.NUGET_SOURCE_URI }} \
+            --timeout 360 \
+            --skip-duplicate

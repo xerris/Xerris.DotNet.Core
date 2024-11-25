@@ -26,8 +26,8 @@ else
     new_tag="v$major.$minor.$new_patch"
 fi
 
-# Create and push the new tag
-git tag $new_tag
-git push origin $new_tag
+# Create and push the new tag with a message
+git tag -a "$new_tag" -m "Release version $new_tag" || { echo "Failed to create tag"; exit 1; }
+git push origin "$new_tag" || { echo "Failed to push tag"; exit 1; }
 
 echo "Created and pushed new tag: $new_tag"
