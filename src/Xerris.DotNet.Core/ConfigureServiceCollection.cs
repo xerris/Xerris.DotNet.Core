@@ -8,13 +8,9 @@ namespace Xerris.DotNet.Core
         private readonly IServiceCollection collection;
 
         public ConfigureServiceCollection(IServiceCollection collection)
-        {
-            this.collection = collection;
-        }
+            => this.collection = collection;
 
         public void Initialize()
-        {
-            collection.AddSingleton<ICache>(new WaitToFinishMemoryCache());
-        }
+            => collection.AddSingleton<ICache>(new WaitToFinishMemoryCache());
     }
 }

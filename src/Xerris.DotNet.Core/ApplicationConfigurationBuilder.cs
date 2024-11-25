@@ -17,9 +17,7 @@ namespace Xerris.DotNet.Core
         }
 
         protected virtual T Build(IConfiguration config, T appConfig)
-        {
-            return appConfig;
-        }
+            => appConfig;
         
         public IConfiguration Configuration
         {
