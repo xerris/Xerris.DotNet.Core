@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Fetch all tags from the remote repository
-git fetch
+# Ensure the repository is fully fetched, including all tags
+git fetch --tags
 
 # Get all tags matching the format and sort them using version sort
 all_tags=$(git tag -l "v*" | sort -V)
@@ -27,7 +27,6 @@ else
 fi
 
 # Create and push the new tag
-# Uncomment these lines to actually create and push the tag
 git tag $new_tag
 git push origin $new_tag
 
