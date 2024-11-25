@@ -28,7 +28,6 @@ jobs:
           if [ -z "$latest_tag" ]; then
             echo "No tag found matching the pattern v.#.#.###"
             latest_tag="v0.0.1"
-          fi
           else
             # Increment the patch version
             IFS='.' read -ra ADDR <<< "${latest_tag#v}"
