@@ -82,8 +82,9 @@ jobs:
         id: get_version
         run: |
           CURRENT_VERSION=$(curl -s \
-            https://api.nuget.org/v3/registration5-semver1/xerris.dotnet.core/index.json | \
-            jq -r '.items[-1].upper')
+            https://api.nuget.org/v3-flatcontainer/xerris.dotnet.core/index.json \
+            | jq -r '.versions | map(select(startswith("2019.") | not)) | .[-1]')
+          
           echo "Current version: $CURRENT_VERSION"
           echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
 
@@ -95,8 +96,9 @@ jobs:
           NEXT_VERSION="${VERSION_PARTS[0]}.\
           ${VERSION_PARTS[1]}.\
           $((VERSION_PARTS[2] + 1))"
+          
           echo "Next version: $NEXT_VERSION"
-            echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
+          echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
         
       - name: Pack
         run: |
