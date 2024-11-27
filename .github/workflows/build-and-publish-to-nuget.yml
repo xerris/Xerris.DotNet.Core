@@ -18,11 +18,8 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Restore dependencies
-        run: dotnet restore
-
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build --configuration Release
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -47,7 +44,7 @@ jobs:
           name: build-output
 
       - name: Test
-        run: dotnet test --no-restore --verbosity normal
+        run: dotnet test --verbosity normal
 
   tag:
     runs-on: ubuntu-latest
@@ -84,7 +81,9 @@ jobs:
       - name: Get current version
         id: get_version
         run: |
-          CURRENT_VERSION=$(curl -s https://api.nuget.org/v3/registration5-semver1/xerris.dotnet.core/index.json | jq -r '.items[0].upper')
+          CURRENT_VERSION=$(curl -s \
+            https://api.nuget.org/v3/registration5-semver1/xerris.dotnet.core/index.json | \
+            jq -r '.items[0].upper')
           echo "Current version: $CURRENT_VERSION"
           echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
 
@@ -93,7 +92,9 @@ jobs:
         run: |
           CURRENT_VERSION=${{ steps.get_version.outputs.current_version }}
           IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
-          NEXT_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$((VERSION_PARTS[2] + 1))"
+          NEXT_VERSION="${VERSION_PARTS[0]}. \
+            ${VERSION_PARTS[1]}. \
+            $((VERSION_PARTS[2] + 1))"
           echo "Next version: $NEXT_VERSION"
           echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
 
@@ -101,7 +102,12 @@ jobs:
         run: mkdir ./packages
 
       - name: Pack
-        run: dotnet pack ./src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj --configuration Release --output ./packages /p:Version=${{ steps.calc_version.outputs.next_version }}
+        run: |
+          dotnet pack \
+            ./src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj \
+            --configuration Release \
+            --output ./packages \
+            /p:Version=${{ steps.calc_version.outputs.next_version }}
 
       - name: List NuGet packages after packing
         run: ls -la ./packages
