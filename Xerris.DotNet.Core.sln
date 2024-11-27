@@ -13,7 +13,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{7A77C852-E637-4145-B743-2C90BABF64C6}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\ci-build.yml = .github\workflows\ci-build.yml
-		.github\workflows\add-new-production-tag.sh = .github\workflows\add-new-production-tag.sh
 		.github\workflows\build-and-publish-to-nuget.yml = .github\workflows\build-and-publish-to-nuget.yml
 	EndProjectSection
 EndProject
