@@ -1,4 +1,4 @@
-name: Increment Version on Merge
+name: Build And Publish
 
 on:
   pull_request:
@@ -66,7 +66,7 @@ jobs:
         run: |
           chmod +x .github/workflows/add-new-production-tag.sh
           ./.github/workflows/add-new-production-tag.sh
-          
+  
   pack-n-publish:
     runs-on: ubuntu-latest
     needs: [ build, test, tag ]
@@ -77,12 +77,31 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
-          
+
+      - name: Install jq
+        run: sudo apt-get install jq
+
+      - name: Get current version
+        id: get_version
+        run: |
+          CURRENT_VERSION=$(curl -s https://api.nuget.org/v3/registration5-semver1/xerris.dotnet.core/index.json | jq -r '.items[0].upper')
+          echo "Current version: $CURRENT_VERSION"
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Calculate next version
+        id: calc_version
+        run: |
+          CURRENT_VERSION=${{ steps.get_version.outputs.current_version }}
+          IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
+          NEXT_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$((VERSION_PARTS[2] + 1))"
+          echo "Next version: $NEXT_VERSION"
+          echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
+
       - name: Create packages folder
         run: mkdir ./packages
 
       - name: Pack
-        run: dotnet pack ./src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj --configuration Release --output ./packages
+        run: dotnet pack ./src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj --configuration Release --output ./packages /p:Version=${{ steps.calc_version.outputs.next_version }}
 
       - name: List NuGet packages after packing
         run: ls -la ./packages
@@ -94,5 +113,3 @@ jobs:
             --source ${{ secrets.NUGET_SOURCE_URI }} \
             --timeout 360 \
             --skip-duplicate
-
-
