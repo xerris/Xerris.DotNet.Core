@@ -7,7 +7,6 @@ on:
 
 jobs:
   publish:
-    uses: ./build-and-publish-nuget.yml@main
+    uses: ./.github/workflows/build-and-publish-nuget
     with:
       csproj-path: './src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj'
-      nuget-package-name: 'xerris.dotnet.core'
