@@ -12,9 +12,9 @@ on:
         required: true
         type: string
     secrets:
-      NUGET_API_KEY:
+      nuget_api_key:
         required: true
-      NUGET_SOURCE_URI:
+      nuget_source_uri:
         required: true
 
 jobs:
@@ -72,7 +72,7 @@ jobs:
       - name: Publish to NuGet
         run: >
           dotnet nuget push ./packages/*.nupkg
-          --api-key ${{ secrets.NUGET_API_KEY }}
-          --source ${{ secrets.NUGET_SOURCE_URI }}
+          --api-key ${{ inputs.nuget_api_key }}
+          --source ${{ input.nuget_source_uri }}
           --timeout 360
           --skip-duplicate
