@@ -1,15 +1,17 @@
 name: Publish My Project
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
+    types: [closed]
+    branches: [main]
 
 jobs:
   publish:
+    if: github.event.pull_request.merged == true
     uses: ./.github/workflows/build-and-publish-to-nuget.yml
     with:
       csproj-path: './src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj'
       nuget-package-name: 'xerris.dotnet.core'
-      nuget-api-key: secrets.NUGET_API_KEY
-      nuget-source-uri: secrets.NUGET_SOURCE_URI
+    secrets:
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      NUGET_SOURCE_URI: ${{ secrets.NUGET_SOURCE_URI }}
