@@ -8,7 +8,7 @@ on:
       - closed
 
 jobs:
-  build:
+  build-and-publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,8 +18,8 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Build
-        run: dotnet build --configuration Release
+      - name: Build Project
+        run: dotnet build ${{ inputs.csproj-path }} --configuration Release
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -27,37 +27,13 @@ jobs:
           name: build-output
           path: '**/bin/Release/net8.0'
 
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v3
+      - name: Test Project
+        run: dotnet test ${{ inputs.csproj-path }} --verbosity normal
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-
-      - name: Test
-        run: dotnet test --verbosity normal
-
-  calculate-version:
-    runs-on: ubuntu-latest
-    needs: [build, test]
-    steps:
       - name: Get current version
         id: get_version
         run: |
-          CURRENT_VERSION=$(curl -s \
-            https://api.nuget.org/v3-flatcontainer/xerris.dotnet.core/index.json \
-            | jq -r '.versions | map(select(startswith("2019.") | not)) | .[-1]')
-          
-          echo "Current version: $CURRENT_VERSION"
+          CURRENT_VERSION=$(curl -s https://api.nuget.org/v3-flatcontainer/${{ inputs.nuget-package-name }}/index.json | jq -r '.versions | map(select(startswith("2019.") | not)) | .[-1]')
           echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
 
       - name: Calculate next version
@@ -65,59 +41,31 @@ jobs:
         run: |
           CURRENT_VERSION=${{ steps.get_version.outputs.current_version }}
           IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
-          NEXT_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}." \
-                        "$((VERSION_PARTS[2] + 1))"
-          
-          echo "Next version: $NEXT_VERSION"
+          NEXT_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$((VERSION_PARTS[2] + 1))"
           echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
-
-  tag:
-    runs-on: ubuntu-latest
-    needs: calculate-version
-    if: success()
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Configure Git User
-        run: |
-          git config --global user.email "greg@xerris.com"
-          git config --global user.name "kr0ggg"
 
       - name: Create and Push Git Tag
         run: |
+          git config --global user.email "your-email@example.com"
+          git config --global user.name "your-username"
           NEXT_VERSION=${{ needs.calculate-version.outputs.next_version }}
           git tag "v$NEXT_VERSION"
           git push origin "v$NEXT_VERSION"
 
-  pack-n-publish:
-    runs-on: ubuntu-latest
-    needs: [build, test, tag]
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-
       - name: Pack NuGet package
         run: |
           mkdir ./packages
-
-          dotnet pack \
-            ./src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj \
-            --configuration Release \
-            --output ./packages \
-            /p:Version=${{ needs.calculate-version.outputs.next_version }}
-
-      - name: List NuGet packages after packing
-        run: ls -la ./packages
+          dotnet pack ${{ inputs.csproj-path }} --configuration Release --output ./packages /p:Version=${{ needs.calculate-version.outputs.next_version }}
 
       - name: Publish to NuGet
         run: |
-          dotnet nuget push ./packages/*.nupkg \
-            --api-key ${{ secrets.NUGET_API_KEY }} \
-            --source ${{ secrets.NUGET_SOURCE_URI }} \
-            --timeout 360 \
-            --skip-duplicate
+          dotnet nuget push ./packages/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source ${{ secrets.NUGET_SOURCE_URI }} --timeout 360 --skip-duplicate
+
+defaults:
+  inputs:
+    csproj-path:
+      description: 'Path to the .csproj file'
+      required: true
+    nuget-package-name:
+      description: 'NuGet package name'
+      required: true
