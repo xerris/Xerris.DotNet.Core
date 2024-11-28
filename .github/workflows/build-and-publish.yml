@@ -9,4 +9,4 @@ jobs:
   publish:
     uses: ./.github/workflows/build-and-publish-nuget
     with:
-      csproj-path: './src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj'
+      csproj-path: './src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj' 
