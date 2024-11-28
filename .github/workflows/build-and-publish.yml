@@ -1,0 +1,13 @@
+name: Publish My Project
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    uses: ./build-and-publish-nuget.yml@main
+    with:
+      csproj-path: './src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj'
+      nuget-package-name: 'xerris.dotnet.core'
