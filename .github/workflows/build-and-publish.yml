@@ -7,6 +7,6 @@ on:
 
 jobs:
   publish:
-    uses: ./.github/workflows/build-and-publish-nuget
+    uses: ./.github/workflows/build-and-publish-nuget.yml
     with:
       csproj-path: './src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj' 
