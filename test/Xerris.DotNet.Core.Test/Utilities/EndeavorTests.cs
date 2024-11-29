@@ -14,11 +14,11 @@ namespace Xerris.DotNet.Core.Test.Utilities
         {
             timesFailed = 0;
         }
-        
+
         [Fact]
         public void Success()
         {
-            Endeavor.Go<PlayItAgainException>(() => Go(), 
+            Endeavor.Go<PlayItAgainException>(() => Go(),
                 e => throw new Exception("should not be here"));
             timesFailed.Should().Be(0);
         }
@@ -26,15 +26,15 @@ namespace Xerris.DotNet.Core.Test.Utilities
         [Fact]
         public async Task FailsOnce()
         {
-            await Endeavor.Go<PlayItAgainException>(async () => await Go(timesFailed == 0), 
-                e =>  CountFails(), 3, 50);
+            await Endeavor.Go<PlayItAgainException>(async () => await Go(timesFailed == 0),
+                e => CountFails(), 3, 50);
             timesFailed.Should().Be(1);
         }
 
         [Fact]
         public async Task FailsAFewTimes()
         {
-            await Endeavor.Go<PlayItAgainException>(async () => await Go(timesFailed <= 3), 
+            await Endeavor.Go<PlayItAgainException>(async () => await Go(timesFailed <= 3),
                 async e => await CountFails(), 5, 50);
             timesFailed.Should().Be(4);
         }
@@ -80,5 +80,4 @@ namespace Xerris.DotNet.Core.Test.Utilities
         {
         }
     }
-    
 }

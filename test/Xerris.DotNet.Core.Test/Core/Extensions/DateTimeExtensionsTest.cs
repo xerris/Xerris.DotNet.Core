@@ -17,16 +17,28 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         }
 
         [Fact]
-        public void Earliest_Midnight() => DateTime.Today.Earliest().Should().Be(DateTime.Today);
+        public void Earliest_Midnight()
+        {
+            DateTime.Today.Earliest().Should().Be(DateTime.Today);
+        }
 
         [Fact]
-        public void Earliest_At00_00_01() => DateTime.Today.AddSeconds(1).Earliest().Should().Be(DateTime.Today);
+        public void Earliest_At00_00_01()
+        {
+            DateTime.Today.AddSeconds(1).Earliest().Should().Be(DateTime.Today);
+        }
 
         [Fact]
-        public void Earliest_At00_01_00() => DateTime.Today.AddMinutes(1).Earliest().Should().Be(DateTime.Today);
+        public void Earliest_At00_01_00()
+        {
+            DateTime.Today.AddMinutes(1).Earliest().Should().Be(DateTime.Today);
+        }
 
         [Fact]
-        public void Earliest_At01_00_00() => DateTime.Today.AddHours(1).Earliest().Should().Be(DateTime.Today);
+        public void Earliest_At01_00_00()
+        {
+            DateTime.Today.AddHours(1).Earliest().Should().Be(DateTime.Today);
+        }
 
 
         [Fact]
@@ -123,7 +135,7 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
             toTruncate.Millisecond.Should().Be(0);
             toTruncate.Kind.Should().Be(DateTimeKind.Utc);
         }
-        
+
         [Fact]
         public void ToDate()
         {
@@ -141,7 +153,7 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
             var date = new DateTime(2022, 01, 30);
             date.Formatted(format).Should().Be(expected);
         }
-        
+
         [Fact]
         public void ToDateBadDateString()
         {

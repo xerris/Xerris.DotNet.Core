@@ -10,13 +10,14 @@ using Xunit;
 
 namespace Xerris.DotNet.Core.Test.Utilities.Mapper
 {
-public class MapperTest
+    public class MapperTest
     {
         [Fact]
         public void CanBuildUsingMapper()
         {
-            var source = 
-                new SourceObj { Age = 10, Date = Clock.Utc.Today, Gst = 5.0m, Misc = "hi", Money = 25.95, Name = "tset"};
+            var source =
+                new SourceObj
+                    { Age = 10, Date = Clock.Utc.Today, Gst = 5.0m, Misc = "hi", Money = 25.95, Name = "tset" };
             var target = new TestMapper().Build(source);
             target.Should().NotBeNull();
         }
@@ -78,7 +79,6 @@ public class MapperTest
 
     internal class TestMapper : AbstractMapper<SourceObj, TargetObj>
     {
-
         public static IValueConverter<T> GetValueConverter<T>(Expression<Func<SourceObj, object>> sourceProperty,
             Expression<Func<TargetObj, T>> targetProperty)
         {
@@ -99,7 +99,9 @@ public class MapperTest
         }
 
         protected override TargetObj Create()
-            => new TargetObj();
+        {
+            return new TargetObj();
+        }
     }
 
     internal class SourceObj

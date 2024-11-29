@@ -14,11 +14,11 @@ namespace Xerris.DotNet.Core.Test.Core.Commands
         [Fact]
         public async Task CanRunMultipleTypedCommands()
         {
-            var person = new Person {FirstName = "Martin", LastName = "Fowler"};
+            var person = new Person { FirstName = "Martin", LastName = "Fowler" };
 
             await new TestTypedCommand<Person>(x => x.FirstName = "Angelina")
-                     .Then(new TestTypedCommand<Person>(x => x.LastName = "Jolie"))
-                     .RunAsync(person);
+                .Then(new TestTypedCommand<Person>(x => x.LastName = "Jolie"))
+                .RunAsync(person);
 
             person.FirstName.Should().Be("Angelina");
             person.LastName.Should().Be("Jolie");
@@ -30,9 +30,13 @@ namespace Xerris.DotNet.Core.Test.Core.Commands
         private readonly Action<T> action;
 
         public TestTypedCommand(Action<T> action)
-            => this.action = action;
+        {
+            this.action = action;
+        }
 
         public async Task RunAsync(T data)
-            => await Task.Run(() => action(data));
+        {
+            await Task.Run(() => action(data));
+        }
     }
 }

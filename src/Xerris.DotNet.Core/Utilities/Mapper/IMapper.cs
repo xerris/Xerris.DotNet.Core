@@ -1,9 +1,8 @@
-﻿namespace Xerris.DotNet.Core.Utilities.Mapper
+﻿namespace Xerris.DotNet.Core.Utilities.Mapper;
+
+internal interface IMapper<in TFrom, out T>
+    where TFrom : class
+    where T : class
 {
-    internal interface IMapper<in TFrom, out T>
-        where TFrom : class
-        where T : class
-    {
-        T Build(TFrom message);
-    }
+    T Build(TFrom message);
 }

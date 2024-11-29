@@ -1,7 +1,9 @@
-﻿namespace Xerris.DotNet.Core.Utilities.Mapper.Converter
+﻿namespace Xerris.DotNet.Core.Utilities.Mapper.Converter;
+
+public class DirectConverter<T> : IValueConverter<T>
 {
-    public class DirectConverter<T> : IValueConverter<T>
+    public T Convert(object value)
     {
-        public T Convert(object value) => (T) value;
+        return (T)value;
     }
 }

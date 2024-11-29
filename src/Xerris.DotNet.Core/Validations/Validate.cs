@@ -1,7 +1,9 @@
-﻿namespace Xerris.DotNet.Core.Validations
+﻿namespace Xerris.DotNet.Core.Validations;
+
+public static class Validate
 {
-    public static class Validate
+    public static Validation Begin()
     {
-        public static Validation Begin() => null;
+        return null;
     }
 }

@@ -1,13 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Xerris.DotNet.Core.Time;
-using Xerris.DotNet.Core.Utilities.ApplicationEvents;
-using Xunit;
-
 namespace Xerris.DotNet.Core.Test.Utilities.ApplicationEvents
 {
     // public class ApplicationEventTest : IDisposable

@@ -1,10 +1,11 @@
 using System;
 
-namespace Xerris.DotNet.Core.Extensions
+namespace Xerris.DotNet.Core.Extensions;
+
+public static class ComparisonExtensions
 {
-    public static class ComparisonExtensions
+    public static bool IsCloseEnough<T>(this T left, T right, decimal tolerance) where T : IComparable<T>
     {
-        public static bool IsCloseEnough<T>(this T left, T right, decimal tolerance) where T : IComparable<T> =>
-            Math.Abs(left.CompareTo(right)) <= tolerance;
+        return Math.Abs(left.CompareTo(right)) <= tolerance;
     }
 }

@@ -1,9 +1,9 @@
-name: Publish Xerris.DotNet.Core 
+name: Publish Xerris.DotNet.Core
 
 on:
   pull_request:
-    types: [closed]
-    branches: [main]
+    types: [ closed ]
+    branches: [ main ]
 
 jobs:
   publish:

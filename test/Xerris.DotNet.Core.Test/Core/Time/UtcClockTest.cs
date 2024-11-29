@@ -8,10 +8,12 @@ namespace Xerris.DotNet.Core.Test.Core.Time
 {
     public class UtcClockTest : IDisposable
     {
+        public void Dispose()
+        {
+            UtcClock.Thaw();
+        }
 
-        public void Dispose() => UtcClock.Thaw();
-        
-        
+
         [Fact]
         public void CanFreeze()
         {
@@ -19,12 +21,14 @@ namespace Xerris.DotNet.Core.Test.Core.Time
             UtcClock.Freeze(now);
             UtcClock.Now.Should().Be(now);
         }
-        
+
         [Fact]
-        public void CanOnlyFreezeUtcTimes() 
-            =>  FluentActions.Invoking(() => UtcClock.Freeze(new DateTime(2007, 01, 07, 14, 15, 0)))
+        public void CanOnlyFreezeUtcTimes()
+        {
+            FluentActions.Invoking(() => UtcClock.Freeze(new DateTime(2007, 01, 07, 14, 15, 0)))
                 .Should().Throw<Exception>()
                 .WithMessage("Only UTC times are valid to be frozen");
+        }
 
         [Fact]
         public void Now()
@@ -33,7 +37,7 @@ namespace Xerris.DotNet.Core.Test.Core.Time
             Thread.Sleep(1);
             UtcClock.Now.Should().NotBe(oldNow);
         }
-        
+
         [Fact]
         public void Freeze()
         {

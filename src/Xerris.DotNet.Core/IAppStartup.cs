@@ -2,11 +2,10 @@ using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Xerris.DotNet.Core
+namespace Xerris.DotNet.Core;
+
+public interface IAppStartup
 {
-    public interface IAppStartup
-    {
-        IConfiguration StartUp(IServiceCollection collection);
-        void InitializeLogging(IConfiguration configuration, Action<IConfiguration> defaultConfig);
-    }
+    IConfiguration StartUp(IServiceCollection collection);
+    void InitializeLogging(IConfiguration configuration, Action<IConfiguration> defaultConfig);
 }

@@ -32,9 +32,13 @@ namespace Xerris.DotNet.Core.Test.Core.Commands
         private readonly Action action;
 
         public TestWaitedCommand(Action action)
-            => this.action = action;
+        {
+            this.action = action;
+        }
 
         public async Task RunAsync()
-            => await Task.Run(() => action());
+        {
+            await Task.Run(() => action());
+        }
     }
 }

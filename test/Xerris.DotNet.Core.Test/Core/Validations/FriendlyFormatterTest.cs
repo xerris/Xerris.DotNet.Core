@@ -14,32 +14,31 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
             var formatted = new FriendlyFormatter(single);
             formatted.Message.Should().Be("1 - one");
         }
-        
+
         [Fact]
         public void MultiWithOne()
         {
-            var multi = new MultiException("one", new[] {new ValidationException("one")});
+            var multi = new MultiException("one", new[] { new ValidationException("one") });
             var formatted = new FriendlyFormatter(multi);
             formatted.Message.Should().Be("1 - one");
         }
-        
+
         [Fact]
         public void MultiWithTwo()
         {
             var multi = new MultiException("one", new[]
-                        { new ValidationException("one"), new ValidationException("two")});
+                { new ValidationException("one"), new ValidationException("two") });
             var formatted = new FriendlyFormatter(multi);
             formatted.Message.Should().Be("1 - one\n2 - two");
         }
-        
+
         [Fact]
         public void MultiWithFour()
         {
             var multi = new MultiException("one", new[]
             {
                 new ValidationException("one"), new ValidationException("two"),
-                new ValidationException("three"), new ValidationException("four"),
-                
+                new ValidationException("three"), new ValidationException("four")
             });
             var formatted = new FriendlyFormatter(multi);
             formatted.Message.Should().Be("1 - one\n2 - two\n3 - three\n4 - four");
@@ -51,17 +50,17 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
             var exception = new ValidationException("one");
             Action act = () => new FriendlyFormatter(exception).Throw();
             act.Should().Throw<ValidationException>()
-               .WithMessage("1 - one");
+                .WithMessage("1 - one");
         }
 
         [Fact]
         public void ThrowMulti()
         {
             var multi = new MultiException("one", new[]
-                { new ValidationException("one"), new ValidationException("two")});
+                { new ValidationException("one"), new ValidationException("two") });
             Action act = () => new FriendlyFormatter(multi).Throw();
             act.Should().Throw<ValidationException>()
-               .WithMessage("1 - one\n2 - two");
+                .WithMessage("1 - one\n2 - two");
         }
     }
 }

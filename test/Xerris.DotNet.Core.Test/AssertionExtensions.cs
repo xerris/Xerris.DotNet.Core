@@ -14,6 +14,5 @@ namespace Xerris.DotNet.Core.Test
                 .IsEqual(actual.LastName, expected.LastName, "LastName")
                 .Check();
         }
-
     }
 }

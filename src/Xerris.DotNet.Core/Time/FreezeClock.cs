@@ -1,39 +1,37 @@
 using System;
 
-namespace Xerris.DotNet.Core.Time
+namespace Xerris.DotNet.Core.Time;
+
+public sealed class FreezeClock : IDisposable
 {
-    public sealed class FreezeClock : IDisposable
+    private bool disposed;
+
+    public FreezeClock()
     {
-        
-        private bool disposed;
+        ClockManager.Freeze();
+    }
 
-        public FreezeClock()
-        {
-            ClockManager.Freeze();
-        }
-
-        public FreezeClock(DateTime dateTime)
-        {
-            ClockManager.Freeze(dateTime);
-        }
+    public FreezeClock(DateTime dateTime)
+    {
+        ClockManager.Freeze(dateTime);
+    }
 
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 
-        ~FreezeClock()
-        {
-            Dispose(false);
-        }
+    ~FreezeClock()
+    {
+        Dispose(false);
+    }
 
-        private void Dispose(bool disposing)
-        {
-            if (disposed) return;
-            if (disposing) ClockManager.Thaw();
-            disposed = true;
-        }
+    private void Dispose(bool disposing)
+    {
+        if (disposed) return;
+        if (disposing) ClockManager.Thaw();
+        disposed = true;
     }
 }

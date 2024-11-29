@@ -11,13 +11,17 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
 
         [Fact]
         public void Base64()
-            => Validate.Begin()
+        {
+            Validate.Begin()
                 .IsEqual(Original.ToBase64().FromBase64(), Original, "original").Check();
+        }
 
 
         [Fact]
         public void GetBytes()
-            => Validate.Begin()
+        {
+            Validate.Begin()
                 .IsEqual(Original.GetBytes().FromBytes(), Original, "original").Check();
+        }
     }
 }

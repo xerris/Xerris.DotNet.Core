@@ -9,19 +9,25 @@ namespace Xerris.DotNet.Core.Test
     public class ModelFixture : IDisposable
     {
         public ModelFixture()
-            => new ClearFactory().Then(new TestModelFactory()).Run();
+        {
+            new ClearFactory().Then(new TestModelFactory()).Run();
+        }
 
 
         public void Dispose()
-            => FactoryGirl.Clear();
+        {
+            FactoryGirl.Clear();
+        }
     }
 
     public class ClearFactory : ICommand
     {
         public void Run()
-            => FactoryGirl.Clear();
+        {
+            FactoryGirl.Clear();
+        }
     }
-    
+
     [CollectionDefinition("Test Models")]
     public class ModelCollection : ICollectionFixture<ModelFixture>
     {

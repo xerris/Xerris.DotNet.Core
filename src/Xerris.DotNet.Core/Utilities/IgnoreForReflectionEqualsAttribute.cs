@@ -1,15 +1,14 @@
 using System;
 
-namespace Xerris.DotNet.Core.Utilities
-{
-    [AttributeUsage(AttributeTargets.Property)]
-    public class IgnoreForReflectionEqualsAttribute : Attribute
-    {
-        public string Reason { get; set; }
+namespace Xerris.DotNet.Core.Utilities;
 
-        public IgnoreForReflectionEqualsAttribute(string reason = "")
-        {
-            Reason = reason;
-        }
+[AttributeUsage(AttributeTargets.Property)]
+public class IgnoreForReflectionEqualsAttribute : Attribute
+{
+    public IgnoreForReflectionEqualsAttribute(string reason = "")
+    {
+        Reason = reason;
     }
+
+    public string Reason { get; set; }
 }

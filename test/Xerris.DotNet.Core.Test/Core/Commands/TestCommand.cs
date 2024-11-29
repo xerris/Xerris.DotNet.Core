@@ -8,9 +8,13 @@ namespace Xerris.DotNet.Core.Test.Core.Commands
         private readonly Action action;
 
         public TestCommand(Action action)
-            => this.action = action;
+        {
+            this.action = action;
+        }
 
         public void Run()
-            => action();
+        {
+            action();
+        }
     }
 }

@@ -7,12 +7,12 @@ namespace Xerris.DotNet.Core.Test.Core.Commands
     [Collection("base")]
     public class CompositeCommandTest
     {
+        private int count;
+
         public CompositeCommandTest()
         {
             count = 1;
         }
-
-        private int count;
 
         [Fact]
         public void CanRunMultipleCommands()

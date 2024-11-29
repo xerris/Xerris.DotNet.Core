@@ -1,10 +1,9 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Xerris.DotNet.Core.Cache
+namespace Xerris.DotNet.Core.Cache;
+
+public interface ICache
 {
-    public interface ICache
-    {
-        Task<TItem> GetOrCreate<TItem>(object key, Func<Task<TItem>> createItem);
-    }
+    Task<TItem> GetOrCreate<TItem>(object key, Func<Task<TItem>> createItem);
 }

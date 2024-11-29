@@ -1,9 +1,16 @@
-﻿namespace Xerris.DotNet.Core.Utilities.Mapper.Converter
+﻿namespace Xerris.DotNet.Core.Utilities.Mapper.Converter;
+
+public abstract class AbstractValueConverter<T> : IValueConverter<T>
 {
-    public abstract class AbstractValueConverter<T> : IValueConverter<T>
+    public virtual T Convert(object value)
     {
-        public virtual T Convert(object value) => InternalConvert(AsString(value)); 
-        protected virtual string AsString(object value) => (value??string.Empty).ToString(); 
-        protected abstract T InternalConvert(string input);
+        return InternalConvert(AsString(value));
     }
+
+    protected virtual string AsString(object value)
+    {
+        return (value ?? string.Empty).ToString();
+    }
+
+    protected abstract T InternalConvert(string input);
 }

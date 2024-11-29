@@ -10,22 +10,34 @@ namespace Xerris.DotNet.Core.Test.Factories
         private static TestFactory Instance => Factory ??= new TestFactory();
 
         public static T Build<T>()
-            => Build<T>(x => { });
+        {
+            return Build<T>(x => { });
+        }
 
         public static T Build<T>(Action<T> propertyUpdates)
-            => Instance.Build(propertyUpdates);
+        {
+            return Instance.Build(propertyUpdates);
+        }
 
         public static void Define<T>(Func<T> factory)
-            => Instance.Define(factory);
+        {
+            Instance.Define(factory);
+        }
 
         public static void Clear()
-            => Factory = null;
+        {
+            Factory = null;
+        }
 
         public static int UniqueId(string key = "anonymous")
-            => Instance.UniqueId(key);
+        {
+            return Instance.UniqueId(key);
+        }
 
         public static string UniqueIdStr(string key = "anonymous")
-            => UniqueId(key).ToString();
+        {
+            return UniqueId(key).ToString();
+        }
     }
 
     public class TestFactory
@@ -35,18 +47,20 @@ namespace Xerris.DotNet.Core.Test.Factories
 
         public T Build<T>(Action<T> propertyUpdates)
         {
-            if (factories.ContainsKey(typeof (T)) == false)
-                throw new ArgumentException($"Unknown entity type requested: {typeof (T).Name}");
-            
-            var entity = (T) factories[typeof (T)]();
+            if (factories.ContainsKey(typeof(T)) == false)
+                throw new ArgumentException($"Unknown entity type requested: {typeof(T).Name}");
+
+            var entity = (T)factories[typeof(T)]();
             propertyUpdates(entity);
             return entity;
         }
 
         public void Define<T>(Func<T> factory)
-            => factories[typeof(T)] = () => factory();
+        {
+            factories[typeof(T)] = () => factory();
+        }
 
-        public int UniqueId(string key= "anonymous")
+        public int UniqueId(string key = "anonymous")
         {
             if (!uniqueIds.ContainsKey(key))
                 uniqueIds.Add(key, 0);

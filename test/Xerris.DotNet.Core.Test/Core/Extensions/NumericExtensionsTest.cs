@@ -8,6 +8,8 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
     {
         [Fact]
         public void DoubleRoundedTo()
-            => double.Parse("6.01").RoundedTo(2).Should().Be(6.01);
+        {
+            double.Parse("6.01").RoundedTo(2).Should().Be(6.01);
+        }
     }
 }

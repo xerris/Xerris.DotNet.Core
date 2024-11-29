@@ -1,10 +1,11 @@
 using Xerris.DotNet.Core.Strategies;
 
-namespace Xerris.DotNet.Core.Extensions
+namespace Xerris.DotNet.Core.Extensions;
+
+public static class TaskExtensions
 {
-    public static class TaskExtensions
+    public static IStrategy<T> Then<T>(this IStrategy<T> left, IStrategy<T> right)
     {
-        public static IStrategy<T> Then<T>(this IStrategy<T> left, IStrategy<T> right)
-            => new CompositeStrategy<T>(left, right);
+        return new CompositeStrategy<T>(left, right);
     }
 }

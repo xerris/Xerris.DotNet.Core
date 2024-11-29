@@ -15,16 +15,28 @@ namespace Xerris.DotNet.Core.Test.Core.Time
         }
 
         // [Fact]
-        public void TodayAtPacific() => TestTodayAt(TimezoneOffset.Pacific);
-        
+        public void TodayAtPacific()
+        {
+            TestTodayAt(TimezoneOffset.Pacific);
+        }
+
         // [Fact]
-        public void TodayAtMountain() => TestTodayAt(TimezoneOffset.Mountain);
-        
+        public void TodayAtMountain()
+        {
+            TestTodayAt(TimezoneOffset.Mountain);
+        }
+
         // [Fact]
-        public void TodayAtCentral() => TestTodayAt(TimezoneOffset.Central);
-        
+        public void TodayAtCentral()
+        {
+            TestTodayAt(TimezoneOffset.Central);
+        }
+
         // [Fact]
-        public void TodayAtEastern() => TestTodayAt(TimezoneOffset.Eastern);
+        public void TodayAtEastern()
+        {
+            TestTodayAt(TimezoneOffset.Eastern);
+        }
 
         // [Theory]
         // [InlineData("2020-05-01 05:00:00", "2020-04-30 23:00:00")] // Normal -7
@@ -38,12 +50,12 @@ namespace Xerris.DotNet.Core.Test.Core.Time
         {
             var localTime = DateTime.Parse(expectedLocalTime);
             var utcTime = DateTime.Parse(actualUtcTime);
-            utc.Freeze(utcTime); 
+            utc.Freeze(utcTime);
             var dateTime = utc.NowAt(TimezoneOffset.Mountain);
             dateTime.Should().Be(localTime);
             utc.Thaw();
         }
-        
+
         private void TestTodayAt(TimezoneOffset offset)
         {
             var todayUtc = CalculateTodayForOffset(offset);
@@ -53,8 +65,10 @@ namespace Xerris.DotNet.Core.Test.Core.Time
         private DateTime CalculateTodayForOffset(TimezoneOffset offset)
         {
             var gap = Math.Abs(offset.Offset);
-            var toAdd = utc.Now.Hour - gap <= gap ? -1 : 0; //depending on time of day figure out what the expected 'today' is
-            return  utc.Today.AddHours(toAdd).Earliest();
+            var toAdd = utc.Now.Hour - gap <= gap
+                ? -1
+                : 0; //depending on time of day figure out what the expected 'today' is
+            return utc.Today.AddHours(toAdd).Earliest();
         }
     }
 }

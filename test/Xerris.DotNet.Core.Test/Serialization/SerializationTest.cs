@@ -14,7 +14,7 @@ namespace Xerris.DotNet.Core.Test.Serialization
         [Fact]
         public void CanSerializeAsJson()
         {
-            var subject = new TestSubject {Name = "MyName", Age = 1, Start = Clock.Local.Now};
+            var subject = new TestSubject { Name = "MyName", Age = 1, Start = Clock.Local.Now };
             var json = subject.ToJson();
             var from = json.FromJson<TestSubject>();
 
@@ -24,7 +24,7 @@ namespace Xerris.DotNet.Core.Test.Serialization
         [Fact]
         public void CanSerializeAsXml()
         {
-            var subject = new TestSubject {Name = "MyName", Age = 1, Start = Clock.Local.Now};
+            var subject = new TestSubject { Name = "MyName", Age = 1, Start = Clock.Local.Now };
             var xml = subject.ToXml();
             var from = xml.FromXml<TestSubject>();
 

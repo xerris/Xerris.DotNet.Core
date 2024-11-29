@@ -1,16 +1,17 @@
-namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
+namespace Xerris.DotNet.Core.Utilities.ApplicationEvents;
+
+public class MonitorBuilder : IMonitorBuilder
 {
-    public class MonitorBuilder : IMonitorBuilder
+    private readonly IEventSink sink;
+
+    public MonitorBuilder(IEventSink sink)
     {
-        private readonly IEventSink sink;
+        this.sink = sink;
+    }
 
-        public MonitorBuilder(IEventSink sink)
-        {
-            this.sink = sink;
-        }
-
-        public IEventMonitor Begin(string user, string operation, string details = null,
-            int acceptableDurationMilliseconds = 2000)
-            => new EventMonitor(user, operation, details, acceptableDurationMilliseconds, sink);
+    public IEventMonitor Begin(string user, string operation, string details = null,
+        int acceptableDurationMilliseconds = 2000)
+    {
+        return new EventMonitor(user, operation, details, acceptableDurationMilliseconds, sink);
     }
 }

@@ -75,8 +75,8 @@ namespace Xerris.DotNet.Core.Test.Utilities
         [Fact]
         public void ShouldNotInclude_SmallerThanStart()
         {
-            var range = new Range<int>(1, 10); 
-           range.Includes(range.Start-1).Should().BeFalse();
+            var range = new Range<int>(1, 10);
+            range.Includes(range.Start - 1).Should().BeFalse();
         }
 
         [Fact]
@@ -89,9 +89,9 @@ namespace Xerris.DotNet.Core.Test.Utilities
         [Fact]
         public void CanIterateOverIntegers()
         {
-            var iteratorValues = new List<int> {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+            var iteratorValues = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
             var range = new Range<int>(1, 10);
-            range.ForEach(inc => inc+1, each => iteratorValues.Contains(each).Should().BeTrue());
+            range.ForEach(inc => inc + 1, each => iteratorValues.Contains(each).Should().BeTrue());
             range.End.Should().Be(iteratorValues.Count);
         }
 
@@ -135,8 +135,8 @@ namespace Xerris.DotNet.Core.Test.Utilities
             {
                 100.01, 101.01, 102.01, 103.01, 104.01, 105.01, 106.01
             };
-            var range = new Range<double>(100.01,106.01);
-            range.ForEach(inc => inc+1, each => iteratorValues.Contains(each).Should().BeTrue());
+            var range = new Range<double>(100.01, 106.01);
+            range.ForEach(inc => inc + 1, each => iteratorValues.Contains(each).Should().BeTrue());
         }
 
         [Fact]
@@ -147,16 +147,16 @@ namespace Xerris.DotNet.Core.Test.Utilities
                 100.0m, 101.01m, 102.02m, 103.03m, 104.04m, 105.05m, 106.06m
             };
             var range = new Range<decimal>(100.0m, 100.06m);
-            range.ForEach(inc => inc+1.01m, each => iteratorValues.Contains(each).Should().BeTrue());
+            range.ForEach(inc => inc + 1.01m, each => iteratorValues.Contains(each).Should().BeTrue());
         }
 
         [Fact]
         public void CanConstructWithIncrementor()
         {
-            int[] expected = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+            int[] expected = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             var withIncrementor = Range<int>.Create(1, 9);
             var actual = new List<int>();
-            withIncrementor.ForEach(actual.Add); 
+            withIncrementor.ForEach(actual.Add);
             expected.Should().BeEquivalentTo(actual.ToArray());
         }
     }

@@ -1,7 +1,9 @@
-﻿namespace Xerris.DotNet.Core.Utilities.Mapper.Converter
+﻿namespace Xerris.DotNet.Core.Utilities.Mapper.Converter;
+
+public class StringConverter : AbstractValueConverter<string>
 {
-    public class StringConverter : AbstractValueConverter<string>
+    protected override string InternalConvert(string input)
     {
-        protected override string InternalConvert(string input) => input;
+        return input;
     }
 }
