@@ -1,5 +1,4 @@
 using Xerris.DotNet.Core.Commands;
-using Xerris.DotNet.Core.Test.Core;
 using Xerris.DotNet.Core.Test.Factories;
 using Xerris.DotNet.Core.Test.Model;
 

@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using FluentAssertions;
-using Xerris.DotNet.Core.Extensions;
 using Xerris.DotNet.Core.Validations;
 using Xunit;
 

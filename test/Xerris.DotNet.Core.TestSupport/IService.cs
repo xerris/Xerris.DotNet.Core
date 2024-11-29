@@ -10,8 +10,6 @@ namespace Xerris.DotNet.Core.TestSupport
     public class MyService : IService
     {
         public void DoIt()
-        {
-            Console.WriteLine("Hi");
-        }
+            => Console.WriteLine("Hi");
     }
 }

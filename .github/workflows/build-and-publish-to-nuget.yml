@@ -56,8 +56,8 @@ jobs:
 
       - name: Create and Push Git Tag
         run: |
-          git config --global user.email "your-email@example.com"
-          git config --global user.name "your-username"
+          git config --global user.email "greg@xerris.com"
+          git config --global user.name "Greg COok"
           NEXT_VERSION=${{ steps.calc_version.outputs.next_version }}
           git tag "v$NEXT_VERSION"
           git push origin "v$NEXT_VERSION"
@@ -73,6 +73,6 @@ jobs:
         run: >
           dotnet nuget push ./packages/*.nupkg
           --api-key ${{ secrets.NUGET_API_KEY }}
-          --source ${{ secrets.NUGET_SOURCE_URI }}
+          --source "${{ secrets.NUGET_SOURCE_URI }}/v3/index.json"
           --timeout 360
           --skip-duplicate

@@ -27,9 +27,7 @@ namespace Xerris.DotNet.Core.Data
         }
 
         ~UnitOfWork()
-        {
-            Dispose(false);
-        }
+            => Dispose(false);
         
         public void Dispose()
         {

@@ -65,8 +65,6 @@ namespace Xerris.DotNet.Core.Test.Core.Time
         }
 
         public void Dispose()
-        {
-            Clock.Local.Thaw(); 
-        }
+            => Clock.Local.Thaw();
     }
 }

@@ -1,4 +1,3 @@
-using Xerris.DotNet.Core.Test.Core;
 using Xerris.DotNet.Core.Test.Model;
 using Xerris.DotNet.Core.Validations;
 

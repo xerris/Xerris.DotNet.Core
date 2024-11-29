@@ -18,31 +18,30 @@ namespace Xerris.DotNet.Core.Logging.Http
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
-            var req = request;
             var id = Guid.NewGuid().ToString();
             var msg = $"[{id} - Request]";
 
             Log.Information("{Message}========Start==========", msg);
             Log.Debug("{Message} {Method} {PathAndQuery} {Scheme}/{Version}",
-                msg, req.Method, req.RequestUri.PathAndQuery, req.RequestUri.Scheme, req.Version);
+                msg, request.Method, request.RequestUri.PathAndQuery, request.RequestUri.Scheme, request.Version);
             Log.Information("{Message} Host: {Scheme}://{Host}",
-                msg, req.RequestUri.Scheme, req.RequestUri.Host);
+                msg, request.RequestUri.Scheme, request.RequestUri.Host);
 
-            foreach (var (key, value) in req.Content.Headers.Where(h 
+            foreach (var (key, value) in request.Content.Headers.Where(h 
                          => !string.Equals(h.Key, "Authorization",StringComparison.CurrentCultureIgnoreCase)))
             {
                 Log.Debug("{Message} {Key}: {Value}", msg, key, string.Join(", ", value));
             }
             
-            if (req.Content != null)
+            if (request.Content != null)
             {
-                foreach (var (key, value) in req.Content.Headers)
+                foreach (var (key, value) in request.Content.Headers)
                     Log.Debug("{Message} {Key}: {Value}", msg, key, string.Join(", ", value));
 
-                if (req.Content is StringContent || IsTextBasedContentType(req.Headers) ||
-                    IsTextBasedContentType(req.Content.Headers))
+                if (request.Content is StringContent || IsTextBasedContentType(request.Headers) ||
+                    IsTextBasedContentType(request.Content.Headers))
                 {
-                    var result = await req.Content.ReadAsStringAsync();
+                    var result = await request.Content.ReadAsStringAsync(cancellationToken);
 
                     Log.Information("{Message} Content:", msg);
                     Log.Debug("{Message} {@Result}", msg, result);
@@ -64,27 +63,24 @@ namespace Xerris.DotNet.Core.Logging.Http
             var resp = response;
 
             Log.Debug("{Message} {Scheme}/{Version} {StatusCode} {ReasonPhrase}",
-                msg, req.RequestUri.Scheme.ToUpper(), resp.Version, (int) resp.StatusCode, resp.ReasonPhrase);
+                msg, request.RequestUri.Scheme.ToUpper(), resp.Version, (int) resp.StatusCode, resp.ReasonPhrase);
 
             foreach (var (key, value) in resp.Headers)
                 Log.Debug("{Message} {key}: {Value}", msg, key, string.Join(", ", value));
 
-            if (resp.Content != null)
+            foreach (var (key, value) in resp.Content.Headers)
+                Log.Debug($"{msg} {key}: {string.Join(", ", value)}");
+
+            if (resp.Content is StringContent || IsTextBasedContentType(resp.Headers) ||
+                IsTextBasedContentType(resp.Content.Headers))
             {
-                foreach (var (key, value) in resp.Content.Headers)
-                    Log.Debug($"{msg} {key}: {string.Join(", ", value)}");
+                start = DateTime.Now;
+                var result = await resp.Content.ReadAsStringAsync(cancellationToken);
+                end = DateTime.Now;
 
-                if (resp.Content is StringContent || this.IsTextBasedContentType(resp.Headers) ||
-                    IsTextBasedContentType(resp.Content.Headers))
-                {
-                    start = DateTime.Now;
-                    var result = await resp.Content.ReadAsStringAsync();
-                    end = DateTime.Now;
-
-                    Log.Debug("{Message} Content:", msg);
-                    Log.Debug("{Message} {@Result}", msg, result);
-                    Log.Debug("{Duration}", end - start);
-                }
+                Log.Debug("{Message} Content:", msg);
+                Log.Debug("{Message} {@Result}", msg, result);
+                Log.Debug("{Duration}", end - start);
             }
 
             Log.Debug("{Message}==========End==========", msg);

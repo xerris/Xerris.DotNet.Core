@@ -18,6 +18,7 @@ namespace Xerris.DotNet.Core.Validations
         {
         }
 
+        [Obsolete("Obsolete")]
         protected ValidationException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
@@ -37,63 +38,39 @@ namespace Xerris.DotNet.Core.Validations
         }
 
         public static ValidationException IsRequired(string message)
-        {
-            return new ValidationException($"{message}");
-        }
+            => new ValidationException($"{message}");
 
         public static ValidationException ListIsNullOrEmpty(string message)
-        {
-            return new ValidationException($"{message} is null or empty");
-        }
+            => new ValidationException($"{message} is null or empty");
 
         public static ValidationException ExceedsMaximumLength(string message)
-        {
-            return new ValidationException($"{message}");
-        }
+            => new ValidationException($"{message}");
 
         public static ValidationException IsNotLengthOf(string message)
-        {
-            return new ValidationException($"{message}");
-        }
+            => new ValidationException($"{message}");
 
         public static ValidationException IsNotTrue(string message)
-        {
-            return new ValidationException($"{message}");
-        }
+            => new ValidationException($"{message}");
 
         public static ValidationException MustBeNumeric(string message)
-        {
-            return new ValidationException($"{message}");
-        }
+            => new ValidationException($"{message}");
 
         public static ValidationException MustBeEmail(string message)
-        {
-            return new ValidationException($"{message}");
-        }
+            => new ValidationException($"{message}");
 
         public static ValidationException MustBePostalCode(string message)
-        {
-            return new ValidationException($"{message}");
-        }
+            => new ValidationException($"{message}");
 
         public static ValidationException MustBePhoneNumber(string message)
-        {
-            return new ValidationException($"{message}");
-        }
+            => new ValidationException($"{message}");
 
         public static ValidationException MustBeOfLength(string message)
-        {
-            return new ValidationException($"{message}");
-        }
+            => new ValidationException($"{message}");
 
         public static ValidationException MustBeMinimumLength(string message)
-        {
-            return new ValidationException($"{message}");
-        }
-        
+            => new ValidationException($"{message}");
+
         public static ValidationException FormattedError(string format, params string[] args)
-        {
-            return new ValidationException(string.Format(format, args));
-        }
+            => new ValidationException(string.Format(format, args));
     }
 }

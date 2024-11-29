@@ -15,9 +15,7 @@ namespace Xerris.DotNet.Core.Test.Utilities
             var range = new Range<int>(1, 10);
 
             for (var i = range.Start; i <= range.End; i++)
-            {
                 range.Includes(i).Should().BeTrue();
-            }
         }
 
         [Fact]
@@ -102,14 +100,14 @@ namespace Xerris.DotNet.Core.Test.Utilities
         {
             var start = DateTime.Today;
             var iteratorValues = new List<DateTime>
-                                                {
-                                                    start,
-                                                    start.AddDays(1),
-                                                    start.AddDays(2),
-                                                    start.AddDays(3),
-                                                    start.AddDays(4),
-                                                    start.AddDays(5)
-                                                };
+            {
+                start,
+                start.AddDays(1),
+                start.AddDays(2),
+                start.AddDays(3),
+                start.AddDays(4),
+                start.AddDays(5)
+            };
             var range = new DateTimeRange(DateTime.Today, DateTime.Today.AddDays(5));
             range.ForEach(inc => inc.AddDays(1), each => iteratorValues.Contains(each).Should().BeTrue());
         }
@@ -119,13 +117,13 @@ namespace Xerris.DotNet.Core.Test.Utilities
         {
             var start = DateTime.Today;
             var iteratorValues = new List<DateTime>
-                                                {
-                                                    start,
-                                                    start.AddMinutes(1),
-                                                    start.AddMinutes(2),
-                                                    start.AddMinutes(3),
-                                                    start.AddMinutes(4)
-                                                };
+            {
+                start,
+                start.AddMinutes(1),
+                start.AddMinutes(2),
+                start.AddMinutes(3),
+                start.AddMinutes(4)
+            };
             var range = new DateTimeRange(DateTime.Today, DateTime.Today.AddMinutes(4));
             range.ForEach(inc => inc.AddMinutes(1), each => iteratorValues.Contains(each).Should().BeTrue());
         }
@@ -134,9 +132,9 @@ namespace Xerris.DotNet.Core.Test.Utilities
         public void CanIterateOverDoubles()
         {
             var iteratorValues = new List<double>
-                                              {
-                                                  100.01, 101.01, 102.01, 103.01, 104.01, 105.01, 106.01
-                                              };
+            {
+                100.01, 101.01, 102.01, 103.01, 104.01, 105.01, 106.01
+            };
             var range = new Range<double>(100.01,106.01);
             range.ForEach(inc => inc+1, each => iteratorValues.Contains(each).Should().BeTrue());
         }
@@ -145,9 +143,9 @@ namespace Xerris.DotNet.Core.Test.Utilities
         public void CanIterateOverDecimals()
         {
             var iteratorValues = new List<decimal>
-                                              {
-                                                  100.0m, 101.01m, 102.02m, 103.03m, 104.04m, 105.05m, 106.06m 
-                                              };
+            {
+                100.0m, 101.01m, 102.02m, 103.03m, 104.04m, 105.05m, 106.06m
+            };
             var range = new Range<decimal>(100.0m, 100.06m);
             range.ForEach(inc => inc+1.01m, each => iteratorValues.Contains(each).Should().BeTrue());
         }

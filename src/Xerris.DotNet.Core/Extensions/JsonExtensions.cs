@@ -15,8 +15,10 @@ namespace Xerris.DotNet.Core.Extensions
             ContractResolver = ContractResolver,
         };
 
-        public static string ToJson<T>(this T item, JsonSerializerSettings settings = null)=>JsonConvert.SerializeObject(item, settings ?? Settings);
+        public static string ToJson<T>(this T item, JsonSerializerSettings settings = null) =>
+            JsonConvert.SerializeObject(item, settings ?? Settings);
 
-        public static T FromJson<T>(this string data, JsonSerializerSettings settings = null)=>JsonConvert.DeserializeObject<T>(data, settings ?? Settings);
+        public static T FromJson<T>(this string data, JsonSerializerSettings settings = null) =>
+            JsonConvert.DeserializeObject<T>(data, settings ?? Settings);
     }
 }

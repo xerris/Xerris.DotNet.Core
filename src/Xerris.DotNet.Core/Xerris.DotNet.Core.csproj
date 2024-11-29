@@ -6,7 +6,7 @@
       <Authors>Xerris Inc.</Authors>
       <Company>Xerris Inc.</Company>
       <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-      <LangVersion>8</LangVersion>
+      <LangVersion>latest</LangVersion>
       <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
 

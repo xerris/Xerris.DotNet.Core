@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using FluentAssertions;
 using Xerris.DotNet.Core.Test.Model;
@@ -8,6 +9,8 @@ using Xunit;
 
 namespace Xerris.DotNet.Core.Test.Core.Validations
 {
+    [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalse")]
+    [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
     public class ValidationExtensionsTest
     {
         private const string ValidationMessage = "Should not be empty";
@@ -182,7 +185,7 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         public void IsNotEmpty_Enumerable()
         {
             Validate.Begin().IsNotEmpty(new object[] {1}, "Foo").Check();
-            Validate.Begin().IsNotEmpty(new object[] { }, "Foo").Invoking(x => x.Check()).Should()
+            Validate.Begin().IsNotEmpty(Array.Empty<object>(), "Foo").Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage("Foo is not expected to be empty");
         }
 
