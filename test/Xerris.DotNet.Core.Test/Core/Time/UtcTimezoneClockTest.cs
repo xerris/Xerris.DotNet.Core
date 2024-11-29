@@ -9,16 +9,10 @@ namespace Xerris.DotNet.Core.Test.Core.Time
     {
         private readonly TimeZoneClock utc;
 
-        public UtcTimezoneClockTest()
-        {
-            utc = new TimeZoneClock(TimeZoneInfo.Utc);
-        }
-
+        public UtcTimezoneClockTest() => utc = new TimeZoneClock(TimeZoneInfo.Utc);
+        
         // [Fact]
-        public void TodayAtPacific()
-        {
-            TestTodayAt(TimezoneOffset.Pacific);
-        }
+        public void TodayAtPacific() => TestTodayAt(TimezoneOffset.Pacific);
 
         // [Fact]
         public void TodayAtMountain()

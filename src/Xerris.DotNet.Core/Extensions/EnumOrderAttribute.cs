@@ -12,9 +12,7 @@ public class EnumOrderAttribute : Attribute
 public class SequenceAttribute : Attribute
 {
     public SequenceAttribute(int value)
-    {
-        Sequence = value;
-    }
+        => Sequence = value;
 
     public int Sequence { get; set; }
 }

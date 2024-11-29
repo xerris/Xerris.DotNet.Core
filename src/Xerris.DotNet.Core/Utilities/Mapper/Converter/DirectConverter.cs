@@ -3,7 +3,5 @@
 public class DirectConverter<T> : IValueConverter<T>
 {
     public T Convert(object value)
-    {
-        return (T)value;
-    }
+        => (T)value;
 }

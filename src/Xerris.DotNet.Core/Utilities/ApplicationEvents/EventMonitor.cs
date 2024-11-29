@@ -31,19 +31,22 @@ public class EventMonitor : IEventMonitor
     public async Task<int> Complete()
     {
         if (sink == null) return 0;
-        if (list.Count == 1)
+        switch (list.Count)
         {
-            await sink.SendAsync(list.First()).ConfigureAwait(false);
-        }
-        else if (list.Count > 1)
-        {
-            for (var i = 0; i < list.Count; i++)
+            case 1:
+                await sink.SendAsync(list.First()).ConfigureAwait(false);
+                break;
+            case > 1:
             {
-                var ap = list[i];
-                ap.OperationStep ??= (i + 1).ToString();
-            }
+                for (var i = 0; i < list.Count; i++)
+                {
+                    var ap = list[i];
+                    ap.OperationStep ??= (i + 1).ToString();
+                }
 
-            await sink.SendAsync(list).ConfigureAwait(false);
+                await sink.SendAsync(list).ConfigureAwait(false);
+                break;
+            }
         }
 
         isCompleted = true;

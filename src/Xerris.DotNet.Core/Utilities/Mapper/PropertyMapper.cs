@@ -22,12 +22,8 @@ public class PropertyMapper<T> : IPropertyMapper
     public string Target => target.Name;
 
     public void Apply(object src, object dest)
-    {
-        target.SetValue(dest, converter.Convert(GetSourceValue(src)), null);
-    }
+        => target.SetValue(dest, converter.Convert(GetSourceValue(src)), null);
 
     private object GetSourceValue(object src)
-    {
-        return source.GetGetMethod()?.Invoke(src, Array.Empty<object>());
-    }
+        => source.GetGetMethod()?.Invoke(src, []);
 }

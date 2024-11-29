@@ -29,8 +29,5 @@ public class ApplicationConfigurationBuilder<T> where T : IApplicationConfigBase
         return Build(configuration, appConfig);
     }
 
-    protected virtual T Build(IConfiguration config, T appConfig)
-    {
-        return appConfig;
-    }
+    protected virtual T Build(IConfiguration config, T appConfig) => appConfig;
 }

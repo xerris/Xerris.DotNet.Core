@@ -20,16 +20,8 @@ public static class IoC
         }
     }
 
-
-    public static TService Resolve<TService>()
-    {
-        return Singleton.Instance.Find<TService>();
-    }
-
-    public static IServiceScope CreateScope()
-    {
-        return Singleton.Instance.NewScope();
-    }
+    public static TService Resolve<TService>() => Singleton.Instance.Find<TService>();
+    public static IServiceScope CreateScope() => Singleton.Instance.NewScope();
 
     private class Singleton
     {
@@ -78,14 +70,7 @@ public static class IoC
                 );
         }
 
-        internal TService Find<TService>()
-        {
-            return container.GetRequiredService<TService>();
-        }
-
-        internal IServiceScope NewScope()
-        {
-            return container.CreateScope();
-        }
+        internal TService Find<TService>() => container.GetRequiredService<TService>();
+        internal IServiceScope NewScope() => container.CreateScope();
     }
 }

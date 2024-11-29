@@ -14,12 +14,14 @@ namespace Xerris.DotNet.Core.Test.Core.Time
         {
             Clock.Local.Thaw();
             Clock.Utc.Thaw();
+            UtcClock.Thaw();
         }
 
         public void Dispose()
         {
             Clock.Local.Thaw();
             Clock.Utc.Thaw();
+            UtcClock.Thaw();
         }
 
         [Fact]

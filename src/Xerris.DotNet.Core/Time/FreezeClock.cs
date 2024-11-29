@@ -7,14 +7,11 @@ public sealed class FreezeClock : IDisposable
     private bool disposed;
 
     public FreezeClock()
-    {
-        ClockManager.Freeze();
-    }
+        => ClockManager.Freeze();
+
 
     public FreezeClock(DateTime dateTime)
-    {
-        ClockManager.Freeze(dateTime);
-    }
+        => ClockManager.Freeze(dateTime);
 
 
     public void Dispose()
@@ -24,9 +21,7 @@ public sealed class FreezeClock : IDisposable
     }
 
     ~FreezeClock()
-    {
-        Dispose(false);
-    }
+        => Dispose(false);
 
     private void Dispose(bool disposing)
     {

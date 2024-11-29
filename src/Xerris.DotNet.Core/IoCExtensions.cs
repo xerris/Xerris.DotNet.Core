@@ -29,7 +29,5 @@ public static class IoCExtensions
     }
 
     private static IEnumerable<Type> FindAllFor(Type type, Assembly assembly)
-    {
-        return assembly.GetTypes().Where(tt => tt.IsClass && !tt.IsAbstract && type.IsAssignableFrom(tt));
-    }
+        => assembly.GetTypes().Where(tt => tt.IsClass && !tt.IsAbstract && type.IsAssignableFrom(tt));
 }

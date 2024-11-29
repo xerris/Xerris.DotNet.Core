@@ -53,10 +53,8 @@ public abstract class BaseRepository
             if (connection != null)
                 return await connection.QueryAsync<T>(sql, parameters, transaction).ConfigureAwait(false);
 
-            using (var conn = await CreateReadonlyConnectionAsync())
-            {
-                return await conn.QueryAsync<T>(sql, parameters).ConfigureAwait(false);
-            }
+            using var conn = await CreateReadonlyConnectionAsync();
+            return await conn.QueryAsync<T>(sql, parameters).ConfigureAwait(false);
         }, retries, callingMethod);
     }
 
@@ -69,10 +67,8 @@ public abstract class BaseRepository
             if (connection != null)
                 return await connection.QuerySingleAsync<T>(sql, parameters, transaction).ConfigureAwait(false);
 
-            using (var conn = await CreateReadonlyConnectionAsync())
-            {
-                return await conn.QuerySingleAsync<T>(sql, parameters).ConfigureAwait(false);
-            }
+            using var conn = await CreateReadonlyConnectionAsync();
+            return await conn.QuerySingleAsync<T>(sql, parameters).ConfigureAwait(false);
         }, retries, callingMethod);
     }
 
@@ -86,10 +82,8 @@ public abstract class BaseRepository
                 return await connection.QuerySingleOrDefaultAsync<T>(sql, parameters, transaction)
                     .ConfigureAwait(false);
 
-            using (var conn = await CreateReadonlyConnectionAsync())
-            {
-                return await conn.QuerySingleOrDefaultAsync<T>(sql, parameters).ConfigureAwait(false);
-            }
+            using var conn = await CreateReadonlyConnectionAsync();
+            return await conn.QuerySingleOrDefaultAsync<T>(sql, parameters).ConfigureAwait(false);
         }, retries, callingMethod);
     }
 

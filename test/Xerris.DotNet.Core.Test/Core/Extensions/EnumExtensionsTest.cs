@@ -24,21 +24,13 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
 
         [Fact]
         public void Should_Bork_When_Attempting_To_Create_Enum_List_When_An_Item_Is_Not_Part_Of_The_Enum()
-        {
-            Assert.Throws<ArgumentException>(() => new[] { "Female", "Male", "kaka-poopoo" }.ToEnumList<Gender>());
-        }
+            => Assert.Throws<ArgumentException>(() => new[] { "Female", "Male", "kaka-poopoo" }.ToEnumList<Gender>());
+        
+        [Fact]
+        public void Can_Parse_From_Int_Back_To_Enum()=> 0.ToEnum<Gender>().Should().Be(Gender.Female);
 
         [Fact]
-        public void Can_Parse_From_Int_Back_To_Enum()
-        {
-            0.ToEnum<Gender>().Should().Be(Gender.Female);
-        }
-
-        [Fact]
-        public void Can_Parse_From_String_Back_To_Enum()
-        {
-            "0".ToEnum<Gender>().Should().Be(Gender.Female);
-        }
+        public void Can_Parse_From_String_Back_To_Enum() => "0".ToEnum<Gender>().Should().Be(Gender.Female);
 
         [Fact]
         public void Should_Not_Convert_String()
@@ -49,10 +41,7 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         }
 
         [Fact]
-        public void Should_Parse_Code_By_Description()
-        {
-            "FT-SN".ToEnumExact<Codes>().Should().Be(Codes.FTSN);
-        }
+        public void Should_Parse_Code_By_Description() => "FT-SN".ToEnumExact<Codes>().Should().Be(Codes.FTSN);
 
         [Fact]
         public void Should_Convert_To_Enum_List_With_A_Description()
@@ -67,10 +56,7 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
 
         [Fact]
         public void ShouldParseCodeWithWhitespaceToEnum()
-        {
-            const string serviceType = " F T";
-            serviceType.ToEnumExact<Codes>().Should().Be(Codes.FT);
-        }
+            => " F T".ToEnumExact<Codes>().Should().Be(Codes.FT);
 
         [Fact]
         public void Should_Get_Sort_Order()
@@ -80,10 +66,7 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         }
 
         [Fact]
-        public void Should_Get_List_Of_Enums()
-        {
-            EnumExtensions.GetEnumList<SortThings>().Should().HaveCount(4);
-        }
+        public void Should_Get_List_Of_Enums() => EnumExtensions.GetEnumList<SortThings>().Should().HaveCount(4);
 
         [Fact]
         public void Should_Get_Sorted_List_Of_Enums()
@@ -98,10 +81,7 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
 
         [Fact]
         public void Should_Return_Default_For_Nullable_Enum()
-        {
-            const string myString = "";
-            myString.ToNullableEnumExact<Gender>().Should().Be(default(Gender?));
-        }
+            => "".ToNullableEnumExact<Gender>().Should().Be(default(Gender?));
 
         [Fact]
         public void ShouldParseNumericStringToEnum()
@@ -122,11 +102,8 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
 
         [Fact]
         public void Should_Throw_Exception_When_Trying_To_Parse_Invalid_Value()
-        {
-            const string myString = "notFemaleOrMale";
-            Assert.Throws<ArgumentException>(() => myString.ToNullableEnumExact<Gender>());
-        }
-
+            => Assert.Throws<ArgumentException>(() => "notFemaleOrMale".ToNullableEnumExact<Gender>());
+        
         [Fact]
         public void Should_Return_True_And_Parse_Valid_Enum_Value()
         {
@@ -216,11 +193,8 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
     public enum SortThings
     {
         [EnumOrder(Order = 2)] [Sequence(1)] Item1 = 1,
-
         [EnumOrder(Order = 10)] [Sequence(3)] Item2 = 2,
-
         [EnumOrder(Order = 1)] [Sequence(2)] Item3 = 3,
-
         [Sequence(5)] Item4 = 4
     }
 }

@@ -12,10 +12,7 @@ namespace Xerris.DotNet.Core.Test.Core.Commands
     {
         private int count;
 
-        public CompositeAwaitedCommandTest()
-        {
-            count = 1;
-        }
+        public CompositeAwaitedCommandTest() => count = 1;
 
         [Fact]
         public async Task CanRunMultipleCommands()
@@ -30,15 +27,7 @@ namespace Xerris.DotNet.Core.Test.Core.Commands
     internal class TestWaitedCommand : IWaitedCommand
     {
         private readonly Action action;
-
-        public TestWaitedCommand(Action action)
-        {
-            this.action = action;
-        }
-
-        public async Task RunAsync()
-        {
-            await Task.Run(() => action());
-        }
+        public TestWaitedCommand(Action action) => this.action = action;
+        public async Task RunAsync() => await Task.Run(() => action());
     }
 }

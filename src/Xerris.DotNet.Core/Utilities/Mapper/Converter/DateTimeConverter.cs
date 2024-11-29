@@ -10,28 +10,22 @@ public class DateTimeConverter : AbstractValueConverter<DateTime>
     private readonly string format;
 
     public DateTimeConverter(string format)
-    {
-        this.format = format;
-    }
+        => this.format = format;
 
     public DateTimeConverter() : this(DateFormat)
     {
     }
 
     public override DateTime Convert(object value)
-    {
-        return value switch
+        => value switch
         {
             null => DateTime.MinValue,
             DateTime time => time,
             _ => base.Convert(value)
         };
-    }
 
     protected override DateTime InternalConvert(string input)
-    {
-        return string.IsNullOrEmpty(input)
+        => string.IsNullOrEmpty(input)
             ? DateTime.MinValue
             : DateTime.ParseExact(input, format, CultureInfo.CurrentCulture);
-    }
 }

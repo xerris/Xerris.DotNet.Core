@@ -16,7 +16,7 @@ public class ValueMapper<T> : IPropertyMapper
 
     public void Apply(object src, object dest)
     {
-        target.SetValue(dest, value, Array.Empty<object>());
+        target.SetValue(dest, value, []);
     }
 
     public string Source => Equals(default(T), value) ? string.Empty : value.ToString();

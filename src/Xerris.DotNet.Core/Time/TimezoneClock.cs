@@ -7,9 +7,7 @@ public class TimeZoneClock : IClock
     private readonly TimeZoneInfo timeZoneInfo;
 
     public TimeZoneClock(TimeZoneInfo timeZoneInfo)
-    {
-        this.timeZoneInfo = timeZoneInfo;
-    }
+        => this.timeZoneInfo = timeZoneInfo;
 
     public DateTime UtcToday => ClockManager.Today.ToUniversalTime();
 
@@ -18,9 +16,7 @@ public class TimeZoneClock : IClock
     public DateTime Today => TimeZoneInfo.ConvertTime(ClockManager.Now, timeZoneInfo).Date;
 
     public void Freeze()
-    {
-        ClockManager.Freeze();
-    }
+        => ClockManager.Freeze();
 
     public void Freeze(DateTime timeToFreeze)
     {
@@ -32,22 +28,14 @@ public class TimeZoneClock : IClock
     }
 
     public void Thaw()
-    {
-        ClockManager.Thaw();
-    }
+        => ClockManager.Thaw();
 
     public DateTime NowToTimeZone(TimeZoneInfo info)
-    {
-        return TimeZoneInfo.ConvertTime(Now, info);
-    }
+        => TimeZoneInfo.ConvertTime(Now, info);
 
     public DateTime TodayAt(TimezoneOffset offset)
-    {
-        return offset.TodayFrom(NowUtc);
-    }
+        => offset.TodayFrom(NowUtc);
 
     public DateTime NowAt(TimezoneOffset offset)
-    {
-        return offset.From(NowUtc);
-    }
+        => offset.From(NowUtc);
 }

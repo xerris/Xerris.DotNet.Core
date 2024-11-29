@@ -47,9 +47,7 @@ public static class ObjectExtensions
         if (o1.GetType().GetProperties().FirstOrDefault(x => x.Name == "HibernateLazyInitializer") != null)
         {
             //swap the two objects so that nhibernate one is last since it contains more properties that we shouldn't be checking
-            var o3 = o1;
-            o1 = o2;
-            o2 = o3;
+            (o1, o2) = (o2, o1);
         }
 
         var propertyInfos = o1.GetType().GetProperties();
@@ -76,9 +74,9 @@ public static class ObjectExtensions
                 return o2Value == null;
             }
 
-            if (o1Value is DateTime)
+            if (o1Value is DateTime time)
             {
-                o1Value = ((DateTime)o1Value).TruncateMilliseconds();
+                o1Value = time.TruncateMilliseconds();
                 o2Value = ((DateTime)o2Value).TruncateMilliseconds();
             }
 
@@ -97,37 +95,33 @@ public static class ObjectExtensions
     private static string Stringify(this object obj)
     {
         if (obj == null) return "null";
-        if (!(obj is IEnumerable os)) return obj.ToString();
+        if (obj is not IEnumerable os) return obj.ToString();
         var enumerable = os as object[] ?? os.Cast<object>().ToArray();
         var sb = new StringBuilder("IEnumerable Count:").Append(enumerable.CountEnum());
-        foreach (var o in enumerable) sb.Append("\n").Append(o.Stringify());
+        foreach (var o in enumerable) sb.Append('\n').Append(o.Stringify());
         return sb.ToString();
     }
 
     private static int CountEnum(this IEnumerable enumerable)
-    {
-        return enumerable.Cast<object>().Count();
-    }
+        => enumerable.Cast<object>().Count();
 
     private static bool IsSystemType(object o1)
-    {
-        return o1 != null && "System".Equals(o1.GetType().Namespace) && !(o1 is IEnumerable);
-    }
+        => o1 != null && "System".Equals(o1.GetType().Namespace) && o1 is not IEnumerable;
 
     private static bool ListContainsReference(IEnumerable<object> objects, object o1)
-    {
-        return objects.Any(o => ReferenceEquals(o, o1));
-    }
+        => objects.Any(o => ReferenceEquals(o, o1));
 
     private static bool CollectionEquals(IEnumerable o1Value, IEnumerable o2Value, List<object> objectsAlreadyCompared,
         bool throwException, Type[] attributeTypesOnPropertiesToIgnore)
     {
         if (o1Value == null) return o2Value == null;
 
-        if (o1Value.CountEnum() != o2Value.CountEnum()) return false;
+        var enumerable = o1Value as object[] ?? o1Value.Cast<object>().ToArray();
+        var value = o2Value as object[] ?? o2Value.Cast<object>().ToArray();
+        if (enumerable.CountEnum() != value.CountEnum()) return false;
 
-        var enumerator1 = o1Value.GetEnumerator();
-        var enumerator2 = o2Value.GetEnumerator();
+        var enumerator1 = enumerable.GetEnumerator();
+        var enumerator2 = value.GetEnumerator();
         while (enumerator1.MoveNext() && enumerator2.MoveNext())
         {
             if (ReflectionEquals(enumerator1.Current, enumerator2.Current, objectsAlreadyCompared, throwException,
@@ -144,17 +138,11 @@ public static class ObjectExtensions
 
     // Currently only supporting struct, but could extend to any type
     public static bool IsAny<T>(this T target, params T[] possibleValues) where T : struct
-    {
-        return possibleValues.Contains(target);
-    }
+        => possibleValues.Contains(target);
 
     public static bool IsNotAny<T>(this T target, params T[] possibleValues) where T : struct
-    {
-        return !target.IsAny(possibleValues);
-    }
+        => !target.IsAny(possibleValues);
 
     public static TResult SafeGet<T, TResult>(this T item, Func<T, TResult> getter)
-    {
-        return ReferenceEquals(default(T), item) ? default : getter(item);
-    }
+        => ReferenceEquals(default(T), item) ? default : getter(item);
 }

@@ -9,15 +9,8 @@ namespace Xerris.DotNet.Core.Test.Startup
 {
     public class IoCTests : IDisposable
     {
-        public IoCTests()
-        {
-            Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), "connectMe");
-        }
-
-        public void Dispose()
-        {
-            Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), null);
-        }
+        public IoCTests() =>
+            Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), "connectMe"); public void Dispose() => Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), null);
 
         [Fact]
         public void ApplicationConfig()

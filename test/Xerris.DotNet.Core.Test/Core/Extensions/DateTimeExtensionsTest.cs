@@ -12,35 +12,21 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         private readonly ITestOutputHelper outputHelper;
 
         public DateTimeExtensionsTest(ITestOutputHelper outputHelper)
-        {
-            this.outputHelper = outputHelper;
-        }
+            => this.outputHelper = outputHelper;
+
 
         [Fact]
-        public void Earliest_Midnight()
-        {
-            DateTime.Today.Earliest().Should().Be(DateTime.Today);
-        }
+        public void Earliest_Midnight() => DateTime.Today.Earliest().Should().Be(DateTime.Today);
 
         [Fact]
-        public void Earliest_At00_00_01()
-        {
-            DateTime.Today.AddSeconds(1).Earliest().Should().Be(DateTime.Today);
-        }
+        public void Earliest_At00_00_01() => DateTime.Today.AddSeconds(1).Earliest().Should().Be(DateTime.Today);
 
         [Fact]
-        public void Earliest_At00_01_00()
-        {
-            DateTime.Today.AddMinutes(1).Earliest().Should().Be(DateTime.Today);
-        }
+        public void Earliest_At00_01_00() => DateTime.Today.AddMinutes(1).Earliest().Should().Be(DateTime.Today);
 
         [Fact]
-        public void Earliest_At01_00_00()
-        {
-            DateTime.Today.AddHours(1).Earliest().Should().Be(DateTime.Today);
-        }
-
-
+        public void Earliest_At01_00_00() => DateTime.Today.AddHours(1).Earliest().Should().Be(DateTime.Today);
+        
         [Fact]
         public void ShouldConvertFromDateTimeToUnixTimeStamp()
         {
@@ -155,11 +141,6 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         }
 
         [Fact]
-        public void ToDateBadDateString()
-        {
-            const string dateString = "20201221x";
-
-            Assert.Throws<FormatException>(() => dateString.ToDate("yyyyMMdd"));
-        }
+        public void ToDateBadDateString() => Assert.Throws<FormatException>(() => "20201221x".ToDate("yyyyMMdd"));
     }
 }

@@ -6,38 +6,13 @@ namespace Xerris.DotNet.Core.Test.Factories
     public static class FactoryGirl
     {
         private static TestFactory Factory { get; set; }
-
         private static TestFactory Instance => Factory ??= new TestFactory();
-
-        public static T Build<T>()
-        {
-            return Build<T>(x => { });
-        }
-
-        public static T Build<T>(Action<T> propertyUpdates)
-        {
-            return Instance.Build(propertyUpdates);
-        }
-
-        public static void Define<T>(Func<T> factory)
-        {
-            Instance.Define(factory);
-        }
-
-        public static void Clear()
-        {
-            Factory = null;
-        }
-
-        public static int UniqueId(string key = "anonymous")
-        {
-            return Instance.UniqueId(key);
-        }
-
-        public static string UniqueIdStr(string key = "anonymous")
-        {
-            return UniqueId(key).ToString();
-        }
+        public static T Build<T>() => Build<T>(x => { });
+        public static T Build<T>(Action<T> propertyUpdates) => Instance.Build(propertyUpdates);
+        public static void Define<T>(Func<T> factory) => Instance.Define(factory);
+        public static void Clear() => Factory = null;
+        public static int UniqueId(string key = "anonymous") => Instance.UniqueId(key);
+        public static string UniqueIdStr(string key = "anonymous") => UniqueId(key).ToString();
     }
 
     public class TestFactory
@@ -55,10 +30,7 @@ namespace Xerris.DotNet.Core.Test.Factories
             return entity;
         }
 
-        public void Define<T>(Func<T> factory)
-        {
-            factories[typeof(T)] = () => factory();
-        }
+        public void Define<T>(Func<T> factory) => factories[typeof(T)] = () => factory();
 
         public int UniqueId(string key = "anonymous")
         {

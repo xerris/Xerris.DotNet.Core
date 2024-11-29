@@ -3,7 +3,5 @@
 public class StringConverter : AbstractValueConverter<string>
 {
     protected override string InternalConvert(string input)
-    {
-        return input;
-    }
+        => input;
 }

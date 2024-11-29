@@ -16,12 +16,8 @@ public static class JsonExtensions
     };
 
     public static string ToJson<T>(this T item, JsonSerializerSettings settings = null)
-    {
-        return JsonConvert.SerializeObject(item, settings ?? Settings);
-    }
+        => JsonConvert.SerializeObject(item, settings ?? Settings);
 
     public static T FromJson<T>(this string data, JsonSerializerSettings settings = null)
-    {
-        return JsonConvert.DeserializeObject<T>(data, settings ?? Settings);
-    }
+        => JsonConvert.DeserializeObject<T>(data, settings ?? Settings);
 }

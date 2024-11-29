@@ -16,7 +16,6 @@ public static class DateTimeExtensions
             dateTime.Second, dateTime.Kind);
     }
 
-
     public static DateTime ToDate(this string dateString, string format)
     {
         var provider = CultureInfo.InvariantCulture;

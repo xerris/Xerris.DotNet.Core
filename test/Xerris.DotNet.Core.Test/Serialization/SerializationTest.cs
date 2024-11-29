@@ -32,8 +32,7 @@ namespace Xerris.DotNet.Core.Test.Serialization
         }
 
         private static void IsEqual(TestSubject actual, TestSubject expected)
-        {
-            Validate.Begin()
+            => Validate.Begin()
                 .IsNotNull(actual, "subject").Check()
                 .IsNotNull(expected, "from").Check()
                 .IsEqual(actual.Name, expected.Name, nameof(TestSubject.Name))
@@ -44,17 +43,17 @@ namespace Xerris.DotNet.Core.Test.Serialization
                 .IsEqual(actual.Timeline.Start, expected.Timeline.Start, nameof(TestSubject.Timeline.Start))
                 .IsEqual(actual.Timeline.End, expected.Timeline.End, nameof(TestSubject.Timeline.End))
                 .Check();
+
+
+        public class TestSubject
+        {
+            public Guid Id { get; set; } = Guid.NewGuid();
+            public string Name { get; set; }
+            public DateTime Start { get; set; }
+            public int Age { get; set; }
+
+            [JsonConverter(typeof(DateTimeRangeConverter))]
+            public DateTimeRange Timeline { get; set; } = new DateTimeRange(DateTime.Today, DateTime.Today.AddDays(1));
         }
-    }
-
-    public class TestSubject
-    {
-        public Guid Id { get; set; } = Guid.NewGuid();
-        public string Name { get; set; }
-        public DateTime Start { get; set; }
-        public int Age { get; set; }
-
-        [JsonConverter(typeof(DateTimeRangeConverter))]
-        public DateTimeRange Timeline { get; set; } = new DateTimeRange(DateTime.Today, DateTime.Today.AddDays(1));
     }
 }

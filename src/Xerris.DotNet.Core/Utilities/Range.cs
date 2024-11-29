@@ -1,23 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Xerris.DotNet.Core.Utilities;
 
 [Serializable]
+[SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
 public class Range<T> : IEquatable<Range<T>> where T : IComparable<T>
 {
     private readonly Func<T, T> incrementor;
     private Tuple<T, T> tuple;
 
-    public Range(T start, T end)
-    {
-        tuple = new Tuple<T, T>(start, end);
-    }
+    public Range(T start, T end) => tuple = new Tuple<T, T>(start, end);
 
-    public Range(T start, T end, Func<T, T> inc) : this(start, end)
-    {
-        incrementor = inc;
-    }
+    public Range(T start, T end, Func<T, T> inc) : this(start, end) => incrementor = inc;
 
     public virtual T Start
     {
@@ -55,24 +51,15 @@ public class Range<T> : IEquatable<Range<T>> where T : IComparable<T>
     }
 
     public virtual bool Includes(T value)
-    {
-        return Start.CompareTo(value) <= 0 && End.CompareTo(value) >= 0;
-    }
+        => Start.CompareTo(value) <= 0 && End.CompareTo(value) >= 0;
 
     public virtual bool Includes(Range<T> value) //ToDo: Unit tests? [MR]
-    {
-        return Start.CompareTo(value.Start) <= 0 && End.CompareTo(value.End) >= 0;
-    }
+        => Start.CompareTo(value.Start) <= 0 && End.CompareTo(value.End) >= 0;
 
     public virtual bool Overlaps(Range<T> value) //ToDo: Unit tests? [MR]
-    {
-        return Start.CompareTo(value.End) <= 0 && End.CompareTo(value.Start) >= 0;
-    }
+        => Start.CompareTo(value.End) <= 0 && End.CompareTo(value.Start) >= 0;
 
-    public virtual void ForEach(Action<T> action)
-    {
-        ForEach(incrementor, action);
-    }
+    public virtual void ForEach(Action<T> action) => ForEach(incrementor, action);
 
     public virtual void ForEach(Func<T, T> incAction, Action<T> action)
     {
@@ -86,10 +73,7 @@ public class Range<T> : IEquatable<Range<T>> where T : IComparable<T>
         for (var current = End; Includes(current); current = decrementorAction(current)) action(current);
     }
 
-    public static Range<int> Create(int start, int end)
-    {
-        return new Range<int>(start, end, inc => inc + 1);
-    }
+    public static Range<int> Create(int start, int end) => new(start, end, inc => inc + 1);
 
     public virtual bool AssertIncludes(T value)
     {
@@ -105,10 +89,7 @@ public class Range<T> : IEquatable<Range<T>> where T : IComparable<T>
         return list.ToArray();
     }
 
-    public override bool Equals(object obj)
-    {
-        return obj is Range<T> range && Equals(range);
-    }
+    public override bool Equals(object obj) => obj is Range<T> range && Equals(range);
 
     public override int GetHashCode()
     {
@@ -120,7 +101,5 @@ public class Range<T> : IEquatable<Range<T>> where T : IComparable<T>
     }
 
     public override string ToString()
-    {
-        return $"Left={tuple.Item1}, Right={tuple.Item2}";
-    }
+        => $"Left={tuple.Item1}, Right={tuple.Item2}";
 }

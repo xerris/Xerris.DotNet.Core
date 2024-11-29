@@ -8,11 +8,7 @@ namespace Xerris.DotNet.Core.Test.Core.Time
 {
     public class UtcClockTest : IDisposable
     {
-        public void Dispose()
-        {
-            UtcClock.Thaw();
-        }
-
+        public void Dispose() => UtcClock.Thaw();
 
         [Fact]
         public void CanFreeze()

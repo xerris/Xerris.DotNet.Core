@@ -3,14 +3,10 @@
 public abstract class AbstractValueConverter<T> : IValueConverter<T>
 {
     public virtual T Convert(object value)
-    {
-        return InternalConvert(AsString(value));
-    }
+        => InternalConvert(AsString(value));
 
     protected virtual string AsString(object value)
-    {
-        return (value ?? string.Empty).ToString();
-    }
+        => (value ?? string.Empty).ToString();
 
     protected abstract T InternalConvert(string input);
 }

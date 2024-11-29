@@ -3,7 +3,5 @@
 public class IntegerConverter : AbstractValueConverter<int?>
 {
     protected override int? InternalConvert(string input)
-    {
-        return string.IsNullOrEmpty(input) ? null : int.Parse(input);
-    }
+        => string.IsNullOrEmpty(input) ? null : int.Parse(input);
 }

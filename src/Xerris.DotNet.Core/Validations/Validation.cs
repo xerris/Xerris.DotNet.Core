@@ -7,22 +7,15 @@ public sealed class Validation
 {
     private readonly List<ValidationException> exceptions;
 
-    public Validation()
-    {
-        exceptions = new List<ValidationException>(1);
-        // optimize for only having 1 exceptio
-    }
-
+    public Validation() => exceptions = new List<ValidationException>(1);
 
     public IEnumerable<ValidationException> Exceptions => exceptions;
 
     public IEnumerable<ValidationException> Errors
         => exceptions.FindAll(e => e.IsError);
-
-
+    
     public IEnumerable<ValidationException> Warnings
         => exceptions.FindAll(e => e.IsWarning);
-
 
     public Validation Add(ValidationException ex)
     {
@@ -30,7 +23,6 @@ public sealed class Validation
         {
             exceptions.Add(ex);
         }
-
         return this;
     }
 

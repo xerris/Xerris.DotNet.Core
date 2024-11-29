@@ -24,7 +24,7 @@ public class WaitToFinishMemoryCache : ICache
     public async Task<TItem> GetOrCreate<TItem>(object key, Func<Task<TItem>> createItem)
     {
         if (cache.TryGetValue(key, out TItem cacheEntry)) return cacheEntry;
-        var myLock = locks.GetOrAdd(key, k => new SemaphoreSlim(1, 1));
+        var myLock = locks.GetOrAdd(key, _ => new SemaphoreSlim(1, 1));
 
         await myLock.WaitAsync();
         try

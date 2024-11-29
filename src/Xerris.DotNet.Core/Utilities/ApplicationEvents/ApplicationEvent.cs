@@ -26,9 +26,7 @@ public class ApplicationEvent
     public string OperationStep { get; set; }
 
     public void StartEvent()
-    {
-        start = Clock.Utc.Now;
-    }
+        => start = Clock.Utc.Now;
 
     public void StopEvent()
     {

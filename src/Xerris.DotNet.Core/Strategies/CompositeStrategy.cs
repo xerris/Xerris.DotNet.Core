@@ -6,14 +6,10 @@ namespace Xerris.DotNet.Core.Strategies;
 public class CompositeStrategy<T> : IStrategy<T>
 {
     public CompositeStrategy(IStrategy<T> strategy, IStrategy<T> next)
-    {
-        Tasks = new[] { strategy, next };
-    }
+        => Tasks = new[] { strategy, next };
 
     public CompositeStrategy(params IStrategy<T>[] strategies)
-    {
-        Tasks = strategies;
-    }
+        => Tasks = strategies;
 
     public IEnumerable<IStrategy<T>> Tasks { get; }
 

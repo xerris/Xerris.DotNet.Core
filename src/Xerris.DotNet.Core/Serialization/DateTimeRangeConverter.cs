@@ -23,14 +23,11 @@ public class DateTimeRangeConverter : JsonConverter
     }
 
     public override bool CanConvert(Type objectType)
-    {
-        return objectType == typeof(DateTimeRange);
-    }
+        => objectType == typeof(DateTimeRange);
+
 
     private static bool IsEqual(string condition, string value)
-    {
-        return string.Equals(condition, value, StringComparison.InvariantCultureIgnoreCase);
-    }
+        => string.Equals(condition, value, StringComparison.InvariantCultureIgnoreCase);
 }
 
 public class DateTimeRangeDto : RangeDto<DateTime>

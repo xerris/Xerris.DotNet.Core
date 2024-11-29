@@ -12,8 +12,5 @@ public class DateTimeRange : Range<DateTime>
     {
     }
 
-    public TimeSpan Difference()
-    {
-        return End - Start;
-    }
+    public TimeSpan Difference() => End - Start;
 }

@@ -11,7 +11,7 @@ public static class ReflectionExtensions
 {
     public static IEnumerable<Type> GetImplementingTypes(this Type t, params Assembly[] targetAssemblies)
     {
-        if (t == null) return Enumerable.Empty<Type>();
+        if (t == null) return [];
 
         var searchAssemblies =
             targetAssemblies.Length != 0 ? targetAssemblies : AppDomain.CurrentDomain.GetAssemblies();
@@ -42,10 +42,7 @@ public static class ReflectionExtensions
     }
 
     public static string NameOfProperty<TModel, T>(this Expression<Func<TModel, T>> expression)
-    {
-        return expression.GetProperty().Name;
-    }
-
+        => expression.GetProperty().Name;
 
     private static MemberExpression GetMemberExpression<TModel, T>(Expression<Func<TModel, T>> expression,
         bool enforceCheck = true)

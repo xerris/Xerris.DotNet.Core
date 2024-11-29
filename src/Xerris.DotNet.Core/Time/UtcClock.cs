@@ -23,9 +23,7 @@ public static class UtcClock
     }
 
     public static void Thaw()
-    {
-        UtcService.Value.Dispose();
-    }
+        => UtcService.Value.Dispose();
 }
 
 public interface IUtcService : IDisposable

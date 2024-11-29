@@ -5,7 +5,6 @@ using Xerris.DotNet.Core.Commands;
 using Xerris.DotNet.Core.Extensions;
 using Xerris.DotNet.Core.Test.Model;
 using Xunit;
-
 namespace Xerris.DotNet.Core.Test.Core.Commands
 {
     [Collection("base")]
@@ -29,14 +28,7 @@ namespace Xerris.DotNet.Core.Test.Core.Commands
     {
         private readonly Action<T> action;
 
-        public TestTypedCommand(Action<T> action)
-        {
-            this.action = action;
-        }
-
-        public async Task RunAsync(T data)
-        {
-            await Task.Run(() => action(data));
-        }
+        public TestTypedCommand(Action<T> action) => this.action = action;
+        public async Task RunAsync(T data) => await Task.Run(() => action(data));
     }
 }

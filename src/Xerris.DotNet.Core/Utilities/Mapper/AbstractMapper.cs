@@ -23,28 +23,18 @@ public abstract class AbstractMapper<TFrom, TO> : IMapper<TFrom, TO>
             { typeof(int?), new IntegerConverter() }
         };
 
-    protected AbstractMapper()
-    {
-        InternalInitialize();
-        //avoids virtual call in constructor
-    }
+    protected AbstractMapper() => InternalInitialize();
 
-    public List<IPropertyMapper> PropertyMappers { get; } = new();
+    public List<IPropertyMapper> PropertyMappers { get; } = [];
 
-    public List<IClassMapper<TFrom, TO>> ClassMappers { get; } = new();
+    public List<IClassMapper<TFrom, TO>> ClassMappers { get; } = [];
 
-    public TO Build(TFrom input)
-    {
-        return BuildInternal(input, Create());
-    }
+    public TO Build(TFrom input) => BuildInternal(input, Create());
 
     protected abstract void Initialize();
     protected abstract TO Create();
 
-    private void InternalInitialize()
-    {
-        Initialize();
-    }
+    private void InternalInitialize() => Initialize();
 
     protected void Map<T>(Expression<Func<TFrom, object>> source, Expression<Func<TO, T>> target)
     {
@@ -54,11 +44,9 @@ public abstract class AbstractMapper<TFrom, TO> : IMapper<TFrom, TO>
     }
 
     protected static IValueConverter<T> GetValueConverter<T>(PropertyInfo source, PropertyInfo target)
-    {
-        return source.PropertyType == target.PropertyType
+        => source.PropertyType == target.PropertyType
             ? new DirectConverter<T>()
             : GetConverterFromMap<T>();
-    }
 
     private static IValueConverter<T> GetConverterFromMap<T>()
     {
@@ -72,10 +60,8 @@ public abstract class AbstractMapper<TFrom, TO> : IMapper<TFrom, TO>
 
     protected void Map<T>(Expression<Func<TFrom, object>> sourceProperty, Expression<Func<TO, T>> targetProperty,
         IValueConverter<T> converter)
-    {
-        Map(sourceProperty.GetProperty(), targetProperty.GetProperty(), converter);
-    }
-
+        => Map(sourceProperty.GetProperty(), targetProperty.GetProperty(), converter);
+    
     protected void Map<T>(Expression<Func<TO, T>> targetProperty, T value)
     {
         var target = targetProperty.GetProperty();
@@ -83,14 +69,10 @@ public abstract class AbstractMapper<TFrom, TO> : IMapper<TFrom, TO>
     }
 
     protected void Map(IClassMapper<TFrom, TO> action)
-    {
-        ClassMappers.Add(action);
-    }
+        => ClassMappers.Add(action);
 
     private void Map<T>(PropertyInfo source, PropertyInfo target, IValueConverter<T> converter)
-    {
-        PropertyMappers.Add(new PropertyMapper<T>(source, target, converter));
-    }
+        => PropertyMappers.Add(new PropertyMapper<T>(source, target, converter));
 
     private TO BuildInternal(TFrom input, TO to)
     {

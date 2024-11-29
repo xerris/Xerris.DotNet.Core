@@ -14,12 +14,8 @@ public class LookupConverter<TFrom, TO> : IValueConverter<TO>
     }
 
     public TO Convert(object input)
-    {
-        return !(input is TFrom) ? defaultValue : Get((TFrom)input);
-    }
+        => !(input is TFrom from) ? defaultValue : Get(from);
 
     private TO Get(TFrom input)
-    {
-        return Equals(default(TFrom), input) || !conversions.ContainsKey(input) ? defaultValue : conversions[input];
-    }
+        => Equals(default(TFrom), input) || !conversions.TryGetValue(input, out var value) ? defaultValue : value;
 }

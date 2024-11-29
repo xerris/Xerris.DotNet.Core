@@ -10,16 +10,10 @@ namespace Xerris.DotNet.Core.Test.Core.Time
     [Collection("base")]
     public class ClockTest : IDisposable
     {
-        public void Dispose()
-        {
-            Clock.Local.Thaw();
-        }
+        public void Dispose() => Clock.Local.Thaw();
 
         [Fact]
-        public void CanGetEndOfTime()
-        {
-            Clock.EndOfTime.Should().Be(new DateTime(9999, 12, 31, 23, 59, 59, 999));
-        }
+        public void CanGetEndOfTime() => Clock.EndOfTime.Should().Be(new DateTime(9999, 12, 31, 23, 59, 59, 999));
 
         [Fact]
         public void CanGetToday()

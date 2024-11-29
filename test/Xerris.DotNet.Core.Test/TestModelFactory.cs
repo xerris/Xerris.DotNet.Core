@@ -6,15 +6,12 @@ namespace Xerris.DotNet.Core.Test
 {
     public class TestModelFactory : ICommand
     {
-        public void Run()
+        public void Run() => FactoryGirl.Define(() => new Person
         {
-            FactoryGirl.Define(() => new Person
-            {
-                FirstName = "Angelina",
-                LastName = "Jolie",
-                Age = 25,
-                SocialSecurityNumber = 12345
-            });
-        }
+            FirstName = "Angelina",
+            LastName = "Jolie",
+            Age = 25,
+            SocialSecurityNumber = 12345
+        });
     }
 }

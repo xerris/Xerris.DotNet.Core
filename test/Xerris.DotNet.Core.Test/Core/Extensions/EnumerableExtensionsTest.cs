@@ -13,14 +13,9 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         [InlineData("dxpw-admin", "stagedaniel@gmail.test", "stagedaniel@gmail.test")]
         [InlineData("dxpw-admin", "newemail@gmail.ca", "newemail@gmail.ca")]
         public void GetEmail(string item1, string item2, string expected)
-        {
-            new[] { item1, item2 }.GetEmail().Should().Be(expected);
-        }
+            => new[] { item1, item2 }.GetEmail().Should().Be(expected);
 
         [Fact]
-        public void NoEmail()
-        {
-            new[] { "dxpw-admin", "nutrien.user@", "blah" }.GetEmail().Should().BeNull();
-        }
+        public void NoEmail() => new[] { "dxpw-admin", "nutrien.user@", "blah" }.GetEmail().Should().BeNull();
     }
 }

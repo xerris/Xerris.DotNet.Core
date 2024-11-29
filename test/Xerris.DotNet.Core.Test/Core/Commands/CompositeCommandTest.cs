@@ -9,10 +9,8 @@ namespace Xerris.DotNet.Core.Test.Core.Commands
     {
         private int count;
 
-        public CompositeCommandTest()
-        {
-            count = 1;
-        }
+        public CompositeCommandTest() => count = 1;
+
 
         [Fact]
         public void CanRunMultipleCommands()

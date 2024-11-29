@@ -5,13 +5,9 @@ namespace Xerris.DotNet.Core.Time;
 public static class Clock
 {
     private static IClock local;
-
     private static IClock mountainStandardTime;
-
     private static IClock mountainTime;
-
     private static IClock utc;
-
     private static IClock australianEastern;
 
     public static IClock Local => local ??= new TimeZoneClock(TimeZoneInfo.Local);

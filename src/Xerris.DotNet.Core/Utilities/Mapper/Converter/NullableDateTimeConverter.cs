@@ -11,9 +11,7 @@ public class NullableDateTimeConverter : AbstractValueConverter<DateTime?>
     private readonly string format;
 
     public NullableDateTimeConverter(string format)
-    {
-        this.format = format;
-    }
+        => this.format = format;
 
     public NullableDateTimeConverter() : this(DateFormat)
     {
@@ -27,9 +25,7 @@ public class NullableDateTimeConverter : AbstractValueConverter<DateTime?>
     }
 
     protected override DateTime? InternalConvert(string input)
-    {
-        return string.IsNullOrEmpty(input)
+        => string.IsNullOrEmpty(input)
             ? null
             : DateTime.ParseExact(input, format, CultureInfo.CurrentCulture);
-    }
 }

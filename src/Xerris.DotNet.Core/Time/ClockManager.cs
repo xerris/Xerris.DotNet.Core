@@ -6,9 +6,7 @@ namespace Xerris.DotNet.Core.Time;
 internal static class ClockManager
 {
     static ClockManager()
-    {
-        AllowClockManipulation = true;
-    }
+        => AllowClockManipulation = true;
 
     private static DateTime? FrozenTime { get; set; }
     internal static bool AllowClockManipulation { get; set; }
@@ -25,22 +23,14 @@ internal static class ClockManager
     internal static DateTime Today => Now.Date;
 
     public static void Initialize(bool allowClockManipulation)
-    {
-        AllowClockManipulation = allowClockManipulation;
-    }
-
+        => AllowClockManipulation = allowClockManipulation;
+    
     internal static void Freeze()
-    {
-        Freeze(DateTime.Now.TruncateMilliseconds());
-    }
+        => Freeze(DateTime.Now.TruncateMilliseconds());
 
     internal static void Freeze(DateTime dateTime)
-    {
-        FrozenTime = dateTime;
-    }
+        => FrozenTime = dateTime;
 
     internal static void Thaw()
-    {
-        FrozenTime = null;
-    }
+        => FrozenTime = null;
 }
