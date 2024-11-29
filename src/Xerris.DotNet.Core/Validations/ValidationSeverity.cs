@@ -1,8 +1,7 @@
-﻿namespace Xerris.DotNet.Core.Validations
+﻿namespace Xerris.DotNet.Core.Validations;
+
+public enum ValidationSeverity
 {
-    public enum ValidationSeverity
-    {
-        Error,
-        Warning
-    }
+    Error,
+    Warning
 }

@@ -19,8 +19,8 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         public void Check_MultipleErrors()
         {
             var validation = new Validation();
-            var error1 = new ValidationException("Foo") {Severity = ValidationSeverity.Error};
-            var error2 = new ValidationException("Bar") {Severity = ValidationSeverity.Error};
+            var error1 = new ValidationException("Foo") { Severity = ValidationSeverity.Error };
+            var error2 = new ValidationException("Bar") { Severity = ValidationSeverity.Error };
             validation.Add(error1);
             validation.Add(error2);
 
@@ -32,32 +32,28 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         public void Check_NoErrors()
         {
             var validation = new Validation();
-
             validation.Check().Should().BeSameAs(validation);
         }
 
         [Fact]
         public void Contains()
         {
-            Validate.Begin().Contains(new[] {1}, 1, ValidationMessage).Check();
-            Validate.Begin().Contains(new[] {2}, 1, ValidationMessage).Invoking(x => x.Check()).Should()
+            Validate.Begin().Contains(new[] { 1 }, 1, ValidationMessage).Check();
+            Validate.Begin().Contains(new[] { 2 }, 1, ValidationMessage).Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage(ValidationMessage);
         }
 
         [Fact]
         public void ContinueIfValidHard()
-        {
-            Action act = () => Validate.Begin()
+            => Validate.Begin()
                 .IsTrue(true, "continue")
                 .ContinueIfValid(v => v.IsTrue(true, "continue")
                     .ContinueIfValid(v1 => v1.IsTrue(false, "I should see this"))
                     .IsTrue(true, "I should not see this"))
                 .IsTrue(false, "I should also see this")
                 .ContinueIfValid(v => v.IsTrue(false, "Will not see this"))
-                .Check();
-
-            act.Should().Throw<ValidationException>().WithMessage("I should see this\nI should also see this");
-        }
+                .Invoking(x => x.Check()).Should().Throw<ValidationException>()
+                .WithMessage("I should see this\nI should also see this");
 
         [Fact]
         public void Email_Validation_Tests()
@@ -91,10 +87,10 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
             Validate.Begin().GreaterThan(new DateTime(2000, 1, 2), null, ValidationMessage).Check();
             Validate.Begin().GreaterThan(null, new DateTime(2000, 1, 1), ValidationMessage).Check();
             Validate.Begin()
-                .GreaterThan((DateTime?) new DateTime(2000, 1, 2), new DateTime(2000, 1, 1), ValidationMessage)
+                .GreaterThan((DateTime?)new DateTime(2000, 1, 2), new DateTime(2000, 1, 1), ValidationMessage)
                 .Check();
             Validate.Begin()
-                .GreaterThan((DateTime?) new DateTime(2000, 1, 1), new DateTime(2000, 1, 1), ValidationMessage)
+                .GreaterThan((DateTime?)new DateTime(2000, 1, 1), new DateTime(2000, 1, 1), ValidationMessage)
                 .Invoking(x => x.Check()).Should().Throw<ValidationException>()
                 .WithMessage(ValidationMessage);
         }
@@ -116,32 +112,30 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
             Validate.Begin().GreaterThanOrEqual(null, new DateTime(2000, 1, 1), ValidationMessage)
                 .Check();
             Validate.Begin()
-                .GreaterThanOrEqual((DateTime?) new DateTime(2000, 1, 2), new DateTime(2000, 1, 1), ValidationMessage)
+                .GreaterThanOrEqual((DateTime?)new DateTime(2000, 1, 2), new DateTime(2000, 1, 1), ValidationMessage)
                 .Check();
             Validate.Begin()
-                .GreaterThanOrEqual((DateTime?) new DateTime(2000, 1, 1), new DateTime(2000, 1, 1), ValidationMessage)
+                .GreaterThanOrEqual((DateTime?)new DateTime(2000, 1, 1), new DateTime(2000, 1, 1), ValidationMessage)
                 .Check();
             Validate.Begin()
-                .GreaterThanOrEqual((DateTime?) new DateTime(2000, 1, 1), new DateTime(2000, 1, 2), ValidationMessage)
+                .GreaterThanOrEqual((DateTime?)new DateTime(2000, 1, 1), new DateTime(2000, 1, 2), ValidationMessage)
                 .Invoking(x => x.Check()).Should().Throw<ValidationException>()
                 .WithMessage(ValidationMessage);
         }
 
         [Fact]
         public void LessThan()
-        {
-            Validate.Begin()
+            => Validate.Begin()
                 .LessThan(1, 2, "1 < 2").Check()
                 .LessThan(2.0, 2.1, "2.0 < 2.1").Check()
                 .LessThan(2.0m, 2.1m, "2.0m < 2.1m")
                 .Check();
-        }
+
 
         [Fact]
         public void LessThan_DateTime()
-        {
-            Validate.Begin()
-                .LessThan(new DateTime(2000, 1, 1, 14, 0, 1), new DateTime(2000, 1, 1, 14, 0, 2), $"14:00:01 < 14:00:02")
+            => Validate.Begin()
+                .LessThan(new DateTime(2000, 1, 1, 14, 0, 1), new DateTime(2000, 1, 1, 14, 0, 2), "14:00:01 < 14:00:02")
                 .Check()
                 .LessThan(new DateTime(2000, 1, 1, 14, 1, 0), new DateTime(2000, 1, 1, 14, 2, 0), "14:01:00 < 14:02:00")
                 .Check()
@@ -149,13 +143,12 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
                 .Check()
                 .LessThan(new DateTime(2000, 1, 1), new DateTime(2000, 2, 1), "2000-01-00 < 2000-02-00")
                 .Check();
-        }
 
         [Fact]
         public void IsEmpty_Enumerable()
         {
             Validate.Begin().IsEmpty(new object[] { }, "Foo").Check();
-            Validate.Begin().IsEmpty(new object[] {1}, "Foo").Invoking(x => x.Check()).Should()
+            Validate.Begin().IsEmpty(new object[] { 1 }, "Foo").Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage("Foo should be empty");
         }
 
@@ -174,17 +167,18 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
             Validate.Begin().IsFalse(false, ValidationMessage).Check();
             Validate.Begin().IsFalse(true, ValidationMessage).Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage(ValidationMessage);
-            
+
             bool? nullableTrue = false;
             Validate.Begin().IsFalse(nullableTrue, ValidationMessage).Check();
             nullableTrue = null;
-            Validate.Begin().IsFalse(nullableTrue, ValidationMessage).Invoking(x => x.Check()).Should().Throw<ValidationException>();
+            Validate.Begin().IsFalse(nullableTrue, ValidationMessage).Invoking(x => x.Check()).Should()
+                .Throw<ValidationException>();
         }
 
         [Fact]
         public void IsNotEmpty_Enumerable()
         {
-            Validate.Begin().IsNotEmpty(new object[] {1}, "Foo").Check();
+            Validate.Begin().IsNotEmpty(new object[] { 1 }, "Foo").Check();
             Validate.Begin().IsNotEmpty(Array.Empty<object>(), "Foo").Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage("Foo is not expected to be empty");
         }
@@ -219,31 +213,36 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         public void IsNotNull_Int()
         {
             Validate.Begin().IsNotNull(1, ValidationMessage).Check();
-            Validate.Begin().IsNotNull(0, ValidationMessage).Invoking(x => x.Check()).Should()
-                .Throw<ValidationException>().WithMessage(ValidationMessage);
+            Validate.Begin().IsNotNull(0, ValidationMessage)
+                .Invoking(x => x.Check())
+                .Should().Throw<ValidationException>()
+                .WithMessage(ValidationMessage);
         }
 
         [Fact]
         public void IsNotNull_NullableInt()
         {
-            Validate.Begin().IsNotNull((int?) 1, ValidationMessage).Check();
-            Validate.Begin().IsNotNull((int?) null, ValidationMessage).Invoking(x => x.Check()).Should()
+            Validate.Begin().IsNotNull((int?)1, ValidationMessage).Check();
+            Validate.Begin().IsNotNull((int?)null, ValidationMessage).Invoking(x => x.Check()).Should()
                 .Throw<ValidationException>().WithMessage(ValidationMessage);
         }
-        
+
         [Fact]
         public void IsNotNull_Object()
         {
             Validate.Begin().IsNotNull("A", ValidationMessage).Check();
-            Validate.Begin().IsNotNull((object) null, ValidationMessage).Invoking(x => x.Check()).Should()
-                .Throw<ValidationException>().WithMessage(ValidationMessage);
+            Validate.Begin().IsNotNull((object)null, ValidationMessage)
+                .Invoking(x => x.Check())
+                .Should().Throw<ValidationException>()
+                .WithMessage(ValidationMessage);
         }
 
         [Fact]
         public void IsNull_NullableInt()
         {
-            Validate.Begin().IsNull((int?) null, "Foo").Check();
-            Validate.Begin().IsNull((int?) 1, "Foo").Invoking(x => x.Check()).Should().Throw<ValidationException>()
+            Validate.Begin().IsNull((int?)null, "Foo").Check();
+            Validate.Begin().IsNull((int?)1, "Foo").Invoking(x => x.Check())
+                .Should().Throw<ValidationException>()
                 .WithMessage("Foo should be null");
         }
 
@@ -251,7 +250,8 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         public void IsNull_Object()
         {
             Validate.Begin().IsNull(null, "Foo").Check();
-            Validate.Begin().IsNull("A", "Foo").Invoking(x => x.Check()).Should().Throw<ValidationException>()
+            Validate.Begin().IsNull("A", "Foo").Invoking(x => x.Check())
+                .Should().Throw<ValidationException>()
                 .WithMessage("Foo should be null");
         }
 
@@ -275,7 +275,8 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
             bool? nullableTrue = true;
             Validate.Begin().IsTrue(nullableTrue, ValidationMessage).Check();
             nullableTrue = null;
-            Validate.Begin().IsTrue(nullableTrue, ValidationMessage).Invoking(x => x.Check()).Should().Throw<ValidationException>();
+            Validate.Begin().IsTrue(nullableTrue, ValidationMessage).Invoking(x => x.Check()).Should()
+                .Throw<ValidationException>();
         }
 
         [Fact]
@@ -298,51 +299,43 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
 
         [Fact]
         public void ShouldAppendMultipleValidations()
-        {
-            Action act = () => Validate.Begin()
+            => Validate.Begin()
                 .IsNotEmpty("derp", "I will not see this")
                 .Append(Validate.Begin().IsEmail("derp", "this is not an email"))
                 .Append(Validate.Begin().IsNotEmpty("derp", "I will not see this"))
                 .Append(Validate.Begin().IsNumeric("derp", "this is not numeric"))
-                .Check();
-
-            act.Should().Throw<ValidationException>().WithMessage("this is not an email\nthis is not numeric");
-        }
+                .Invoking(x => x.Check())
+                .Should().Throw<ValidationException>()
+                .WithMessage("this is not an email\nthis is not numeric");
 
         [Fact]
         public void ShouldAppendNothing()
-        {
-            Validate.Begin()
+            => Validate.Begin()
                 .IsNotEmpty("derp", "I will not see this")
                 .Append(Validate.Begin().IsNotEmpty("derp", "I will not see this"))
                 .Append(Validate.Begin().IsNotEmpty("derp", "I will not see this"))
                 .Append(Validate.Begin().IsNotEmpty("derp", "I will not see this"))
                 .Check();
-        }
 
         [Fact]
         public void ShouldAppendValidations()
-        {
-            Action act = () => Validate.Begin()
+            => Validate.Begin()
                 .IsNotEmpty(string.Empty, "this is empty")
                 .Append(Validate.Begin().IsEmail("derp", "this is not an email"))
-                .Check();
-
-            act.Should().Throw<ValidationException>().WithMessage("this is empty\nthis is not an email");
-        }
+                .Invoking(x => x.Check())
+                .Should().Throw<ValidationException>()
+                .WithMessage("this is empty\nthis is not an email");
 
         [Fact]
         public void ShouldBeAbleToNestContinueIfValid()
-        {
-            Action act = () => Validate.Begin()
+            => Validate.Begin()
                 .IsTrue(true, "continue")
                 .ContinueIfValid(v => v.IsTrue(true, "continue")
                     .ContinueIfValid(v1 => v1.IsTrue(false, "I should see this")))
                 .IsTrue(false, "I should also see this")
-                .Check();
-
-            act.Should().Throw<ValidationException>().WithMessage("I should see this\nI should also see this");
-        }
+                .Invoking(x => x.Check())
+                .Should().Throw<ValidationException>()
+                .WithMessage("I should see this\nI should also see this");
 
         [Fact]
         public void ShouldBeAbleToValidateExactLengthOfString()
@@ -362,11 +355,10 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
 
         [Fact]
         public void ShouldBeEquals()
-        {
-            Validate.Begin().IsEqual('C', 'C', "same characters")
+            => Validate.Begin().IsEqual('C', 'C', "same characters")
                 .IsEqual("AbC", "AbC", "same strings")
-                .IsEqual(-123, -123, "same integers").Check();
-        }
+                .IsEqual(-123, -123, "same integers")
+                .Check();
 
         [Fact]
         public void ShouldBeGreaterThanOrEquals()
@@ -541,20 +533,18 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
 
         [Fact]
         public void ShouldCheckAfterContinueIfValid()
-        {
-            Action act = () => Validate.Begin()
+            => Validate.Begin()
                 .IsTrue(true, "continue")
                 .ContinueIfValid(v => v.IsTrue(false, "I should see this"))
                 .IsTrue(false, "I should also see this")
-                .Check();
-
-            act.Should().Throw<ValidationException>().WithMessage("I should see this\nI should also see this");
-        }
+                .Invoking(x => x.Check())
+                .Should().Throw<ValidationException>()
+                .WithMessage("I should see this\nI should also see this");
 
         [Fact]
         public void ShouldContainItemMatchingCriteria()
         {
-            var items = new List<string> {"why hi there"};
+            var items = new List<string> { "why hi there" };
             Validate.Begin().Contains(items, x => x == "why hi there", "error message").Check().IsValid().Should()
                 .BeTrue();
             Validate.Begin().Contains(items, x => x == "hello world", "error message").Invoking(x => x.Check()).Should()
@@ -563,11 +553,10 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
 
         [Fact]
         public void ShouldContinueIfValid()
-        {
-            Validate.Begin()
+            => Validate.Begin()
                 .IsTrue(true, "continue")
-                .ContinueIfValid(v => v.IsTrue(true, "I will not see this"));
-        }
+                .ContinueIfValid(v => v.IsTrue(true, "I will not see this"))
+                .Check();
 
         [Fact]
         public void ShouldNotBeEquals()
@@ -579,25 +568,20 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
 
         [Fact]
         public void ShouldNotBeValidAfterContinueIfValid()
-        {
-            Action act = () => Validate.Begin()
+            => Validate.Begin()
                 .IsTrue(true, "continue")
                 .ContinueIfValid(v => v.IsTrue(false, "I should see this"))
-                .Check();
-
-            act.Should().Throw<ValidationException>().WithMessage("I should see this");
-        }
+                .Invoking(x => x.Check())
+                .Should().Throw<ValidationException>().WithMessage("I should see this");
 
         [Fact]
         public void ShouldNotContinueIfInValid()
-        {
-            Action act = () => Validate.Begin()
+            => Validate.Begin()
                 .IsTrue(false, "stop here")
                 .ContinueIfValid(v => v.IsTrue(false, "I should not see this"))
-                .Check();
-
-            act.Should().Throw<ValidationException>().WithMessage("stop here");
-        }
+                .Invoking(x => x.Check())
+                .Should()
+                .Throw<ValidationException>().WithMessage("stop here");
 
         [Fact]
         public void ShouldNotValidateNumerics()
@@ -652,8 +636,8 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void Warnings_ErrorAndWarning()
         {
-            var warning = new ValidationException("Foo") {Severity = ValidationSeverity.Warning};
-            var error = new ValidationException("Foo") {Severity = ValidationSeverity.Error};
+            var warning = new ValidationException("Foo") { Severity = ValidationSeverity.Warning };
+            var error = new ValidationException("Foo") { Severity = ValidationSeverity.Error };
             var validation = new Validation();
             validation.Add(warning);
             validation.Add(error);
@@ -661,44 +645,33 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         }
 
         [Fact]
-        public void Warnings_NullValidation()
-        {
-            ((Validation) null).Warnings().Should().BeNull();
-        }
+        public void Warnings_NullValidation() => ((Validation)null).Warnings().Should().BeNull();
 
         [Fact]
-        public void IsDateWithTime()
-        {
+        public void IsDateWithTime() =>
             Validate.Begin().IsDate("2019-01-01 14:25:59", "is a date").IsValid().Should().BeTrue();
-        }
 
         [Fact]
-        public void IsDate()
-        {
-            Validate.Begin().IsDate("2019-01-01", "is a date").IsValid().Should().BeTrue();
-        }
+        public void IsDate() => Validate.Begin().IsDate("2019-01-01", "is a date").IsValid().Should().BeTrue();
 
         [Fact]
-        public void IsNotADate()
-        {
-            Validate.Begin().IsDate("derp", "is a date").IsValid().Should().BeTrue();
-        }
+        public void IsNotADate() => Validate.Begin().IsDate("derp", "is a date").IsValid().Should().BeTrue();
 
         [Fact]
         public void ComparesTo_SameType()
         {
-            var angelina = new Foo("Angelina", "Jolie") {Age = 44};
-            var ladyGaga = new Foo("Angelina", "Gaga") {Age = 44};
+            var angelina = new Foo("Angelina", "Jolie") { Age = 44 };
+            var ladyGaga = new Foo("Angelina", "Gaga") { Age = 44 };
 
             Validate.Begin()
                 .ComparesTo<Foo>(angelina, ladyGaga, (validation, actual, expected) =>
                 {
                     validation.IsNotNull(actual, "actual").Check()
-                    .IsNotNull(expected, "expected").Check()
-                    .IsEqual(actual.FirstName, expected.FirstName, nameof(Foo.FirstName))
-                    .IsNotEqual(actual.LastName, expected.LastName, nameof(Foo.LastName))
-                    .IsEqual(actual.Age, expected.Age, nameof(Foo.Age))
-                    .Check();
+                        .IsNotNull(expected, "expected").Check()
+                        .IsEqual(actual.FirstName, expected.FirstName, nameof(Foo.FirstName))
+                        .IsNotEqual(actual.LastName, expected.LastName, nameof(Foo.LastName))
+                        .IsEqual(actual.Age, expected.Age, nameof(Foo.Age))
+                        .Check();
                 })
                 .Check();
         }
@@ -706,9 +679,9 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void DoesNotCompareTo_DifferentType()
         {
-            var angelina = new Foo("Angelina", "Jolie") {Age = 41};
-            var ladyGaga = new Bar("Angelina", "Gaga") {Age = 44, SocialSecurityNumber = 111321};
-            
+            var angelina = new Foo("Angelina", "Jolie") { Age = 41 };
+            var ladyGaga = new Bar("Angelina", "Gaga") { Age = 44, SocialSecurityNumber = 111321 };
+
             Validate.Begin()
                 .ComparesTo(angelina, ladyGaga, (validation, actual, expected) =>
                 {
@@ -726,8 +699,8 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void Is()
         {
-            var angelina = new Foo("Angelina", "Jolie") {Age = 41};
-            var ladyGaga = new Bar("Angelina", "Gaga") {Age = 44, SocialSecurityNumber = 111321};
+            var angelina = new Foo("Angelina", "Jolie") { Age = 41 };
+            var ladyGaga = new Bar("Angelina", "Gaga") { Age = 44, SocialSecurityNumber = 111321 };
 
             Validate.Begin()
                 .IsNotNull(angelina, "angelina").Check()
@@ -740,11 +713,10 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void Is_Invalid()
         {
-            var angelina = new Foo("Angelina", "Jolie") {Age = 41};
-            var ladyGaga = new Bar("Angelina", "Gaga") {Age = 44, SocialSecurityNumber = 111321};
+            var angelina = new Foo("Angelina", "Jolie") { Age = 41 };
+            var ladyGaga = new Bar("Angelina", "Gaga") { Age = 44, SocialSecurityNumber = 111321 };
 
             Assert.Throws<ValidationException>(() =>
-                
                 Validate.Begin()
                     .IsNotNull(angelina, "angelina").Check()
                     .IsNotNull(ladyGaga, "ladyGaga").Check()
@@ -752,16 +724,15 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
                         validation.IsNull(subject, "subject")
                     ).Check()
             );
-            
-            
+
+
             Assert.Throws<ValidationException>(() =>
-                
                 Validate.Begin()
                     .IsNotNull(angelina, "angelina").Check()
                     .IsNotNull(ladyGaga, "ladyGaga").Check()
                     .Is(angelina, (validation, subject) =>
                         validation.IsNull(subject, "subject").Check()
-                ).Check()
+                    ).Check()
             );
         }
 
@@ -814,8 +785,8 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         [Fact]
         public void ForEach()
         {
-            var name = "Santa";
-            var items = new[] {"one", "two", "three"};
+            const string name = "Santa";
+            var items = new[] { "one", "two", "three" };
             Validate.Begin()
                 .IsNotEmpty(name, "name")
                 .ForEach(items, (v, each) => v.IsNotEmpty(each, "each item"))
@@ -826,36 +797,36 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
         public void ForEachFails()
         {
             const string name = "Santa";
-            var items = new[] {"one", "two", string.Empty};
-            
+            var items = new[] { "one", "two", string.Empty };
+
             Action fail = () => Validate.Begin()
-                            .IsNotEmpty(name, "name")
-                            .ForEach(items, (v, each) => v.IsNotEmpty(each, "string is null"))
-                            .Check();
-            
+                .IsNotEmpty(name, "name")
+                .ForEach(items, (v, each) => v.IsNotEmpty(each, "string is null"))
+                .Check();
+
             fail.Should().Throw<ValidationException>().WithMessage("string is null");
         }
-        
+
         [Fact]
         public void ForEachFails_OnItemPriorToForEach()
         {
             var name = string.Empty;
-            var items = new[] {"one", "two", "three"};
-            
+            var items = new[] { "one", "two", "three" };
+
             Action fail = () => Validate.Begin()
-                            .IsNotEmpty(name, "name")
-                            .ForEach(items, (v, each) => v.IsNotEmpty(each, "string is null"))
-                            .Check();
+                .IsNotEmpty(name, "name")
+                .ForEach(items, (v, each) => v.IsNotEmpty(each, "string is null"))
+                .Check();
 
             fail.Should().Throw<ValidationException>().WithMessage("name");
         }
-        
+
         [Fact]
         public void ForEachFails_ListIsNullShouldNotThrowNullPointerException()
         {
-            var name = "kaka";
+            const string name = "kaka";
             string[] items = null;
-            
+
             Action fail = () => Validate.Begin()
                 .IsNotEmpty(name, "name")
                 .ForEach(items, (v, each) => v.IsNotEmpty(each, "string is null"))

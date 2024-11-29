@@ -1,21 +1,16 @@
 using System;
 
-namespace Xerris.DotNet.Core.Utilities
+namespace Xerris.DotNet.Core.Utilities;
+
+public class DateTimeRange : Range<DateTime>
 {
-
-    public class DateTimeRange : Range<DateTime>
+    private DateTimeRange() : base(default, default)
     {
-        private DateTimeRange() :base(default(DateTime), default(DateTime))
-        { } 
-
-        public DateTimeRange(DateTime start, DateTime end) : base(start, end, dtTime => dtTime.AddDays(1))
-        {
-        }
-
-        public TimeSpan Difference()
-        {
-            return End - Start;
-        }
-        
     }
+
+    public DateTimeRange(DateTime start, DateTime end) : base(start, end, dtTime => dtTime.AddDays(1))
+    {
+    }
+
+    public TimeSpan Difference() => End - Start;
 }

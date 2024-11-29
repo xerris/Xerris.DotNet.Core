@@ -6,7 +6,6 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
 {
     public class EnumerableExtensionsTest
     {
-
         [Theory]
         [InlineData("dxpw-admin", "nutrien.user@nutrien.com", "nutrien.user@nutrien.com")]
         [InlineData("testuser22@nutrien.com", "dwpw-admin", "testuser22@nutrien.com")]
@@ -17,7 +16,6 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
             => new[] { item1, item2 }.GetEmail().Should().Be(expected);
 
         [Fact]
-        public void NoEmail()
-            => new[] { "dxpw-admin", "nutrien.user@", "blah" }.GetEmail().Should().BeNull();
+        public void NoEmail() => new[] { "dxpw-admin", "nutrien.user@", "blah" }.GetEmail().Should().BeNull();
     }
 }

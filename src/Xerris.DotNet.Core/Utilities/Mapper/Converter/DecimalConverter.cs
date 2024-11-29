@@ -1,8 +1,7 @@
-﻿namespace Xerris.DotNet.Core.Utilities.Mapper.Converter
+﻿namespace Xerris.DotNet.Core.Utilities.Mapper.Converter;
+
+public class DecimalConverter : AbstractValueConverter<decimal?>
 {
-    public class DecimalConverter : AbstractValueConverter<decimal?>
-    {
-        protected override decimal? InternalConvert(string input) =>
-            string.IsNullOrEmpty(input) ? (decimal?)null : decimal.Parse(input);
-    }
+    protected override decimal? InternalConvert(string input)
+        => string.IsNullOrEmpty(input) ? null : decimal.Parse(input);
 }

@@ -14,6 +14,14 @@ namespace Xerris.DotNet.Core.Test.Core.Time
         {
             Clock.Local.Thaw();
             Clock.Utc.Thaw();
+            UtcClock.Thaw();
+        }
+
+        public void Dispose()
+        {
+            Clock.Local.Thaw();
+            Clock.Utc.Thaw();
+            UtcClock.Thaw();
         }
 
         [Fact]
@@ -45,7 +53,7 @@ namespace Xerris.DotNet.Core.Test.Core.Time
             Thread.Sleep(500);
             Clock.Local.Now.Should().NotBe(then);
         }
-        
+
         [Fact]
         public void CanFreezeClockForSpecificDateTime()
         {
@@ -56,11 +64,11 @@ namespace Xerris.DotNet.Core.Test.Core.Time
                 Thread.Sleep(500);
                 Clock.Local.Now.IsCloseEnough(then, .0001m);
             }
+
             Thread.Sleep(500);
             Clock.Local.Now.IsCloseEnough(then, .0001m);
-            
         }
-        
+
         [Fact]
         public void CanFreezeClockForSpecificDateTimeUtc()
         {
@@ -71,15 +79,9 @@ namespace Xerris.DotNet.Core.Test.Core.Time
                 Thread.Sleep(500);
                 Clock.Utc.Now.IsCloseEnough(then, .0001m);
             }
+
             Thread.Sleep(500);
             Clock.Utc.Now.IsCloseEnough(then, .0001m);
-            
-        }
-
-        public void Dispose()
-        {
-            Clock.Local.Thaw();
-            Clock.Utc.Thaw();
         }
     }
 }

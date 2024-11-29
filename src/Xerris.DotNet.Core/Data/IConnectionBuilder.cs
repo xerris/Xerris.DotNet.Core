@@ -1,11 +1,10 @@
 using System.Data;
 using System.Threading.Tasks;
 
-namespace Xerris.DotNet.Core.Data
+namespace Xerris.DotNet.Core.Data;
+
+public interface IConnectionBuilder
 {
-    public interface IConnectionBuilder
-    {
-        Task<IDbConnection> CreateConnectionAsync();
-        Task<IDbConnection> CreateReadConnectionAsync();
-    }
+    Task<IDbConnection> CreateConnectionAsync();
+    Task<IDbConnection> CreateReadConnectionAsync();
 }

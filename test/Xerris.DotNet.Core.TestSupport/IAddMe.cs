@@ -1,6 +1,5 @@
-namespace Xerris.DotNet.Core.TestSupport
+namespace Xerris.DotNet.Core.TestSupport;
+
+public interface IAddMe
 {
-    public interface IAddMe
-    {
-    }
 }

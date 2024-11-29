@@ -1,15 +1,16 @@
 ﻿using System;
 
-namespace Xerris.DotNet.Core.TestSupport
-{
-    public interface IService
-    {
-        void DoIt();
-    }
+namespace Xerris.DotNet.Core.TestSupport;
 
-    public class MyService : IService
+public interface IService
+{
+    void DoIt();
+}
+
+public class MyService : IService
+{
+    public void DoIt()
     {
-        public void DoIt()
-            => Console.WriteLine("Hi");
+        Console.WriteLine("Hi");
     }
 }

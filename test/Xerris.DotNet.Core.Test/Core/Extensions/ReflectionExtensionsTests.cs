@@ -66,6 +66,8 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
             return "HI";
         }
     }
-    
-    public interface IBye { }
+
+    public interface IBye
+    {
+    }
 }

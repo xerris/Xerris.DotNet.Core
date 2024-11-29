@@ -2,86 +2,87 @@ using System;
 using System.Data;
 using Serilog;
 
-namespace Xerris.DotNet.Core.Data
+namespace Xerris.DotNet.Core.Data;
+
+public interface IUnitOfWork : IDisposable
 {
-     public interface IUnitOfWork : IDisposable
+    IDbTransaction Transaction { get; }
+    IDbConnection Connection { get; }
+    void Commit();
+    void Rollback();
+}
+
+public class UnitOfWork : IUnitOfWork
+{
+    private bool committed;
+    private bool disposed;
+
+    public UnitOfWork(IDbConnection connection)
     {
-        IDbTransaction Transaction { get; }
-        IDbConnection Connection { get; }
-        void Commit();
-        void Rollback();
+        Connection = connection;
+        Transaction = connection.BeginTransaction();
     }
 
-    public class UnitOfWork : IUnitOfWork
+    public IDbTransaction Transaction { get; }
+    public IDbConnection Connection { get; }
+
+    public void Dispose()
     {
-        private bool committed = false;
-        private bool disposed;
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 
-        public IDbTransaction Transaction { get; }
-        public IDbConnection Connection { get; }
-
-        public UnitOfWork(IDbConnection connection)
+    public void Commit()
+    {
+        try
         {
-            Connection = connection;
-            Transaction = connection.BeginTransaction();
+            Log.Debug("Committing unit of work");
+            Transaction.Commit();
+            committed = true;
+            Log.Debug("Committing successful");
         }
-
-        ~UnitOfWork()
-            => Dispose(false);
-        
-        public void Dispose()
+        catch (Exception e)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            Log.Error(e, "Unable to commit unit of work");
+            Rollback();
+            throw;
         }
+    }
 
-        private void Dispose(bool disposing)
+    public void Rollback()
+    {
+        Transaction.Rollback();
+    }
+
+    ~UnitOfWork()
+    {
+        Dispose(false);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (disposed) return;
+        if (disposing)
         {
-            if (disposed) return;
-            if (disposing)
-            {
-                if (!committed)
+            if (!committed)
+                try
                 {
-                    try
-                    {
-                        Rollback();
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        Log.Warning("Attempted rollback of transaction in dispose.");
-                    }
-                    catch(Exception e)
-                    {
-                        // if we can't roll back here we have issues
-                        Log.Warning(e,"Unable to rollback transaction in dispose.");
-                    }
+                    Rollback();
                 }
-                Transaction?.Dispose();
-                Connection?.Dispose();
-            }
-            disposed = true;
+                catch (InvalidOperationException)
+                {
+                    Log.Warning("Attempted rollback of transaction in dispose.");
+                }
+                catch (Exception e)
+                {
+                    // if we can't roll back here we have issues
+                    Log.Warning(e, "Unable to rollback transaction in dispose.");
+                }
+
+            Transaction?.Dispose();
+            Connection?.Dispose();
         }
 
-        public void Commit()
-        {
-            try
-            {
-                Log.Debug("Committing unit of work");
-                Transaction.Commit();
-                committed = true;
-                Log.Debug("Committing successful");
-            }
-            catch (Exception e)
-            {
-                Log.Error(e, "Unable to commit unit of work");
-                Rollback();
-                throw;
-            }
-        }
-
-        public void Rollback()
-        {
-            Transaction.Rollback();
-        }
+        disposed = true;
     }
 }

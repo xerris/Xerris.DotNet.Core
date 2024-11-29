@@ -12,9 +12,8 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         private readonly ITestOutputHelper outputHelper;
 
         public DateTimeExtensionsTest(ITestOutputHelper outputHelper)
-        {
-            this.outputHelper = outputHelper;
-        }
+            => this.outputHelper = outputHelper;
+
 
         [Fact]
         public void Earliest_Midnight() => DateTime.Today.Earliest().Should().Be(DateTime.Today);
@@ -27,8 +26,7 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
 
         [Fact]
         public void Earliest_At01_00_00() => DateTime.Today.AddHours(1).Earliest().Should().Be(DateTime.Today);
-
-
+        
         [Fact]
         public void ShouldConvertFromDateTimeToUnixTimeStamp()
         {
@@ -123,7 +121,7 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
             toTruncate.Millisecond.Should().Be(0);
             toTruncate.Kind.Should().Be(DateTimeKind.Utc);
         }
-        
+
         [Fact]
         public void ToDate()
         {
@@ -141,13 +139,8 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
             var date = new DateTime(2022, 01, 30);
             date.Formatted(format).Should().Be(expected);
         }
-        
-        [Fact]
-        public void ToDateBadDateString()
-        {
-            const string dateString = "20201221x";
 
-            Assert.Throws<FormatException>(() => dateString.ToDate("yyyyMMdd"));
-        }
+        [Fact]
+        public void ToDateBadDateString() => Assert.Throws<FormatException>(() => "20201221x".ToDate("yyyyMMdd"));
     }
 }

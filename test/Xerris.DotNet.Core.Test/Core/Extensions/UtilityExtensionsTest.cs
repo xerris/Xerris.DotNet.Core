@@ -14,7 +14,8 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         {
             var actual = FactoryGirl.Build<Person>();
             Validate.Begin()
-                .ComparesTo<Person>(actual.ToJson().ToBase64().FromBase64().FromJson<Person>(), actual, AssertionExtensions.Matches);
+                .ComparesTo<Person>(actual.ToJson().ToBase64().FromBase64().FromJson<Person>(), actual,
+                    AssertionExtensions.Matches);
         }
 
         [Fact]
@@ -30,7 +31,8 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         {
             var actual = FactoryGirl.Build<Person>();
             Validate.Begin()
-                .ComparesTo<Person>(actual.ToJson().Zip().Unzip().FromJson<Person>(), actual, AssertionExtensions.Matches);
+                .ComparesTo<Person>(actual.ToJson().Zip().Unzip().FromJson<Person>(), actual,
+                    AssertionExtensions.Matches);
         }
     }
 }

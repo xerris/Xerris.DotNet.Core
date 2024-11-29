@@ -1,6 +1,5 @@
-namespace Xerris.DotNet.Core
+namespace Xerris.DotNet.Core;
+
+public interface IApplicationConfigBase
 {
-    public interface IApplicationConfigBase
-    {
-    }
 }

@@ -13,8 +13,7 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         public void Base64()
             => Validate.Begin()
                 .IsEqual(Original.ToBase64().FromBase64(), Original, "original").Check();
-
-
+        
         [Fact]
         public void GetBytes()
             => Validate.Begin()

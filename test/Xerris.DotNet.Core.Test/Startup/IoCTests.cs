@@ -9,15 +9,12 @@ namespace Xerris.DotNet.Core.Test.Startup
 {
     public class IoCTests : IDisposable
     {
-        public IoCTests()
-        {
-            Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), "connectMe");
-        }
+        public IoCTests() =>
+            Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), "connectMe"); public void Dispose() => Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), null);
 
         [Fact]
         public void ApplicationConfig()
         {
- 
             var appConfig = IoC.Resolve<IApplicationConfig>();
 
             Validate.Begin()
@@ -53,9 +50,5 @@ namespace Xerris.DotNet.Core.Test.Startup
             var service = IoC.Resolve<IService>();
             IoC.Resolve<IService>().Should().BeSameAs(service);
         }
-
-        public void Dispose()
-            => Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), null);
-
     }
 }

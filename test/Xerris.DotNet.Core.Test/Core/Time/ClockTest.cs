@@ -10,11 +10,10 @@ namespace Xerris.DotNet.Core.Test.Core.Time
     [Collection("base")]
     public class ClockTest : IDisposable
     {
+        public void Dispose() => Clock.Local.Thaw();
+
         [Fact]
-        public void CanGetEndOfTime()
-        {
-            Clock.EndOfTime.Should().Be(new DateTime(9999, 12, 31, 23, 59, 59,999));
-        }
+        public void CanGetEndOfTime() => Clock.EndOfTime.Should().Be(new DateTime(9999, 12, 31, 23, 59, 59, 999));
 
         [Fact]
         public void CanGetToday()
@@ -46,7 +45,7 @@ namespace Xerris.DotNet.Core.Test.Core.Time
         {
             var now = Clock.MountainTime.Now;
         }
-        
+
         [Fact]
         public void CanGetCentralTime()
         {
@@ -63,8 +62,5 @@ namespace Xerris.DotNet.Core.Test.Core.Time
             Clock.Utc.Freeze(DateTime.Parse(utcTimeAsString));
             Clock.AustralianEasternTime.Today.Should().Be(DateTime.Parse(expectedAestDateAsString));
         }
-
-        public void Dispose()
-            => Clock.Local.Thaw();
     }
 }

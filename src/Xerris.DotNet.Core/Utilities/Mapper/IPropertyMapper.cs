@@ -1,9 +1,8 @@
-﻿namespace Xerris.DotNet.Core.Utilities.Mapper
+﻿namespace Xerris.DotNet.Core.Utilities.Mapper;
+
+public interface IPropertyMapper
 {
-    public interface IPropertyMapper
-    {
-        void Apply(object src, object dest);
-        string Source { get; }
-        string Target { get; }
-    }
+    string Source { get; }
+    string Target { get; }
+    void Apply(object src, object dest);
 }

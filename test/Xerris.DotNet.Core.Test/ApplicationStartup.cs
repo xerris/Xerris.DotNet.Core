@@ -20,8 +20,6 @@ namespace Xerris.DotNet.Core.Test
         }
 
         public void InitializeLogging(IConfiguration configuration, Action<IConfiguration> defaultConfig)
-        {
-            defaultConfig(configuration);
-        }
+            => defaultConfig(configuration);
     }
 }

@@ -11,8 +11,8 @@ public class EnumOrderAttribute : Attribute
 [AttributeUsage(AttributeTargets.Field)]
 public class SequenceAttribute : Attribute
 {
-    public int Sequence { get; set; }
-
     public SequenceAttribute(int value)
         => Sequence = value;
+
+    public int Sequence { get; set; }
 }

@@ -15,14 +15,17 @@ namespace Xerris.DotNet.Core.Test.Core.Validations
             multi.InnerExceptions.Count().Should().Be(1);
             multi.Message.Should().Be("one");
         }
-        
+
         [Fact]
         public void MultiExceptions()
         {
-            var multi = new MultiException("one", 
-                new[] {new ValidationException("one"),
-                                   new ValidationException("two")});
-            
+            var multi = new MultiException("one",
+                new[]
+                {
+                    new ValidationException("one"),
+                    new ValidationException("two")
+                });
+
             multi.InnerExceptions.Count().Should().Be(2);
             multi.Message.Should().Be($"one{Environment.NewLine}two");
         }

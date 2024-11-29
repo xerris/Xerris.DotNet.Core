@@ -4,7 +4,6 @@ namespace Xerris.DotNet.Core.Test.Factories
 {
     public class CleanFactoryGirl : ICommand
     {
-        public void Run()
-            => FactoryGirl.Clear();
+        public void Run() => FactoryGirl.Clear();
     }
 }
