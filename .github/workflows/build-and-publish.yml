@@ -1,4 +1,4 @@
-name: Publish My Project
+name: Publish Xerris.DotNet.Core 
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ on:
 jobs:
   publish:
     if: github.event.pull_request.merged == true
-    uses: ./.github/workflows/build-and-publish-to-nuget.yml
+    uses: xerris/xerris-common-actions/.github/workflows/build-and-publish-to-nuget.yml@main
     with:
       csproj-path: './src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj'
       nuget-package-name: 'xerris.dotnet.core'
