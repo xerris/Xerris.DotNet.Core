@@ -7,7 +7,7 @@ on:
 
 jobs:
   ci-build:
-    uses: your-org/common-workflows/.github/workflows/ci-build.yml@main
+    uses: xerris/xerris-common-workflows/.github/workflows/ci-build.yml@main
     with:
       dotnet-version: '8.0.x'
       build-configuration: 'Release'
