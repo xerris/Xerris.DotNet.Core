@@ -18,34 +18,55 @@ on:
         required: true
 
 jobs:
-  build-and-publish:
+  setup:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
 
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
       - name: Build Project
         run: dotnet build ${{ inputs.csproj-path }} --configuration Release
-
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build-output
           path: '**/bin/Release/net8.0'
 
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
       - name: Test Project
         run: dotnet test ${{ inputs.csproj-path }} --verbosity normal
 
+  version:
+    needs: test
+    runs-on: ubuntu-latest
+    outputs:
+      next_version: ${{ steps.calc_version.outputs.next_version }}
+    steps:
       - name: Get current version
         id: get_version
         run: |
           CURRENT_VERSION=$(curl -s https://api.nuget.org/v3-flatcontainer/${{ inputs.nuget-package-name }}/index.json | jq -r '.versions | map(select(startswith("2019.") | not)) | .[-1]')
           echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
-
       - name: Calculate next version
         id: calc_version
         run: |
@@ -54,21 +75,49 @@ jobs:
           NEXT_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$((VERSION_PARTS[2] + 1))"
           echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
 
+  tag:
+    needs: version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
       - name: Create and Push Git Tag
         run: |
           git config --global user.email "greg@xerris.com"
           git config --global user.name "Greg COok"
-          NEXT_VERSION=${{ steps.calc_version.outputs.next_version }}
+          NEXT_VERSION=${{ needs.version.outputs.next_version }}
           git tag "v$NEXT_VERSION"
           git push origin "v$NEXT_VERSION"
 
+  pack:
+    needs: [version, tag]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
       - name: Pack NuGet package
         run: >
           dotnet pack ${{ inputs.csproj-path }}
           --configuration Release
           --output ./packages
-          /p:Version=${{ steps.calc_version.outputs.next_version }}
+          /p:Version=${{ needs.version.outputs.next_version }}
+      - name: Upload NuGet package
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-package
+          path: ./packages
 
+  publish:
+    needs: pack
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download NuGet package
+        uses: actions/download-artifact@v4
+        with:
+          name: nuget-package
+          path: ./packages
       - name: Publish to NuGet
         run: >
           dotnet nuget push ./packages/*.nupkg
