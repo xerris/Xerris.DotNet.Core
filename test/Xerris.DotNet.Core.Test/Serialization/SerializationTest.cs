@@ -1,5 +1,4 @@
 using System;
-using Moq;
 using Newtonsoft.Json;
 using Xerris.DotNet.Core.Extensions;
 using Xerris.DotNet.Core.Serialization;

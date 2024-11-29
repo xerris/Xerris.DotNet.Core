@@ -79,7 +79,8 @@ public class MapperTest
     internal class TestMapper : AbstractMapper<SourceObj, TargetObj>
     {
 
-        public static IValueConverter<T> GetValueConverter<T>(Expression<Func<SourceObj, object>> sourceProperty, Expression<Func<TargetObj, T>> targetProperty)
+        public static IValueConverter<T> GetValueConverter<T>(Expression<Func<SourceObj, object>> sourceProperty,
+            Expression<Func<TargetObj, T>> targetProperty)
         {
             var source = sourceProperty.GetProperty();
             var target = targetProperty.GetProperty();
@@ -98,9 +99,7 @@ public class MapperTest
         }
 
         protected override TargetObj Create()
-        {
-            return new TargetObj();
-        }
+            => new TargetObj();
     }
 
     internal class SourceObj

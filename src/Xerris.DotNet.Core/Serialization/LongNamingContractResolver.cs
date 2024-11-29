@@ -16,9 +16,7 @@ namespace Xerris.DotNet.Core.Serialization
             // Now inspect each property and replace the 
             // short name with the real property name
             foreach (var prop in list)
-            {
                 prop.PropertyName = prop.UnderlyingName;
-            }
 
             return list;
         }

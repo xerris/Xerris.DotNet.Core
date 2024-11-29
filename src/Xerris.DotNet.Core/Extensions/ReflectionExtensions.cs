@@ -13,7 +13,7 @@ namespace Xerris.DotNet.Core.Extensions
         {
             if (t == null) return Enumerable.Empty<Type>();
 
-            var searchAssemblies = targetAssemblies.Any() ? targetAssemblies : AppDomain.CurrentDomain.GetAssemblies();
+            var searchAssemblies = targetAssemblies.Length != 0 ? targetAssemblies : AppDomain.CurrentDomain.GetAssemblies();
 
             return searchAssemblies
                 .SelectMany(s => s.GetTypes())
@@ -23,8 +23,8 @@ namespace Xerris.DotNet.Core.Extensions
         public static IEnumerable<Assembly> GetParentAssemblies(this Assembly a)
         {
             return new StackTrace().GetFrames()
-                .Where(f => f.GetMethod().ReflectedType != null)
-                .Select(f => f.GetMethod().ReflectedType.Assembly)
+                .Where(f => f.GetMethod()?.ReflectedType != null)
+                .Select(f => f.GetMethod()?.ReflectedType.Assembly)
                 .Distinct().Where(x => x.GetReferencedAssemblies().Any(y => y.FullName == a.FullName));
         }
         
@@ -37,13 +37,12 @@ namespace Xerris.DotNet.Core.Extensions
         public static object GetValue<TModel, T>(this Expression<Func<TModel, T>> expression, T obj)
         {
             var info = expression.GetProperty();
-            return info.GetValue(obj, new object[0]);
+            return info.GetValue(obj, Array.Empty<object>());
         }
 
         public static string NameOfProperty<TModel, T>(this Expression<Func<TModel, T>> expression)
-        {
-            return expression.GetProperty().Name;
-        }
+            => expression.GetProperty().Name;
+        
 
         private static MemberExpression GetMemberExpression<TModel, T>(Expression<Func<TModel, T>> expression, bool enforceCheck = true)
         {
@@ -62,7 +61,7 @@ namespace Xerris.DotNet.Core.Extensions
             }
             if (enforceCheck && memberExpression == null)
             {
-                throw new ArgumentException("Not a member access", "expression");
+                throw new ArgumentException("Not a member access", nameof(expression));
             }
             return memberExpression;
         }

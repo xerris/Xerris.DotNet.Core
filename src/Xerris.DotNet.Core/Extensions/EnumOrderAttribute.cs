@@ -1,20 +1,18 @@
 using System;
 
-namespace Xerris.DotNet.Core.Extensions
+namespace Xerris.DotNet.Core.Extensions;
+
+[AttributeUsage(AttributeTargets.Field)]
+public class EnumOrderAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Field)]
-    public class EnumOrderAttribute : Attribute
-    {
-        public int Order { get; set; }
-    }
+    public int Order { get; set; }
 }
 
 [AttributeUsage(AttributeTargets.Field)]
 public class SequenceAttribute : Attribute
 {
     public int Sequence { get; set; }
+
     public SequenceAttribute(int value)
-    {
-        Sequence = value;
-    }
+        => Sequence = value;
 }

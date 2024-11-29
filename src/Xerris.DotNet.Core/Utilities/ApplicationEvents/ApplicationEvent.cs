@@ -12,7 +12,6 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
     {
         private DateTime start;
         
-        
         public string Identifier { get; set; }
         public DateTime Timestamp { get; set; }
         public string User { get; set; }
@@ -25,9 +24,7 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
         public string OperationStep { get; set; }
 
         public void StartEvent()
-        {
-            start = Clock.Utc.Now;
-        }
+            => start = Clock.Utc.Now;
 
         public void StopEvent()
         {
@@ -36,7 +33,5 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
             Timestamp = end;
             Identifier = Guid.NewGuid().ToString();
         }
-        
     }
-    
 }

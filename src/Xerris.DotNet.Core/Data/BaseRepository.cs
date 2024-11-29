@@ -13,9 +13,7 @@ namespace Xerris.DotNet.Core.Data
         private readonly IConnectionBuilder connectionBuilder;
 
         protected BaseRepository(IConnectionBuilder connectionBuilder)
-        {
-            this.connectionBuilder = connectionBuilder;
-        }
+            => this.connectionBuilder = connectionBuilder;
 
         protected async Task<IDbConnection> CreateConnectionAsync()
         {

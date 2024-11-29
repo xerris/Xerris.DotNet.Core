@@ -4,6 +4,7 @@ using FluentAssertions;
 using Xerris.DotNet.Core.Extensions;
 using Xerris.DotNet.Core.Validations;
 using Xunit;
+// ReSharper disable InconsistentNaming
 
 namespace Xerris.DotNet.Core.Test.Core.Extensions
 {
@@ -22,21 +23,15 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
 
         [Fact]
         public void Should_Bork_When_Attempting_To_Create_Enum_List_When_An_Item_Is_Not_Part_Of_The_Enum()
-        {
-            Assert.Throws<ArgumentException>((() => new[] {"Female", "Male", "kaka-poopoo"}.ToEnumList<Gender>()));
-        }
+            => Assert.Throws<ArgumentException>(() => new[] { "Female", "Male", "kaka-poopoo" }.ToEnumList<Gender>());
 
         [Fact]
         public void Can_Parse_From_Int_Back_To_Enum()
-        {
-            0.ToEnum<Gender>().Should().Be(Gender.Female);
-        }
+            => 0.ToEnum<Gender>().Should().Be(Gender.Female);
 
         [Fact]
         public void Can_Parse_From_String_Back_To_Enum()
-        {
-            "0".ToEnum<Gender>().Should().Be(Gender.Female);
-        }
+            => "0".ToEnum<Gender>().Should().Be(Gender.Female);
 
         [Fact]
         public void Should_Not_Convert_String()
@@ -48,9 +43,7 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
 
         [Fact]
         public void Should_Parse_Code_By_Description()
-        {
-            "FT-SN".ToEnumExact<Codes>().Should().Be(Codes.FTSN);
-        }
+            => "FT-SN".ToEnumExact<Codes>().Should().Be(Codes.FTSN);
 
         [Fact]
         public void Should_Convert_To_Enum_List_With_A_Description()
@@ -79,9 +72,7 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
 
         [Fact]
         public void Should_Get_List_Of_Enums()
-        {
-            EnumExtensions.GetEnumList<SortThings>().Should().HaveCount(4);
-        }
+            => EnumExtensions.GetEnumList<SortThings>().Should().HaveCount(4);
 
         [Fact]
         public void Should_Get_Sorted_List_Of_Enums()
@@ -104,8 +95,7 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         [Fact]
         public void ShouldParseNumericStringToEnum()
         {
-            Gender value;
-            "1".TryToEnum<Gender>(out value);
+            "1".TryToEnum<Gender>(out var value);
             value.Should().Be(Gender.Male);
             
         }

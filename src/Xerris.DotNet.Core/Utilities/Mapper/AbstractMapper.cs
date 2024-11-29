@@ -12,9 +12,6 @@ namespace Xerris.DotNet.Core.Utilities.Mapper
         where TFrom : class
         where TO : class
     {
-        private readonly List<IPropertyMapper> propertyMappers = new List<IPropertyMapper>();
-        private readonly List<IClassMapper<TFrom, TO>> classMappers = new List<IClassMapper<TFrom, TO>>();
-
         private static readonly Dictionary<Type, IValueConverter> Converters =
             new Dictionary<Type, IValueConverter>
                 {
@@ -32,8 +29,9 @@ namespace Xerris.DotNet.Core.Utilities.Mapper
 
         private void InternalInitialize() => Initialize();
 
-        public  List<IPropertyMapper> PropertyMappers => propertyMappers;
-        public List<IClassMapper<TFrom, TO>> ClassMappers => classMappers;
+        public  List<IPropertyMapper> PropertyMappers { get; } = new List<IPropertyMapper>();
+
+        public List<IClassMapper<TFrom, TO>> ClassMappers { get; } = new List<IClassMapper<TFrom, TO>>();
 
         protected void Map<T>(Expression<Func<TFrom, object>> source, Expression<Func<TO, T>> target)
         {
@@ -63,23 +61,23 @@ namespace Xerris.DotNet.Core.Utilities.Mapper
         protected void Map<T>(Expression<Func<TO, T>> targetProperty, T value)
         {
             var target = targetProperty.GetProperty();
-            propertyMappers.Add(new ValueMapper<T>(target, value));
+            PropertyMappers.Add(new ValueMapper<T>(target, value));
         }
 
-        protected void Map(IClassMapper<TFrom, TO> action) => classMappers.Add(action);
+        protected void Map(IClassMapper<TFrom, TO> action) => ClassMappers.Add(action);
 
         private void Map<T>(PropertyInfo source, PropertyInfo target, IValueConverter<T> converter)
-                    => propertyMappers.Add(new PropertyMapper<T>(source, target, converter)); 
+                    => PropertyMappers.Add(new PropertyMapper<T>(source, target, converter)); 
 
         public TO Build(TFrom input) => BuildInternal(input, Create()); 
 
         private TO BuildInternal(TFrom input, TO to)
         {
-            foreach (var applier in propertyMappers)
+            foreach (var applier in PropertyMappers)
             {
                 applier.Apply(input, to);
             }
-            foreach (var action in classMappers)
+            foreach (var action in ClassMappers)
             {
                 action.Apply(input, to);
             }

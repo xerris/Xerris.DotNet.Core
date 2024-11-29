@@ -55,8 +55,7 @@ namespace Xerris.DotNet.Core.Test.Startup
         }
 
         public void Dispose()
-        {
-            Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), null);
-        }
+            => Environment.SetEnvironmentVariable(nameof(IApplicationConfig.ConnectionString), null);
+
     }
 }

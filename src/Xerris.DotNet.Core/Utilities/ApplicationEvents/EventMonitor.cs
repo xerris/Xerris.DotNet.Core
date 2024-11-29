@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
-using Xerris.DotNet.Core.Extensions;
 using Xerris.DotNet.Core.Time;
 
 namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
@@ -31,11 +28,8 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
         }
 
         ~EventMonitor()
-        {
-            Dispose(false);
-        }
+            => Dispose(false);
         
-
         private ApplicationEvent CreateApplicationEvent(string operationStep)
         {
             var ap = new ApplicationEvent {User = user, Operation = operation, Details = details, OperationStep = operationStep};
@@ -144,7 +138,6 @@ namespace Xerris.DotNet.Core.Utilities.ApplicationEvents
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        
         
         private void Dispose(bool disposing)
         {

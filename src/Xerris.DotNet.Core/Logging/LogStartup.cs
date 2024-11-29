@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using Xerris.DotNet.Core.Extensions;
 
 
 namespace Xerris.DotNet.Core.Logging
@@ -16,22 +17,18 @@ namespace Xerris.DotNet.Core.Logging
             {
                 if (initialized) return;
 
-                var hasSerilog = configuration.GetSection("Serilog") != null;
+                if (configuration == null) return;
+                var serilog = configuration.GetSection("Serilog");
 
-                if (hasSerilog)
-                {
+                if (serilog.IsNotEmpty())
                     Log.Logger = new LoggerConfiguration()
                         .ReadFrom.Configuration(configuration)
                         .CreateLogger();
-                }
                 else
-                {
                     Log.Logger = new LoggerConfiguration()
                         .WriteTo.Console(outputTemplate:
                             "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
                         .CreateLogger();
-                }
-                
 
                 initialized = true;
             }

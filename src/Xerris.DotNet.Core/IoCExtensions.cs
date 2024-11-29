@@ -27,14 +27,11 @@ namespace Xerris.DotNet.Core
 
         public static IServiceCollection AutoRegisterAll<T>(this IServiceCollection collection, Assembly assembly)
         {
-            var target = typeof(T);
-            FindAllFor(target, assembly).ForEach(each => ServiceCollectionServiceExtensions.AddSingleton(collection, target, (Type)each));
+            FindAllFor(typeof(T), assembly).ForEach(each => collection.AddSingleton(typeof(T), each));
             return collection;
         }
 
         private static IEnumerable<Type> FindAllFor(Type type, Assembly assembly)
-        {
-            return assembly.GetTypes().Where(tt => tt.IsClass && !tt.IsAbstract && type.IsAssignableFrom(tt));
-        }
+            => assembly.GetTypes().Where(tt => tt.IsClass && !tt.IsAbstract && type.IsAssignableFrom(tt));
     }
 }

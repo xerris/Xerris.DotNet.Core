@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using Xerris.DotNet.Core.Utilities.Mapper.Converter;
 
 namespace Xerris.DotNet.Core.Utilities.Mapper
@@ -24,6 +25,6 @@ namespace Xerris.DotNet.Core.Utilities.Mapper
             target.SetValue(dest, converter.Convert(GetSourceValue(src)), null);
 
         private object GetSourceValue(object src) =>
-            source.GetGetMethod().Invoke(src, new object[0]);
+            source.GetGetMethod()?.Invoke(src, Array.Empty<object>());
     }
 }

@@ -14,9 +14,7 @@ namespace Xerris.DotNet.Core.Validations
 
         public MultiException(string message, ValidationException innerException)
             : base(message, innerException)
-        {
-            innerExceptions = new[] {innerException};
-        }
+            => innerExceptions = new[] { innerException };
 
         public MultiException(IEnumerable<ValidationException> innerExceptions)
             : this(null, innerExceptions)
@@ -25,10 +23,10 @@ namespace Xerris.DotNet.Core.Validations
 
         public MultiException(string message, IEnumerable<ValidationException> innerExceptions)
             : base(message, innerExceptions.FirstOrDefault())
-        {
-            this.innerExceptions = innerExceptions.Where(i => !(i is null)).ToArray();
-        }
+            => this.innerExceptions = innerExceptions.Where(i => !(i is null)).ToArray();
+        
 
+        [Obsolete("Obsolete")]
         private MultiException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

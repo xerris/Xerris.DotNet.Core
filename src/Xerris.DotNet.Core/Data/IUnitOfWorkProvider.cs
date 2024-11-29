@@ -14,9 +14,7 @@ namespace Xerris.DotNet.Core.Data
         private readonly IConnectionBuilder builder;
 
         public UnitOfWorkProvider(IConnectionBuilder builder)
-        {
-            this.builder = builder;
-        }
+            => this.builder = builder;
         
         public async Task<IUnitOfWork> CreateTransactional()
         {

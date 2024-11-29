@@ -6,16 +6,12 @@ namespace Xerris.DotNet.Core.Data
     {
         public IDbTransaction Transaction => null;
         public IDbConnection Connection { get; }
-        
+
         public ReadonlyUnitOfWork(IDbConnection connection)
-        {
-            Connection = connection;
-        }
+            => Connection = connection;
 
         public void Dispose()
-        {
-            Connection?.Dispose();
-        }
+            => Connection?.Dispose();
 
         public void Commit()
         {

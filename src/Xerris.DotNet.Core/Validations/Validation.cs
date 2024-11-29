@@ -8,21 +8,18 @@ namespace Xerris.DotNet.Core.Validations
         private readonly List<ValidationException> exceptions;
 
         public Validation()
-        {
-            exceptions = new List<ValidationException>(1); // optimize for only having 1 exception
-        }
+            => exceptions = new List<ValidationException>(1); // optimize for only having 1 exceptio
+        
 
         public IEnumerable<ValidationException> Exceptions => exceptions;
 
-        public IEnumerable<ValidationException> Errors
-        {
-            get { return exceptions.FindAll(e => e.IsError); }
-        }
+        public IEnumerable<ValidationException> Errors 
+            => exceptions.FindAll(e => e.IsError);
+
 
         public IEnumerable<ValidationException> Warnings
-        {
-            get { return exceptions.FindAll(e => e.IsWarning); }
-        }
+            => exceptions.FindAll(e => e.IsWarning);
+        
 
         public Validation Add(ValidationException ex)
         {

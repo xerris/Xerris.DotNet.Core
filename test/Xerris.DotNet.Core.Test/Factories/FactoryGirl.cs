@@ -10,62 +10,41 @@ namespace Xerris.DotNet.Core.Test.Factories
         private static TestFactory Instance => Factory ??= new TestFactory();
 
         public static T Build<T>()
-        {
-            return Build<T>(x => {});
-        }
+            => Build<T>(x => { });
 
         public static T Build<T>(Action<T> propertyUpdates)
-        {
-            return Instance.Build(propertyUpdates);
-        }
+            => Instance.Build(propertyUpdates);
 
         public static void Define<T>(Func<T> factory)
-        {
-            Instance.Define(factory);
-        }
+            => Instance.Define(factory);
 
         public static void Clear()
-        {
-            Factory = null;
-        }
+            => Factory = null;
 
         public static int UniqueId(string key = "anonymous")
-        {
-            return Instance.UniqueId(key);
-        }
+            => Instance.UniqueId(key);
 
         public static string UniqueIdStr(string key = "anonymous")
-        {
-            return UniqueId(key).ToString();
-        }
+            => UniqueId(key).ToString();
     }
 
     public class TestFactory
     {
-        private readonly IDictionary<Type, Func<object>> factories;
-        private readonly IDictionary<string, int> uniqueIds;
+        private readonly IDictionary<Type, Func<object>> factories = new Dictionary<Type, Func<object>>();
+        private readonly IDictionary<string, int> uniqueIds = new Dictionary<string, int>();
 
-        public TestFactory()
-        {
-            factories = new Dictionary<Type, Func<object>>();
-            uniqueIds = new Dictionary<string, int>();
-        }
-        
         public T Build<T>(Action<T> propertyUpdates)
         {
             if (factories.ContainsKey(typeof (T)) == false)
-            {
                 throw new ArgumentException($"Unknown entity type requested: {typeof (T).Name}");
-            }
+            
             var entity = (T) factories[typeof (T)]();
             propertyUpdates(entity);
             return entity;
         }
 
         public void Define<T>(Func<T> factory)
-        {
-            factories[typeof(T)] = () => factory();
-        }
+            => factories[typeof(T)] = () => factory();
 
         public int UniqueId(string key= "anonymous")
         {
