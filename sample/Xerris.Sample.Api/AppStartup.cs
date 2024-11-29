@@ -1,6 +1,3 @@
-using System;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Xerris.DotNet.Core;
 
@@ -20,11 +17,9 @@ namespace Xerris.Sample.Api
         }
 
         public void InitializeLogging(IConfiguration configuration, Action<IConfiguration> defaultConfig)
-        {
-            Log.Logger = new LoggerConfiguration()
+            => Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console(outputTemplate:
                     "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
-        }
     }
 }
