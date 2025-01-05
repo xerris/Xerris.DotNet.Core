@@ -23,7 +23,6 @@ public static partial class ValidationExtensions
     public static bool IsValid(this Validation validation)
         => validation?.Errors == null || !validation.Errors.Any();
 
-
     public static Validation IsEqual<T>(this Validation validation, T left, T right, string message)
         => Equals(left, right) ? validation : validation.AddException(new ValidationException(message));
 
@@ -264,6 +263,16 @@ public static partial class ValidationExtensions
 
         return validation;
     }
+
+    public static Validation IsId(this Validation validation, Guid id)
+        => !Guid.Empty.Equals(id)
+            ? validation
+            : validation.AddException(new ValidationException($"{nameof(id)} is not a valid Id"));
+    
+    public static Validation IsId(this Validation validation, Guid? id)
+        => id.HasValue && !Guid.Empty.Equals(id)
+            ? validation
+            : validation.AddException(new ValidationException($"{nameof(id)} is not a valid Id"));
 
     public static Validation IsMinimumLength(this Validation validation, string theValue, int minimumLength,
         string message)

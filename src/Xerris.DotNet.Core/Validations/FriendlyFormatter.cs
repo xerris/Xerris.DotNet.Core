@@ -21,3 +21,4 @@ public class FriendlyFormatter
         Message = builder.ToString().TrimEnd('\n', '\r');
     }
 }
+

@@ -104,13 +104,6 @@ public static class EnumExtensions
         return false;
     }
 
-    public static int GetSortOrder(this Enum value)
-    {
-        var fi = value.GetType().GetField(value.ToString());
-        var attributes = (EnumOrderAttribute[])fi.GetCustomAttributes(typeof(EnumOrderAttribute), false);
-        return attributes.Length > 0 ? attributes[0].Order : value.IntValue();
-    }
-
     public static int GetSequence(this Enum value)
     {
         var sequence = value.GetAttribute<SequenceAttribute>();
@@ -120,7 +113,7 @@ public static class EnumExtensions
     public static T GetAttribute<T>(this Enum value) where T : Attribute
     {
         var fi = value.GetType().GetField(value.ToString());
-        return (T)fi.GetCustomAttributes(typeof(T), false).FirstOrDefault();
+        return (T)fi!.GetCustomAttributes(typeof(T), false).FirstOrDefault();
     }
 
     public static string GetDescription<T>(this T value) where T : struct, IConvertible
@@ -128,14 +121,22 @@ public static class EnumExtensions
         if (!typeof(T).IsEnum) throw new ArgumentException("{0} must be an enumerated type", typeof(T).Name);
 
         var fi = value.GetType().GetField(value.ToString() ?? string.Empty);
-        var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+        var attributes = (DescriptionAttribute[])fi!.GetCustomAttributes(typeof(DescriptionAttribute), false);
         return attributes.Length > 0 ? attributes[0].Description : value.ToString();
     }
 
-    public static IEnumerable<T> GetSortedList<T>() where T : struct, IConvertible
+    public static IEnumerable<T> GetSortedList<T>() where T : struct, Enum
     {
-        var t = typeof(T);
-        return !t.IsEnum ? null : Enum.GetValues(t).Cast<Enum>().OrderBy(x => GetSortOrder(x)).Cast<T>();
+        return Enum.GetValues(typeof(T))
+            .Cast<T>()
+            .OrderBy(e => GetSortOrder(e));
+    }
+
+    public static int GetSortOrder(this Enum value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = field!.GetCustomAttribute<EnumOrderAttribute>();
+        return attribute?.Order ?? Convert.ToInt32(value);
     }
 
     public static string GetName<T>(this Enum value)
