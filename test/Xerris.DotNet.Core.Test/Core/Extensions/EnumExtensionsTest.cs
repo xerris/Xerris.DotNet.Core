@@ -62,6 +62,7 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         public void Should_Get_Sort_Order()
         {
             SortThings.Item1.GetSortOrder().Should().Be(2);
+            //this item does not have the EnumOrder attribute, should just use the int value directly
             SortThings.Item4.GetSortOrder().Should().Be(4);
         }
 
@@ -73,6 +74,7 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
         {
             var sorted = EnumExtensions.GetSortedList<SortThings>().ToArray();
             sorted.Should().HaveCount(4);
+            
             sorted.ToArray()[0].Should().Be(SortThings.Item3);
             sorted.ToArray()[1].Should().Be(SortThings.Item1);
             sorted.ToArray()[2].Should().Be(SortThings.Item4);
@@ -192,9 +194,19 @@ namespace Xerris.DotNet.Core.Test.Core.Extensions
 
     public enum SortThings
     {
-        [EnumOrder(Order = 2)] [Sequence(1)] Item1 = 1,
-        [EnumOrder(Order = 10)] [Sequence(3)] Item2 = 2,
-        [EnumOrder(Order = 1)] [Sequence(2)] Item3 = 3,
-        [Sequence(5)] Item4 = 4
+        [EnumOrder(Order = 2)] 
+        [Sequence(1)] 
+        Item1 = 1,
+        
+        [EnumOrder(Order = 10)] 
+        [Sequence(3)] 
+        Item2 = 2,
+        
+        [EnumOrder(Order = 1)] 
+        [Sequence(2)] 
+        Item3 = 3,
+        
+        [Sequence(5)] 
+        Item4 = 4
     }
 }
