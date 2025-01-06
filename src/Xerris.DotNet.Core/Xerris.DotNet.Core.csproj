@@ -7,8 +7,8 @@
         <Company>Xerris Inc.</Company>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <LangVersion>latest</LangVersion>
-        <TargetFramework>net8.0</TargetFramework>
         <PackageReadmeFile>README.md</PackageReadmeFile>
+        <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>

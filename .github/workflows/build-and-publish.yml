@@ -12,8 +12,8 @@ jobs:
     with:
       csproj-path: './src/Xerris.DotNet.Core/Xerris.DotNet.Core.csproj'
       nuget-package-name: 'xerris.dotnet.core'
-      dotnet-version: '9.0.x'
-      release-path: 'net9.0'
+      dotnet-version: '8.0.x'
+      release-path: 'net8.0'
     secrets:
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       NUGET_SOURCE_URI: ${{ secrets.NUGET_SOURCE_URI }}
