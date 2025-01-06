@@ -10,5 +10,6 @@ jobs:
     uses: xerris/xerris-common-workflows/.github/workflows/ci-build.yml@main
     with:
       dotnet-version: '9.0.x'
+      release-path: 'net9.0'
       build-configuration: 'Release'
       artifact-name: 'build-output'
