@@ -13,7 +13,5 @@ public class CompositeCommand : ICommand
     }
 
     public void Add(ICommand waitedCommand)
-    {
-        commands.Add(waitedCommand);
-    }
+        => commands.Add(waitedCommand);
 }
