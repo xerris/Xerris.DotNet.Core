@@ -50,5 +50,16 @@ namespace Xerris.DotNet.Core.Test.Startup
             var service = IoC.Resolve<IService>();
             IoC.Resolve<IService>().Should().BeSameAs(service);
         }
+
+        [Fact]
+        public void TryResolveWithFindsDefault()
+        {
+            var privateCollection = new ServiceCollection();
+            IoC.ConfigureServiceCollection(privateCollection);
+            
+            IoC.Resolve<IAddMe>().Should().BeOfType<AddMe>();
+            IoC.TryResolve<IDependency, DefaultDependency>()
+                .Should().BeOfType<DefaultDependency>();
+        }
     }
 }

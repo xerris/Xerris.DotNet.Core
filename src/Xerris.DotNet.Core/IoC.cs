@@ -21,8 +21,10 @@ public static class IoC
     }
 
     public static TService Resolve<TService>() => Singleton.Instance.Find<TService>();
+    public static TService TryResolve<TService, TDefault>() where TDefault : TService, new()
+        => Singleton.Instance.FindOrDefault<TService, TDefault>();
     public static IServiceScope CreateScope() => Singleton.Instance.NewScope();
-
+    
     private class Singleton
     {
         private readonly IServiceProvider container;
@@ -72,5 +74,12 @@ public static class IoC
 
         internal TService Find<TService>() => container.GetRequiredService<TService>();
         internal IServiceScope NewScope() => container.CreateScope();
+
+        public TService FindOrDefault<TService, TDefault>() where TDefault : TService, new()
+        {
+            var service = container.GetService<TService>();
+            if (service != null) return service; 
+            return new TDefault();
+        }
     }
 }
